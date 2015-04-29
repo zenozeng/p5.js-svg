@@ -32,3 +32,32 @@ SVG module for p5.js (still coding).
 
 
 
+## FAQ
+
+### Why not PShape?
+
+I think that PShape is somehow not that natural for SVG.
+SVG is something more DOM-like.
+So, the manipulation of SVG should have a DOM-like api.
+
+Also, I think in SVG's world, we should treat shapes as object.
+Thus, an OOP api was designed.
+
+### Performance Issue
+
+I have tested the performance of svg using a demo drawing many circles (a very edge case).
+http://zenozeng.github.io/gsoc2015/p5.js/svg-test/
+
+Though the fps is always about 60,
+the circles drawn per second varies when circle count increases.
+(Tested on my laptop, Intel(R) Core(TM) i5-2450M CPU @ 2.50GHz)
+At the very beginning (before drawing 550 circles), about 40+ circles can be drawn per second.
+However, when there are already 1000 circles in svg, only 20+ circles can be drawn per second.
+When it comes to 20000 circles, only about 1 circle can be drawn per second.
+See also: http://zenozeng.github.io/gsoc2015/p5.js/svg-test/svg.log
+
+The performance is not good, but not so bad.
+However, performance can be improved if API was provided in SVG's manner:
+
+    That is, move an existing object rather than draw another new object.
+    A OOP API for this, for example.
