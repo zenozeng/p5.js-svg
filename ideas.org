@@ -1,0 +1,9 @@
+
+* 基于现有代码记录变动作为返回值
+
+  在操作之前，创建一个 <g> 对象，然后用 canvas2svg 生成内部的代码，这样之后将其代码注入到该 <g> 对象内。
+返回值可以是这个 group。
+
+* extends
+
+  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create

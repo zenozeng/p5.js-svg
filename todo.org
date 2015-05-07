@@ -1,0 +1,3 @@
+大概就是基于 canvas2svg 提供一组原始的 API 支持类似 `circle()` 之类的用法。
+注意：不提供 c = circle() 是因为在 p5.js 中这默认是返回 this 来允许链式调用的。
+同时提供 `new Circle()` 这样的语法

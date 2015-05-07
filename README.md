@@ -61,3 +61,11 @@ However, performance can be improved if API was provided in SVG's manner:
 
     That is, move an existing object rather than draw another new object.
     A OOP API for this, for example.
+
+## License
+
+LGPL
+
+这个项目包括了：
+
+- canvas2svg (MIT)

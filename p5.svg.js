@@ -6,8 +6,9 @@
      * it should extend p5.Element
      * it should provide elem.filter
      */
-    p5.SVGElement = function(attributes) {
-        var element;
+    p5.SVGElement = function(element, attributes) {
+        if (typeof element === "string") {
+        }
         Object.keys(attributes || {}).forEach(function(key) {
             element.setAttribute(key, attributes[key]);
         });
@@ -16,13 +17,21 @@
     p5.SVGElement.prototype = p5.Element;
 
     /**
+     * Provide Canvas like API based on SVG
+     *
+     */
+    p5.SVGDrawingContext = function(svg) {
+        return new C2S();
+    };
+
+    /**
      * Creates a SVG element in the document, and sets its width and
      * height in pixels. This method should be called only once at
      * the start of setup.
      * @param {Number} width - Width for SVG Element
      * @param {Number} height - Height for SVG Element
      * @param {Object} attributes - Attributes for SVG Element
-     * @return {p5.SVGElement} p5.Element represents the SVG Element created
+     * @return {p5.SVGElement} p5.SVGElement represents the SVG Element created
      */
     p5.prototype.createSVG = function(width, height, attributes) {
         var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -37,6 +46,8 @@
 
         document.body.appendChild(svg);
 
+        this.drawingContext = new p5.SVGDrawingContext(svg);
+
         return svg;
     };
 
@@ -44,6 +55,10 @@
         Group: 'g',
         Circle: 'circle'
     };
+
+    // API Style 1: c = new Circle()
+    // API Style 2: c = createCircle()
+    // API Style 3: c = circle() // 也许不能接受，因为原先的 API 允许了链式调用之类的功能
 
     // Object.keys(svgElements).forEach();
 
