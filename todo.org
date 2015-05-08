@@ -1,3 +1,23 @@
-大概就是基于 canvas2svg 提供一组原始的 API 支持类似 `circle()` 之类的用法。
+* HOLD API
+  - State "HOLD"       from ""           [2015-05-07 四 20:38]
+
+  大概就是基于 canvas2svg 提供一组原始的 API 支持类似 `circle()` 之类的用法。
 注意：不提供 c = circle() 是因为在 p5.js 中这默认是返回 this 来允许链式调用的。
 同时提供 `new Circle()` 这样的语法
+
+* DONE figure out how p5.dom.js comes out
+  CLOSED: [2015-05-07 四 20:43]
+  https://github.com/processing/p5.js/commits/6666c757e498b639f99126ebace5ee371aa09247/lib/addons/p5.dom.js
+
+  似乎不是生成的，而是直接写在 lib/addons 里的，可以在 github commit log 里看出一些踪迹来
+
+* DONE How createElement works?
+  CLOSED: [2015-05-07 四 20:35]
+
+  p5.prototype.createElement is defined in p5.js/lib/addons/p5.dom.js
+
+* CANCELLED createCircle, createRect...
+  CLOSED: [2015-05-07 四 20:53]
+  - State "CANCELLED"  from ""           [2015-05-07 四 20:53]
+
+    可能不是很有必要，因为已经有 Mover API 了，而这样又会污染一大堆 API

@@ -8,7 +8,7 @@
 
     - p5's API
 
-    - p5.dom's API
+    - p5.dom's API and Source Code
 
     - [canvas2svg](http://gliffy.github.io/canvas2svg/)
 

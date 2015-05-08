@@ -3,6 +3,10 @@ define(function(require) {
 
     var p5 = window.p5;
 
+    var createSVGDrawingContext = function(svg) {
+        return new C2S();
+    };
+
     /**
      * Creates a SVG element in the document, and sets its width and
      * height in pixels. This method should be called only once at
@@ -25,7 +29,7 @@ define(function(require) {
 
         document.body.appendChild(svg);
 
-        this.drawingContext = new SVGDrawingContext(svg);
+        this.drawingContext = createSVGDrawingContext(svg);
 
         return svg;
     };

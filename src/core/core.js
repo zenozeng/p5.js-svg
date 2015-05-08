@@ -3,6 +3,6 @@
  *
  */
 define(function(require) {
-    var p5 = window.p5 || require('p5');
+    var p5 = require('p5');
     return p5;
 });

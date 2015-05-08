@@ -5,9 +5,16 @@
 define(function(require) {
     "use strict";
 
-    var p5 = window.p5;
+    var p5 = require('core');
 
-    p5.SVGElement = function(element) {
+    /**
+     * @class p5.SVGElement
+     * @extends p5.Element
+     * @constructor
+     * @param {Element} element - DOM Element
+     * @param {Object} p5Instance - P5 Instance
+     */
+    p5.SVGElement = function(element, p5Instance) {
         p5.Element.call(this, element);
     };
 
