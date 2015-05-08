@@ -25,3 +25,7 @@
     - p5.prototype.createSVG
 
     - p5.SVGElement
+
+- Gruntfile (using requirejs and amdclean) for generating dist/
+
+    This is based on p5.js's Gruntfile.

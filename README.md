@@ -2,6 +2,28 @@
 
 SVG module for p5.js (still coding).
 
+## Usage
+
+### Global
+
+Simply include p5.svg.js and that's all.
+
+### AMD
+
+```javascript
+define(function(require) {
+    require('p5.svg');
+    // your code here
+});
+```
+
+### CMD
+
+```javascript
+var p5 = require('p5');
+require('./p5.svg.js')(p5);
+```
+
 ## So, why SVG?
 
 - Resolution Independence

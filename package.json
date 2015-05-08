@@ -1,8 +1,8 @@
 {
-  "dependencies": {
-    "grunt": "^0.4.5"
-  },
+  "version": "0.0.1",
   "devDependencies": {
+    "amdclean": "^2.7.0",
+    "grunt": "^0.4.5",
     "grunt-contrib-requirejs": "^0.4.4"
   }
 }
