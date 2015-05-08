@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "grunt": "^0.4.5"
+  },
+  "devDependencies": {
+    "grunt-contrib-requirejs": "^0.4.4"
   }
 }

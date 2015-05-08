@@ -2,7 +2,6 @@
  * Alias for p5's core.
  *
  */
-define(function(require) {
-    var p5 = require('p5');
+define(function() {
     return p5;
 });
