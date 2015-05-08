@@ -4,7 +4,7 @@ define(function(require) {
     var p5 = window.p5;
 
     var createSVGDrawingContext = function(svg) {
-        return new C2S();
+        // return new C2S();
     };
 
     /**
@@ -28,6 +28,8 @@ define(function(require) {
         });
 
         document.body.appendChild(svg);
+
+        this.svg = svg;
 
         this.drawingContext = createSVGDrawingContext(svg);
 

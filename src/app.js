@@ -3,6 +3,9 @@ define(function(require) {
 
     var p5 = require('core');
 
+    require('p5.SVGElement');
+    require('rendering.svg');
+
     /**
      * Create SVG element with given tag in the current SVG target.
      *
@@ -10,10 +13,16 @@ define(function(require) {
      * @param {Object} attributes - Attributes for the new SVG element
      */
     p5.prototype.createSVGElement = function(tag, attributes) {
+
+        if (typeof this.svg === 'undefined') {
+            throw new Error('createSVG() must be called before using createSVGElement()');
+        }
+
         var element;
         Object.keys(attributes || {}).forEach(function(key) {
             element.setAttribute(key, attributes[key]);
         });
+
         return new p5.SVGElement(element);
     };
 

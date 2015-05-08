@@ -21,3 +21,5 @@
   - State "CANCELLED"  from ""           [2015-05-07 四 20:53]
 
     可能不是很有必要，因为已经有 Mover API 了，而这样又会污染一大堆 API
+
+* TODO SVGFilter or MoverFilter
