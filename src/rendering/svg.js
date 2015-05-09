@@ -14,26 +14,21 @@ define(function(require) {
      * @param {Object} attributes - Attributes for SVG Element
      * @return {p5.SVGElement} p5.SVGElement represents the SVG Element created
      */
-    p5.prototype.createSVG = function(width, height, attributes) {
-
-        svg.setAttribute('width', width || "100px");
-        svg.setAttribute('height', height || "100px");
-        svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xlink', 'http://www.w3.org/1999/xlink');
-
-        Object.keys(attributes || {}).forEach(function(key) {
-            svg.setAttribute(key, attributes[key]);
-        });
-
-        document.body.appendChild(svg);
+    p5.prototype.createSVG = function(width, height) {
 
         var svgCanvas = new SVGCanvas();
+        var svg = svgCanvas.svg;
+
+        document.body.appendChild(svg);
+        this.svg = svg;
 
         if (!this._defaultGraphics) {
             this._defaultGraphics = new p5.Graphics(svgCanvas, this, true);
             this._elements.push(this._defaultGraphics);
         }
 
-        this.svg = svg;
+        this._defaultGraphics.resize(width, height);
+        this._defaultGraphics._applyDefaults();
 
         return svg;
     };
