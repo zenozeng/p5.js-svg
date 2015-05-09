@@ -29,3 +29,10 @@
 - Gruntfile (using requirejs and amdclean) for generating dist/
 
     This is based on p5.js's Gruntfile.
+
+    Note that if current (2015-05-08) p5.js uses amdclean@0.3.3,
+    which will have different behavior with latest amdclean.
+    In latest amdclean, when hooking into onBuildWrite,
+    multiple `define` will be called in different anonymous functions,
+    which will make variables undefined to each other.
+    To fix this, hook into onBuildWrite.
