@@ -36,3 +36,9 @@
     multiple `define` will be called in different anonymous functions,
     which will make variables undefined to each other.
     To fix this, hook into onBuildWrite.
+
+- Create repo: [svgcanvas](https://github.com/zenozeng/svgcanvas)
+
+    `Mock <canvas> element using <svg> (based on gliffy's canvas2svg).`
+
+- Init demo/
