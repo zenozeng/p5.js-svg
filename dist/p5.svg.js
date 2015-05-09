@@ -986,7 +986,7 @@ var core, p5SVGElement, renderingsvg, src_app;
                         }
                         return this.ctx;
                     };
-                    moudle.exports = SVGCanvas;
+                    module.exports = SVGCanvas;
                     return exports;
                 },
                 { './canvas2svg': 1 }
@@ -1002,7 +1002,6 @@ var core, p5SVGElement, renderingsvg, src_app;
          * the start of setup.
          * @param {Number} width - Width (in px) for SVG Element
          * @param {Number} height - Height (in px) for SVG Element
-         * @param {Object} attributes - Attributes for SVG Element
          * @return {p5.SVGElement} p5.SVGElement represents the SVG Element created
          */
         p5.prototype.createSVG = function (width, height) {

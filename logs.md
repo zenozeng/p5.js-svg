@@ -42,3 +42,8 @@
     `Mock <canvas> element using <svg> (based on gliffy's canvas2svg).`
 
 - Init demo/
+
+- Import svgcanvas to p5.js-svg
+
+    Note that UMD package will be broken after amdclean.
+    You can use ranma to convert CMD to AMD first.

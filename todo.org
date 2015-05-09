@@ -28,3 +28,13 @@
 
   这样可以保证能够得到一致的 API，一份代码简单改改就能同时跑在 canvas 和 svg 中。
   而且对于不同的 shape，只要按照 canvas api 做一份就好，svg 直接也拿到支持。这样是非常棒的。
+
+* DONE AMD, CMD & CommonJS
+  CLOSED: [2015-05-09 六 23:52]
+
+  http://www.cnblogs.com/skylar/p/4065455.html
+
+  AMD: https://github.com/amdjs/amdjs-api/wiki/AMD-%28%E4%B8%AD%E6%96%87%E7%89%88%29
+
+  CMD: https://github.com/seajs/seajs/issues/242
+

@@ -17,7 +17,7 @@ define(function(require) {
 });
 ```
 
-### CMD
+### CommonJS
 
 ```javascript
 var p5 = require('p5');
