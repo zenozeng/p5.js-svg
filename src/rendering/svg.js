@@ -1,23 +1,20 @@
 define(function(require) {
     "use strict";
 
-    var p5 = window.p5;
+    var p5 = require('core');
 
-    var createSVGDrawingContext = function(svg) {
-        // return new C2S();
-    };
+    var SVGCanvas = require('SVGCanvas');
 
     /**
      * Creates a SVG element in the document, and sets its width and
      * height in pixels. This method should be called only once at
      * the start of setup.
-     * @param {Number} width - Width for SVG Element
-     * @param {Number} height - Height for SVG Element
+     * @param {Number} width - Width (in px) for SVG Element
+     * @param {Number} height - Height (in px) for SVG Element
      * @param {Object} attributes - Attributes for SVG Element
      * @return {p5.SVGElement} p5.SVGElement represents the SVG Element created
      */
     p5.prototype.createSVG = function(width, height, attributes) {
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
         svg.setAttribute('width', width || "100px");
         svg.setAttribute('height', height || "100px");
@@ -29,9 +26,14 @@ define(function(require) {
 
         document.body.appendChild(svg);
 
-        this.svg = svg;
+        var svgCanvas = new SVGCanvas();
 
-        this.drawingContext = createSVGDrawingContext(svg);
+        if (!this._defaultGraphics) {
+            this._defaultGraphics = new p5.Graphics(svgCanvas, this, true);
+            this._elements.push(this._defaultGraphics);
+        }
+
+        this.svg = svg;
 
         return svg;
     };
