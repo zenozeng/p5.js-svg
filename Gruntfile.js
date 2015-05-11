@@ -25,6 +25,7 @@ module.exports = function(grunt) {
 
                         fs.writeFileSync(outputFile, amdclean.clean({
                             filePath: outputFile,
+                            globalObject: true,
                             transformAMDChecks: false,
                             escodegen: {
                                 format: {

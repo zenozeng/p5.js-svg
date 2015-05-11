@@ -3,8 +3,6 @@ define(function(require) {
 
     var p5 = require('core');
 
-    var SVGCanvas = require('SVGCanvas');
-
     /**
      * Creates a SVG element in the document, and sets its width and
      * height in pixels. This method should be called only once at
@@ -15,7 +13,7 @@ define(function(require) {
      */
     p5.prototype.createSVG = function(width, height) {
 
-        var svgCanvas = new SVGCanvas();
+        var svgCanvas = new (require('SVGCanvas'));
         var svg = svgCanvas.svg;
 
         document.body.appendChild(svg);

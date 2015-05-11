@@ -50,3 +50,9 @@
 - Add shell script to generate amd for svgcanvas
 
     https://github.com/zenozeng/svgcanvas/commit/a9a860f3a040139b8187bb4cca9eb87aa3a5e12b
+
+- Bug: SVGCanvas undefined
+
+    `var SVGCanvas = require('SVGCanvas')` was compiled to `var SVGCanvas = SVGCanvas;` by amdclean
+
+    fixed by: `var svgCanvas = new (require('SVGCanvas'));`

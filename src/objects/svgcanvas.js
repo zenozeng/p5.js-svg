@@ -1002,5 +1002,6 @@ define(function() {
 
         return this.ctx;
     };
+
     return SVGCanvas;
 });
