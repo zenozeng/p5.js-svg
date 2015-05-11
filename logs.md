@@ -46,4 +46,7 @@
 - Import svgcanvas to p5.js-svg
 
     Note that UMD package will be broken after amdclean.
-    You can use ranma to convert CMD to AMD first.
+
+- Add shell script to generate amd for svgcanvas
+
+    https://github.com/zenozeng/svgcanvas/commit/a9a860f3a040139b8187bb4cca9eb87aa3a5e12b

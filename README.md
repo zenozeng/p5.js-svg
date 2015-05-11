@@ -51,9 +51,6 @@ require('./p5.svg.js')(p5);
     Now that SVGs are object based,
     we can apply filters on object. (use blur, for example)
 
-
-
-
 ## FAQ
 
 ### Why not PShape?
