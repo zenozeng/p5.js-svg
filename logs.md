@@ -62,3 +62,7 @@
 - createSVG now will override default graphics and will call noCanvas
 
 - svgcanvas now supports width, height, style, className, id and getBoundingClientRect
+
+- Override svgcanvas.ctx.fillRect & svgcanvas.ctx.clearRect for p5.prototype.background & p5.prototype.clear
+
+    Now when `clear` or `background` called, the svg will remove all child elements to save resources (with 200ms delay to ensure current frame have enough time to stay)

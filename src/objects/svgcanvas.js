@@ -994,7 +994,20 @@ define(function() {
             }
         });
 
-        ["width", "height", "style", "id"].forEach(function(prop) {
+        ["width", "height"].forEach(function(prop) {
+            Object.defineProperty(_this, prop, {
+                get: function() {
+                    return svg.getAttribute(prop) | 0;
+                },
+                set: function(val) {
+                    if (typeof val !== "undefined") {
+                        return svg.setAttribute(prop, val);
+                    }
+                }
+            });
+        });
+
+        ["style", "id"].forEach(function(prop) {
             Object.defineProperty(_this, prop, {
                 get: function() {
                     return svg[prop];
@@ -1008,7 +1021,6 @@ define(function() {
         });
 
         ["getBoundingClientRect"].forEach(function(fn) {
-            console.log(fn);
             _this[fn] = function() {
                 return svg[fn]();
             };
