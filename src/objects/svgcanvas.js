@@ -981,17 +981,37 @@ define(function() {
         this.ctx = new C2S();
         this.svg = this.ctx.__root;
 
-        // sync updates of this.style, this.width, this.height to svg
+        // sync attributes to svg
         var svg = this.svg;
-        ["width", "height", "style"].forEach(function(prop) {
-            Object.defineProperty(this, prop, {
+        var _this = this;
+
+        Object.defineProperty(this, 'className', {
+            get: function() {
+                return svg.getAttribute('class') || '';
+            },
+            set: function(val) {
+                return svg.setAttribute('class', val);
+            }
+        });
+
+        ["width", "height", "style", "id"].forEach(function(prop) {
+            Object.defineProperty(_this, prop, {
                 get: function() {
                     return svg[prop];
                 },
                 set: function(val) {
-                    svg[prop] = val;
+                    if (typeof val !== "undefined") {
+                        return svg.setAttribute(prop, val);
+                    }
                 }
             });
+        });
+
+        ["getBoundingClientRect"].forEach(function(fn) {
+            console.log(fn);
+            _this[fn] = function() {
+                return svg[fn]();
+            };
         });
     }
 
@@ -1002,6 +1022,5 @@ define(function() {
 
         return this.ctx;
     };
-
     return SVGCanvas;
 });

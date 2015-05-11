@@ -19,6 +19,8 @@ define(function(require) {
         document.body.appendChild(svg);
         this.svg = svg;
 
+        window.p = this;
+
         // override default graphics (original is created by createCanvas at _start)
         this.noCanvas();
         this._defaultGraphics = new p5.Graphics(svgCanvas, this, true);

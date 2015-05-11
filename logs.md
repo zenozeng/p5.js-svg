@@ -58,3 +58,7 @@
     `var SVGCanvas = require('SVGCanvas')` was compiled to `var SVGCanvas = SVGCanvas;` by amdclean
 
     fixed by: `var svgCanvas = new (require('SVGCanvas'));`
+
+- createSVG now will override default graphics and will call noCanvas
+
+- svgcanvas now supports width, height, style, className, id and getBoundingClientRect
