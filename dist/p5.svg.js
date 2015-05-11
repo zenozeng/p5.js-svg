@@ -960,10 +960,10 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
             var svg = svgCanvas.svg;
             document.body.appendChild(svg);
             this.svg = svg;
-            if (!this._defaultGraphics) {
-                this._defaultGraphics = new p5.Graphics(svgCanvas, this, true);
-                this._elements.push(this._defaultGraphics);
-            }
+            // override default graphics (original is created by createCanvas at _start)
+            this.noCanvas();
+            this._defaultGraphics = new p5.Graphics(svgCanvas, this, true);
+            this._elements.push(this._defaultGraphics);
             this._defaultGraphics.resize(width, height);
             this._defaultGraphics._applyDefaults();
             return svg;
