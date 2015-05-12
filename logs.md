@@ -65,7 +65,7 @@
 
 - Override svgcanvas.ctx.fillRect & svgcanvas.ctx.clearRect for p5.prototype.background & p5.prototype.clear
 
-    Now when `clear` or `background` called, the svg will remove all child elements to save resources (with 200ms delay to ensure current frame have enough time to stay)
+    Now when `clear` or `background` called, the svg will remove all child elements to save resources
 
 - Add generation-based gc to svgcanvas (buggy)
 
@@ -76,3 +76,5 @@
 - Modify canvas2svg.js: reuse __createElement
 
 - new implementation for Context.prototype.gc (from bottom to top), fixes #17
+
+- use setTimeout for gc to make it called after redraw done (after both ctx.save() and ctx.restore() called)
