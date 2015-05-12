@@ -1,6 +1,6 @@
 # Log
 
-## 2015-04-28 -- 2015-05-10
+## 2015-04-28 -- 2015-05-10 (10h41min)
 
 - API Design
 
@@ -30,7 +30,7 @@
 
     This is based on p5.js's Gruntfile.
 
-    Note that if current (2015-05-08) p5.js uses amdclean@0.3.3,
+    Note that current (2015-05-08) p5.js uses amdclean@0.3.3,
     which will have different behavior with latest amdclean.
     In latest amdclean, when hooking into onBuildWrite,
     multiple `define` will be called in different anonymous functions,
@@ -53,7 +53,7 @@
 
     https://github.com/zenozeng/svgcanvas/commit/a9a860f3a040139b8187bb4cca9eb87aa3a5e12b
 
-- Bug: SVGCanvas undefined
+- Fix Bug: SVGCanvas undefined
 
     `var SVGCanvas = require('SVGCanvas')` was compiled to `var SVGCanvas = SVGCanvas;` by amdclean
 
@@ -66,3 +66,13 @@
 - Override svgcanvas.ctx.fillRect & svgcanvas.ctx.clearRect for p5.prototype.background & p5.prototype.clear
 
     Now when `clear` or `background` called, the svg will remove all child elements to save resources (with 200ms delay to ensure current frame have enough time to stay)
+
+- Add generation-based gc to svgcanvas (buggy)
+
+- Skip gc when between ctx.save() and ctx.restore() (buggy due to redraw)
+
+- Skip gc when still in path
+
+- Modify canvas2svg.js: reuse __createElement
+
+- new implementation for Context.prototype.gc (from bottom to top), fixes #17

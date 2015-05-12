@@ -14,7 +14,7 @@ module.exports = function(grunt) {
                         'core': 'src/core/core',
                         'p5.SVGElement': 'src/objects/p5.SVGElement',
                         'rendering.svg': 'src/rendering/svg',
-                        'SVGCanvas': 'src/objects/svgcanvas'
+                        'svgcanvas': 'src/objects/svgcanvas'
                     },
                     useStrict: true,
                     out: 'dist/p5.svg.js',

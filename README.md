@@ -51,6 +51,13 @@ require('./p5.svg.js')(p5);
     Now that SVGs are object based,
     we can apply filters on object. (use blur, for example)
 
+## 注意事项
+
+### clear() and background()
+
+When these 2 functions called, the <svg> will remove all child elements in order to improve performance.
+
+
 ## FAQ
 
 ### Why not PShape?
@@ -76,10 +83,6 @@ When it comes to 20000 circles, only about 1 circle can be drawn per second.
 See also: http://zenozeng.github.io/gsoc2015/p5.js/svg-test/svg.log
 
 The performance is not good, but not so bad.
-However, performance can be improved if API was provided in SVG's manner:
-
-    That is, move an existing object rather than draw another new object.
-    A OOP API for this, for example.
 
 ## License
 

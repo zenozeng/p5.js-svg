@@ -1,4 +1,6 @@
-* HOLD API
+* DONE API
+  CLOSED: [2015-05-11 一 22:58]
+  - State "DONE"       from "HOLD"       [2015-05-11 一 22:58]
   - State "HOLD"       from ""           [2015-05-07 四 20:38]
 
   大概就是基于 canvas2svg 提供一组原始的 API 支持类似 `circle()` 之类的用法。
@@ -24,7 +26,8 @@
 
 * TODO SVGFilter or MoverFilter
 
-* 提供基于 canvas2svg 的 API
+* DONE 提供基于 canvas2svg 的 API
+  CLOSED: [2015-05-11 一 22:58]
 
   这样可以保证能够得到一致的 API，一份代码简单改改就能同时跑在 canvas 和 svg 中。
   而且对于不同的 shape，只要按照 canvas api 做一份就好，svg 直接也拿到支持。这样是非常棒的。
@@ -38,3 +41,12 @@
 
   CMD: https://github.com/seajs/seajs/issues/242
 
+* DOING GC
+
+** 保证始终有一代存在就好了
+
+** 每次尝试 gc 的时候就创建新一代，然后 do gc 到仅剩一代
+
+* canvas2svg
+
+** pull request: reuse __createElement

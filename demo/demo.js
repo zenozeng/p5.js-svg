@@ -1,6 +1,7 @@
 var n = 0;
 
 function setup() {
+    // frameRate(1);
     createSVG(600, 600);
 }
 

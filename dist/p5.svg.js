@@ -1,6 +1,6 @@
 ;(function() {
-/*! p5.svg.js v0.0.1 May 11, 2015 */
-var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
+/*! p5.svg.js v0.0.1 May 12, 2015 */
+var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
         define('p5.svg', ['p5'], function (p5) {
@@ -29,7 +29,7 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
         // extends p5.Element
         p5.SVGElement.prototype = Object.create(p5.Element);    // p5.SVGElement.prototype.
     }({});
-    SVGCanvas = function () {
+    svgcanvas = function () {
         var C2S;
         (function () {
             'use strict';
@@ -171,7 +171,7 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
              * Adds a color stop to the gradient root
              */
             CanvasGradient.prototype.addColorStop = function (offset, color) {
-                var stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop'), regex, matches;
+                var stop = this.__createElement('stop'), regex, matches;
                 stop.setAttribute('offset', offset);
                 if (color.indexOf('rgba') !== -1) {
                     //separate alpha value, since webkit can't handle it
@@ -251,6 +251,9 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
              * @private
              */
             ctx.prototype.__createElement = function (elementName, properties, resetFill) {
+                if (typeof properties === 'undefined') {
+                    properties = {};
+                }
                 var element = document.createElementNS('http://www.w3.org/2000/svg', elementName), keys = Object.keys(properties), i, key;
                 if (resetFill) {
                     //if fill or stroke is not specified, the svg element should not display. By default SVG's fill is black.
@@ -395,7 +398,7 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
              * Will generate a group tag.
              */
             ctx.prototype.save = function () {
-                var group = document.createElementNS('http://www.w3.org/2000/svg', 'g'), parent = this.__closestGroupOrSvg();
+                var group = this.__createElement('g'), parent = this.__closestGroupOrSvg();
                 this.__groupStack.push(parent);
                 parent.appendChild(group);
                 this.__currentElement = group;
@@ -417,7 +420,7 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
                 //if the current element has siblings, add another group
                 var parent = this.__closestGroupOrSvg();
                 if (parent.childNodes.length > 0) {
-                    var group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    var group = this.__createElement('g');
                     parent.appendChild(group);
                     this.__currentElement = group;
                 }
@@ -698,7 +701,7 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
              */
             ctx.prototype.__wrapTextLink = function (font, element) {
                 if (font.href) {
-                    var a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+                    var a = this.__createElement('a');
                     a.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', font.href);
                     a.appendChild(element);
                     return a;
@@ -792,7 +795,7 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
              * Generates a ClipPath from the clip command.
              */
             ctx.prototype.clip = function () {
-                var group = this.__closestGroupOrSvg(), clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath'), id = randomString(this.__ids), newGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                var group = this.__closestGroupOrSvg(), clipPath = this.__createElement('clipPath'), id = randomString(this.__ids), newGroup = this.__createElement('g');
                 group.removeChild(this.__currentElement);
                 clipPath.setAttribute('id', id);
                 clipPath.appendChild(this.__currentElement);
@@ -857,7 +860,7 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
                     this.__currentElement = currentElement;
                 } else if (image.nodeName === 'CANVAS' || image.nodeName === 'IMG') {
                     //canvas or image
-                    svgImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+                    svgImage = this.__createElement('image');
                     svgImage.setAttribute('width', dw);
                     svgImage.setAttribute('height', dh);
                     svgImage.setAttribute('preserveAspectRatio', 'none');
@@ -917,8 +920,80 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
             };
             C2S = ctx;
         }());
+        var Context = function (width, height) {
+            C2S.call(this);
+            this.__width = width;
+            this.__height = height;
+            this.generations = [[]];    // used to collect element references for different generations
+        };
+        Context.prototype = Object.create(C2S.prototype);
+        Context.prototype.__createElement = function (elementName, properties, resetFill) {
+            var element = C2S.prototype.__createElement.call(this, elementName, properties, resetFill);
+            var currentGeneration = this.generations[this.generations.length - 1];
+            currentGeneration.push(element);
+            return element;
+        };
+        Context.prototype.gc = function () {
+            this.generations.push([]);
+            var ctx = this;
+            // make sure it happens after current job done
+            // for example: in p5.js's redraw use setTimeout will make gc called after both save() and restore() called
+            setTimeout(function () {
+                if (ctx.__currentElement.nodeName === 'path') {
+                    // we are still in path, skip gc
+                    return;
+                }
+                // keep only latest generation
+                while (ctx.generations.length > 1) {
+                    var elements = ctx.generations.shift();
+                    var lastCount = 0;
+                    var count = elements.length;
+                    console.log(count);
+                    while (count > 0) {
+                        console.log(count);
+                        lastCount = count;
+                        elements = elements.filter(function (elem) {
+                            // in case children may from live generation, gc from bottom to top
+                            if (elem.children.length === 0) {
+                                elem.remove();
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        });
+                        count = elements.length;
+                        console.log(lastCount, count);
+                        if (count === lastCount) {
+                            // could not gc more, exit now
+                            // save this elements to live generation
+                            var liveGeneration = ctx.generations[ctx.generations.length - 1];
+                            elements.forEach(function (elem) {
+                                liveGeneration.push(elem);
+                            });
+                            // exit
+                            break;
+                        }
+                    }
+                }
+            }, 0);    // if (this.__groupStack.length > 0) {
+                      //     // we are between ctx.save() and ctx.restore, skip gc
+                      //     return;
+                      // }
+        };
+        Context.prototype.clearRect = function (x, y, w, h) {
+            if (x === 0 && y === 0 && w === this.__width && h === this.__height) {
+                this.gc();
+            }
+            C2S.prototype.clearRect.call(this, x, y, w, h);
+        };
+        Context.prototype.fillRect = function (x, y, w, h) {
+            if (x === 0 && y === 0 && w === this.__width && h === this.__height) {
+                this.gc();
+            }
+            C2S.prototype.fillRect.call(this, x, y, w, h);
+        };
         function SVGCanvas() {
-            this.ctx = new C2S();
+            this.ctx = new Context();
             this.svg = this.ctx.__root;
             // sync attributes to svg
             var svg = this.svg;
@@ -941,6 +1016,7 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
                     },
                     set: function (val) {
                         if (typeof val !== 'undefined') {
+                            _this.ctx['__' + prop] = val;
                             return svg.setAttribute(prop, val);
                         }
                     }
@@ -977,6 +1053,7 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
     }();
     renderingsvg = function (require) {
         var p5 = core;
+        var SVGCanvas = svgcanvas;
         /**
          * Creates a SVG element in the document, and sets its width and
          * height in pixels. This method should be called only once at
@@ -989,33 +1066,6 @@ var core, p5SVGElement, SVGCanvas, renderingsvg, src_app;
         p5.prototype.createSVG = function (width, height) {
             var svgCanvas = new SVGCanvas();
             var svg = svgCanvas.svg;
-            // Override ctx.fillRect & clearRect,
-            // to make the svg remove all child element to save resources
-            [
-                'fillRect',
-                'clearRect'
-            ].forEach(function (method) {
-                var _fn = svgCanvas.ctx[method];
-                svgCanvas.ctx[method] = function (x, y, w, h) {
-                    _fn.call(svgCanvas.ctx, x, y, w, h);
-                    if (x === 0 && y === 0 && w === svgCanvas.width && h === svgCanvas.height) {
-                        // clear all child element
-                        var elements = svg.querySelectorAll('g > *');
-                        if (elements) {
-                            console.log(0, elements);
-                            // use setTimeout to ensure current frame to have enough time to stay
-                            setTimeout(function () {
-                                // remove invisible elements
-                                console.log('gc');
-                                console.log(elements);
-                                for (var i = 0; i < elements.length - 1; i++) {
-                                    elements[i].remove();
-                                }
-                            }, 100);
-                        }
-                    }
-                };
-            });
             document.body.appendChild(svg);
             this.svg = svg;
             // for debug
