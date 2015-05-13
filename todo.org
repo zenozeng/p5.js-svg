@@ -41,12 +41,25 @@
 
   CMD: https://github.com/seajs/seajs/issues/242
 
-* DOING GC
+* DONE GC
+  CLOSED: [2015-05-12 二 14:34]
 
-** 保证始终有一代存在就好了
+** DONE 保证始终有一代存在就好了
+   CLOSED: [2015-05-12 二 14:33]
 
-** 每次尝试 gc 的时候就创建新一代，然后 do gc 到仅剩一代
+** DONE 每次尝试 gc 的时候就创建新一代，然后 do gc 到仅剩一代
+   CLOSED: [2015-05-12 二 14:34]
 
-* canvas2svg
+* TODO canvas2svg
 
 ** pull request: reuse __createElement
+
+* TODO svgcanvas
+
+** bower
+
+** npm
+
+** 总文件 copyright 头
+
+** 分文件 copyright 头

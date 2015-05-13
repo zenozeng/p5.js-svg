@@ -939,7 +939,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
             // make sure it happens after current job done
             // for example: in p5.js's redraw use setTimeout will make gc called after both save() and restore() called
             setTimeout(function () {
-                console.log(ctx.__groupStack);
                 if (ctx.__groupStack.length > 0) {
                     // we are between ctx.save() and ctx.restore, skip gc
                     return;
@@ -953,9 +952,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                     var elements = ctx.generations.shift();
                     var lastCount = 0;
                     var count = elements.length;
-                    console.log(count);
                     while (count > 0) {
-                        console.log(count);
                         lastCount = count;
                         elements = elements.filter(function (elem) {
                             // in case children may from live generation, gc from bottom to top
@@ -967,7 +964,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                             }
                         });
                         count = elements.length;
-                        console.log(lastCount, count);
                         if (count === lastCount) {
                             // could not gc more, exit now
                             // save this elements to live generation

@@ -913,9 +913,7 @@ define(function() {
                 var elements = ctx.generations.shift();
                 var lastCount = 0;
                 var count = elements.length;
-                console.log(count);
                 while (count > 0) {
-                    console.log(count);
                     lastCount = count;
                     elements = elements.filter(function(elem) {
                         // in case children may from live generation, gc from bottom to top
@@ -927,7 +925,6 @@ define(function() {
                         }
                     });
                     count = elements.length;
-                    console.log(lastCount, count);
                     if (count === lastCount) {
                         // could not gc more, exit now
                         // save this elements to live generation

@@ -78,3 +78,8 @@
 - new implementation for Context.prototype.gc (from bottom to top), fixes #17
 
 - use setTimeout for gc to make it called after redraw done (after both ctx.save() and ctx.restore() called)
+
+- Test line()
+
+    Now, ellipse() and line() could work based on svgcanvas.
+

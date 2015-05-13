@@ -24,6 +24,12 @@ var p5 = require('p5');
 require('./p5.svg.js')(p5);
 ```
 
+## Known Issue
+
+### Shape
+
+`noSmooth()` and `smooth()` are not supported.
+
 ## So, why SVG?
 
 - Resolution Independence
@@ -50,13 +56,6 @@ require('./p5.svg.js')(p5);
 
     Now that SVGs are object based,
     we can apply filters on object. (use blur, for example)
-
-## 注意事项
-
-### clear() and background()
-
-When these 2 functions called, the <svg> will remove all child elements in order to improve performance.
-
 
 ## FAQ
 
