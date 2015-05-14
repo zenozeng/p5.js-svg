@@ -11,7 +11,7 @@ define(function(require) {
      * the start of setup.
      * @param {Number} width - Width (in px) for SVG Element
      * @param {Number} height - Height (in px) for SVG Element
-     * @return {p5.SVGElement} p5.SVGElement represents the SVG Element created
+     * @return {Object} {toDataURL}
      */
     // TODO: fix return type
     p5.prototype.createSVG = function(width, height) {

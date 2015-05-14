@@ -63,3 +63,7 @@
 ** 总文件 copyright 头
 
 ** 分文件 copyright 头
+
+* TODO toDataURL
+
+* TODO 基于 toDataURL 实现的基于 pixels 的单元测试lo
