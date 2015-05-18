@@ -83,3 +83,8 @@
 
     Now, ellipse() and line() could work based on svgcanvas.
 
+- Add SVGGraphics.toSerializedSVG
+
+    Based on canvas2svg's getSerializedSvg
+
+- SVG Support for SVGGraphics.toDataURL

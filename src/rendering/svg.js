@@ -13,7 +13,6 @@ define(function(require) {
      * @param {Number} height - Height (in px) for SVG Element
      * @return {Object} {toDataURL}
      */
-    // TODO: fix return type
     p5.prototype.createSVG = function(width, height) {
 
         var svgCanvas = new SVGCanvas;
@@ -22,8 +21,6 @@ define(function(require) {
         document.body.appendChild(svg);
         this.svg = svg;
 
-        // for debug
-        window.p = this;
 
         // override default graphics (original is created by createCanvas at _start)
         this.noCanvas();
@@ -32,6 +29,25 @@ define(function(require) {
         this._defaultGraphics.resize(width, height);
         this._defaultGraphics._applyDefaults();
 
-        return svg;
+        var SVGGraphics = {
+            svg: svg,
+            toSerializedSVG: function() {
+                return svgCanvas.getContext('2d').getSerializedSvg();
+            },
+            toDataURL: function(type, options) {
+                var serializedSVG = svgCanvas.getContext('2d').getSerializedSvg();
+                if (type === "image/jpeg" || type === "image/png") {
+                    // use canvas to export
+                } else {
+                    return "data:image/svg+xml;charset=utf-8," + serializedSVG;
+                }
+            }
+        };
+
+        // for debug
+        window.p = this;
+        window.s = SVGGraphics;
+
+        return SVGGraphics;
     };
 });

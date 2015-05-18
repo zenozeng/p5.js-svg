@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.0.1 May 12, 2015 */
+/*! p5.svg.js v0.0.1 May 19, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -1058,23 +1058,36 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
          * the start of setup.
          * @param {Number} width - Width (in px) for SVG Element
          * @param {Number} height - Height (in px) for SVG Element
-         * @return {p5.SVGElement} p5.SVGElement represents the SVG Element created
+         * @return {Object} {toDataURL}
          */
-        // TODO: fix return type
         p5.prototype.createSVG = function (width, height) {
             var svgCanvas = new SVGCanvas();
             var svg = svgCanvas.svg;
             document.body.appendChild(svg);
             this.svg = svg;
-            // for debug
-            window.p = this;
             // override default graphics (original is created by createCanvas at _start)
             this.noCanvas();
             this._defaultGraphics = new p5.Graphics(svgCanvas, this, true);
             this._elements.push(this._defaultGraphics);
             this._defaultGraphics.resize(width, height);
             this._defaultGraphics._applyDefaults();
-            return svg;
+            var SVGGraphics = {
+                svg: svg,
+                toSerializedSVG: function () {
+                    return svgCanvas.getContext('2d').getSerializedSvg();
+                },
+                toDataURL: function (type, options) {
+                    var serializedSVG = svgCanvas.getContext('2d').getSerializedSvg();
+                    if (type === 'image/jpeg' || type === 'image/png') {
+                    } else {
+                        return 'data:image/svg+xml;charset=utf-8,' + serializedSVG;
+                    }
+                }
+            };
+            // for debug
+            window.p = this;
+            window.s = SVGGraphics;
+            return SVGGraphics;
         };
     }({});
     src_app = function (require) {
