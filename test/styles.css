@@ -5,7 +5,7 @@ h1 {
     color: #ED225D;
     padding-bottom: .5em;
 }
-img, .match, .function {
+img, .match {
     height: 100px;
     box-sizing: border-box;
     box-shadow: 0 0 5px #777;
