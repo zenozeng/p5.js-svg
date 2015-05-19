@@ -8,6 +8,9 @@ $(function() {
     console.log(canvasGraphics);
 
     window.testRender = function(draw) {
+        p5svg.background(255);
+        p5canvas.background(255);
+
         draw(p5svg);
         draw(p5canvas);
 
