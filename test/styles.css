@@ -30,22 +30,21 @@ svg, canvas {
 .match {
     width: 100px;
     display: inline-block;
-    text-align: center;
-    line-height: 100px;
+    box-shadow: none;
     vertical-align: top;
     font-size: 60px;
+    line-height: 100px;
 }
-.match .fa-check-circle {
+.match .fa-check {
     color: #3CB371;
 
 }
-.match .fa-times-circle {
+.match .fa-times {
     color: #DC143C;
 }
 
 .function {
     display: inline-block;
-    padding: 12px;
     vertical-align: top;
     font-size: 12px;
 }

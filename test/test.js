@@ -37,7 +37,7 @@ $(function() {
         img.src = canvaspng;
         $('#tests').append(img);
 
-        match = svgpng === canvaspng ? 'fa-check-circle' : 'fa-times-circle';
+        match = svgpng === canvaspng ? 'fa-check' : 'fa-times';
         $('#tests').append('<div class="match"><i class="fa ' + match + '"></i></div>');
 
         $('#tests').append('<div class="function">' + fnbody.replace(/;/g, ';<br>') + '</div>');
