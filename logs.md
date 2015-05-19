@@ -88,3 +88,7 @@
     Based on canvas2svg's getSerializedSvg
 
 - SVG Support for SVGGraphics.toDataURL
+
+- JPEG Support for SVGGraphics.toDataURL (draw svg in canvas)
+
+- PNG Support for SVGGraphics.toDataURL (draw svg in canvas)

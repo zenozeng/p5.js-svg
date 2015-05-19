@@ -36,10 +36,26 @@ define(function(require) {
             },
             toDataURL: function(type, options) {
                 var serializedSVG = svgCanvas.getContext('2d').getSerializedSvg();
+                var dataURL = "data:image/svg+xml;charset=utf-8," + serializedSVG;
                 if (type === "image/jpeg" || type === "image/png") {
+                    console.log(type, options);
                     // use canvas to export
+                    var img = new Image();
+                    img.src = dataURL;
+                    // sync mode
+                    var imageLoaded = function() {
+                        return (img.width > 0) && (img.height > 0);
+                    };
+                    // wait until image loaded
+                    while (!imageLoaded()) {}
+                    var canvas = document.createElement('canvas');
+                    canvas.width = svgCanvas.width;
+                    canvas.height = svgCanvas.height;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    return canvas.toDataURL(type, options);
                 } else {
-                    return "data:image/svg+xml;charset=utf-8," + serializedSVG;
+                    return dataURL;
                 }
             }
         };
