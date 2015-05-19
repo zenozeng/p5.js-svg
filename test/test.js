@@ -1,11 +1,19 @@
 $(function() {
-    var p5canvas = new p5();
-    var canvasGraphics = p5canvas.createCanvas(100, 100, true);
-
-    var p5svg = new p5();
-    var svgGraphics = p5svg.createSVG(100, 100);
-
-    console.log(canvasGraphics);
+    // see also: http://p5js.org/learn/examples/Instance_Mode_Instantiation.php
+    var canvasGraphics, svgGraphics;
+    var sync = true;
+    var p5canvas = new p5(function(p) {
+        p.setup = function() {
+            canvasGraphics = p.createCanvas(100, 100);
+            p.noLoop();
+        };
+    }, sync);
+    var p5svg = new p5(function(p) {
+        p.setup = function() {
+            svgGraphics = p.createSVG(100, 100);
+            p.noLoop();
+        };
+    }, sync);
 
     window.testRender = function(draw) {
         p5svg.background(255);
@@ -18,8 +26,6 @@ $(function() {
                 eval(fnbody);
             }
         });
-        draw(p5svg);
-        draw(p5canvas);
 
         var img, svgpng, canvaspng, match;
 
