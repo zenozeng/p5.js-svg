@@ -17,6 +17,7 @@
     "mocha": "~2.2.5",
     "istanbul": "https://github.com/gotwarlost/istanbul.git#~0.3.13",
     "p5.js": "https://github.com/processing/p5.js.git#~0.4.4",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "font-awesome": "~4.3.0"
   }
 }

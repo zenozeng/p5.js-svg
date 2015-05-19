@@ -1,0 +1,51 @@
+body {
+    padding: 2em;
+}
+h1 {
+    color: #ED225D;
+    padding-bottom: .5em;
+}
+img, .match, .function {
+    height: 100px;
+    box-sizing: border-box;
+    box-shadow: 0 0 5px #777;
+    margin-right: 32px;
+}
+svg, canvas {
+    display: none;
+}
+#th div {
+    width: 100px;
+    height: 50px;
+    float: left;
+    margin-right: 32px;
+    font-size: 12px;
+    color: #777;
+}
+#th::after {
+    clear: both;
+    display: block;
+    content: '';
+}
+.match {
+    width: 100px;
+    display: inline-block;
+    text-align: center;
+    line-height: 100px;
+    vertical-align: top;
+    font-size: 60px;
+}
+.match .fa-check-circle {
+    color: #3CB371;
+
+}
+.match .fa-times-circle {
+    color: #DC143C;
+}
+
+.function {
+    display: inline-block;
+    padding: 12px;
+    vertical-align: top;
+    font-size: 12px;
+}
