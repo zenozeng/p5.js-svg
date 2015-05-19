@@ -16,12 +16,13 @@ $(function() {
     }, sync);
 
     window.testRender = function(draw) {
-        p5svg.background(255);
-        p5canvas.background(255);
-
         var fnbody = draw.toString();
         fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
         [p5svg, p5canvas].forEach(function(p) {
+            p.strokeWeight(2);
+            p.fill(200);
+            p.background(250);
+            p.stroke(0);
             with (p) {
                 eval(fnbody);
             }
@@ -43,22 +44,17 @@ $(function() {
         img.src = canvaspng;
         $('#tests').append(img);
 
-        match = svgpng === canvaspng ? 'fa-check' : 'fa-times';
-        $('#tests').append('<div class="match"><i class="fa ' + match + '"></i></div>');
+        match = svgpng === canvaspng;
+        console.log(svgpng, canvaspng);
+
+        var icon = match ? 'fa-check' : 'fa-times';
+        $('#tests').append('<div class="match"><i class="fa ' + icon + '"></i></div>');
 
         $('#tests').append('<div class="function">' + fnbody.replace(/;/g, ';<br>') + '</div>');
         $('#tests').append('<br><br>');
+
+        return match;
     };
 
-    testRender(function() {
-        ellipse(50, 50, 50, 25);
-    });
-
-    testRender(function() {
-        line(30, 20, 85, 20);
-        stroke(126);
-        line(85, 20, 85, 75);
-        stroke(255);
-        line(85, 75, 30, 75);
-    });
+    mocha.run();
 });
