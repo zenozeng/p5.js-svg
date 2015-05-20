@@ -901,7 +901,7 @@ define(function() {
         // for example: in p5.js's redraw use setTimeout will make gc called after both save() and restore() called
         setTimeout(function() {
             if (ctx.__groupStack.length > 0) {
-                // we are between ctx.save() and ctx.restore, skip gc
+                // we are between ctx.save() and ctx.restore(), skip gc
                 return;
             }
             if (ctx.__currentElement.nodeName === 'path') {
@@ -941,9 +941,21 @@ define(function() {
     };
     Context.prototype.clearRect = function(x, y, w, h) {
         if (x === 0 && y === 0 && w === this.__width && h === this.__height) {
-            this.gc();
+            // remove all
+            this.generations.forEach(function(elems) {
+                elems.forEach(function(elem) {
+                    if (elem) {
+                        elem.remove();
+                    }
+                });
+            });
+            this.generations = [[]];
+            var g = this.__createElement('g');
+            this.__root.appendChild(g);
+            this.__currentElement = g;
+        } else {
+            C2S.prototype.clearRect.call(this, x, y, w, h);
         }
-        C2S.prototype.clearRect.call(this, x, y, w, h);
     };
     Context.prototype.fillRect = function(x, y, w, h) {
         if (x === 0 && y === 0 && w === this.__width && h === this.__height) {

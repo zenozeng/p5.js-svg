@@ -46,3 +46,6 @@ img, .match, svg, canvas {
     vertical-align: top;
     font-size: 12px;
 }
+#mocha {
+    background: #fff;
+}

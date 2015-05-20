@@ -67,3 +67,21 @@
 * TODO toDataURL
 
 * TODO 基于 toDataURL 实现的基于 pixels 的单元测试lo
+
+* 异步转同步
+
+** deasync
+
+   https://github.com/abbr/deasync
+
+   Turns async function into sync via JavaScript wrapper of Node event loop
+   基于 libuv，然后有一部分 C++。
+
+** How does jQuery's synchronous AJAX request work?
+   http://stackoverflow.com/questions/3481970/how-does-jquerys-synchronous-ajax-request-work
+
+** How do I make an image load synchronously?
+
+   http://stackoverflow.com/questions/9421202/how-do-i-make-an-image-load-synchronously
+
+** createObjectURL?

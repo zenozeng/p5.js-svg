@@ -66,7 +66,7 @@ $(function() {
                     var r2 = canvaspngData.data[i];
                     var g2 = canvaspngData.data[i + 1];
                     var b2 = canvaspngData.data[i + 2];
-                    var a2 = canvaspngData.data[i + 2];
+                    var a2 = canvaspngData.data[i + 3];
 
                     if (canvaspngData.data[i + 3] > 0 || svgpngData.data[i + 3] > 0) {
                         count++;
