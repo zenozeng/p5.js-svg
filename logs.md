@@ -100,3 +100,7 @@
 - svgcanvas: clearRect now will remove all elements if x, y, w, h matches the whole canvas
 
 - Display mocha results
+
+- Basic 2D Primitives now work (based on svgcanvas)
+
+    Known Issue: [circle's edge is not exactly same in SVG and canvas #37](https://github.com/zenozeng/p5.js-svg/issues/37)
