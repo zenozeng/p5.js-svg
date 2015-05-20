@@ -98,3 +98,5 @@
 - Pull request for canvas2svg: reuse __createElement ([#18](https://github.com/gliffy/canvas2svg/pull/18))
 
 - svgcanvas: clearRect now will remove all elements if x, y, w, h matches the whole canvas
+
+- Display mocha results
