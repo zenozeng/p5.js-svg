@@ -8,8 +8,11 @@ describe('2d_primitives', function() {
             arc(50, 55, 70, 70, PI, PI+QUARTER_PI);
             arc(50, 55, 80, 80, PI+QUARTER_PI, TWO_PI);
         },
-        ellipse: function() {
+        circle: function() {
             ellipse(56, 46, 55, 55);
+        },
+        ellipse: function() {
+            ellipse(56, 46, 55, 35);
         },
         line: function() {
             line(30, 20, 85, 20);
@@ -40,8 +43,8 @@ describe('2d_primitives', function() {
 
     Object.keys(tests).forEach(function(key) {
         describe(key, function() {
-            it(key + ': SVG API should draw same image as Canvas API', function() {
-                testRender(tests[key]);
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                testRender(tests[key], done);
             });
         });
     });

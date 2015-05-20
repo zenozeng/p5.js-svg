@@ -15,7 +15,7 @@ $(function() {
         };
     }, sync);
 
-    window.testRender = function(draw) {
+    window.testRender = function(draw, callback) {
         var fnbody = draw.toString();
         fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
         [p5svg, p5canvas].forEach(function(p) {
@@ -51,6 +51,12 @@ $(function() {
         canvas.height = canvasGraphics.height;
         $container.append(canvas);
         var ctx = canvas.getContext('2d');
+
+        var $match = $('<div class="match"></div>');
+        $container.append($match);
+        $container.append('<div class="function">' + fnbody.replace(/;/g, ';<br>') + '</div>');
+        $container.append('<br><br>');
+
         $(svgimg).load(function() {
             $(canvasimg).load(function() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -81,27 +87,27 @@ $(function() {
                         canvaspngData.data[i + 2] = 0;
                         canvaspngData.data[i + 3] = 255;
                     } else {
-                        console.log([r1, g1, b1, a1], [r2, g2, b2, a2]);
                         mismatch++;
                         canvaspngData.data[i] = 255;
                         canvaspngData.data[i + 1] = 255;
                         canvaspngData.data[i + 2] = 255;
                         canvaspngData.data[i + 3] = 255;
                     }
+
+                    mismatch = mismatch > 0;
+
+                    var icon = mismatch ? 'fa-times': 'fa-check';
+                    $match.html('<i class="fa ' + icon + '"></i>');
+
+                    if (mismatch) {
+                        console.log({count: count, mismatch: mismatch, rate: mismatch / count});
+                        throw new Error('mismatch');
+                    }
+                    callback();
                 }
-                console.log({count: count, mismatch: mismatch, rate: mismatch / count});
                 ctx.putImageData(canvaspngData, 0, 0);
             });
         });
-
-        match = svgpng === canvaspng;
-
-
-        var icon = match ? 'fa-check' : 'fa-times';
-        $container.append('<div class="match"><i class="fa ' + icon + '"></i></div>');
-
-        $container.append('<div class="function">' + fnbody.replace(/;/g, ';<br>') + '</div>');
-        $container.append('<br><br>');
 
         return match;
     };

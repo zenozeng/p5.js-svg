@@ -6,7 +6,7 @@ h1 {
     color: #ED225D;
     padding-bottom: .5em;
 }
-#tests img, #tests .match, #tests svg, #tests canvas {
+#test-graph img, #test-graph .match, #test-graph svg, #test-graph canvas {
     height: 100px;
     box-sizing: border-box;
     box-shadow: 0 0 5px #777;
