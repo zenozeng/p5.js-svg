@@ -6,7 +6,7 @@ h1 {
     color: #ED225D;
     padding-bottom: .5em;
 }
-img, .match, svg, canvas {
+#tests img, #tests .match, #tests svg, #tests canvas {
     height: 100px;
     box-sizing: border-box;
     box-shadow: 0 0 5px #777;
@@ -48,4 +48,6 @@ img, .match, svg, canvas {
 }
 #mocha {
     background: #fff;
+    margin: 20px 0;
+    padding: 12px;
 }
