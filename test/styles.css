@@ -28,10 +28,10 @@ h1 {
 .match {
     width: 100px;
     display: inline-block;
-    box-shadow: none;
+    box-shadow: none ! important;
     vertical-align: top;
     font-size: 60px;
-    line-height: 100px;
+    /* line-height: 100px; */
 }
 .match .fa-check {
     color: #3CB371;

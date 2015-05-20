@@ -34,16 +34,17 @@ $(function() {
 
         img = new Image();
         img.src = svgGraphics.toDataURL();
+        img.className = 'svg';
         $container.append(img);
 
         svgimg = new Image();
         svgpng = svgGraphics.toDataURL('image/png');
         svgimg.src = svgpng;
-        $container.append(svgimg);
 
         canvasimg = new Image();
         canvaspng = canvasGraphics.elt.toDataURL('image/png');
         canvasimg.src = canvaspng;
+        canvasimg.className = 'canvasimg';
         $container.append(canvasimg);
 
         var canvas = document.createElement('canvas');
@@ -94,18 +95,25 @@ $(function() {
                         canvaspngData.data[i + 3] = 255;
                     }
 
-                    mismatch = mismatch > 0;
-
-                    var icon = mismatch ? 'fa-times': 'fa-check';
-                    $match.html('<i class="fa ' + icon + '"></i>');
-
-                    if (mismatch) {
-                        console.log({count: count, mismatch: mismatch, rate: mismatch / count});
-                        throw new Error('mismatch');
-                    }
-                    callback();
                 }
+
                 ctx.putImageData(canvaspngData, 0, 0);
+
+                var matchp = mismatch === 0;
+                var icon = matchp ? 'fa-check': 'fa-times';
+                $match.html('<i class="fa ' + icon + '"></i>');
+
+                if (matchp) {
+                    callback();
+                } else {
+                    var err = JSON.stringify({
+                        count: count,
+                        mismatch: mismatch,
+                        rate: mismatch / count
+                    });
+                    callback(new Error(err));
+                }
+
             });
         });
 
