@@ -85,3 +85,13 @@
    http://stackoverflow.com/questions/9421202/how-do-i-make-an-image-load-synchronously
 
 ** createObjectURL?
+
+** Should setting an image src to data URL be available immediately?
+
+   http://stackoverflow.com/questions/4776670/should-setting-an-image-src-to-data-url-be-available-immediately
+
+** spec-whatwg
+
+   https://html.spec.whatwg.org/multipage/embedded-content-1.html#attr-img-src
+
+   https://html.spec.whatwg.org/multipage/embedded-content.html#img-none

@@ -32,15 +32,21 @@ $(function() {
 
         var $container = $('#test-graph');
 
+        // draw original svg
         img = new Image();
-        img.src = svgGraphics.toDataURL();
+        svgGraphics.toDataURL(function(err, svg) {
+            img.src = svg;
+        });
         img.className = 'svg';
         $container.append(img);
 
+        // load svg->png
         svgimg = new Image();
-        svgpng = svgGraphics.toDataURL('image/png');
-        svgimg.src = svgpng;
+        svgGraphics.toDataURL('image/png', {}, function(err, png) {
+            svgimg.src = png;
+        });
 
+        // load canvas->png
         canvasimg = new Image();
         canvaspng = canvasGraphics.elt.toDataURL('image/png');
         canvasimg.src = canvaspng;
@@ -58,8 +64,8 @@ $(function() {
         $container.append('<div class="function">' + fnbody.replace(/;/g, ';<br>') + '</div>');
         $container.append('<br><br>');
 
-        $(svgimg).load(function() {
-            $(canvasimg).load(function() {
+        $(svgimg).ready(function() {
+            $(canvasimg).ready(function() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(svgimg, 0, 0);
                 var svgpngData = ctx.getImageData(0, 0, canvas.width, canvas.height);

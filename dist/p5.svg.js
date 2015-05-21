@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.0.1 May 20, 2015 */
+/*! p5.svg.js v0.0.1 May 21, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -1088,29 +1088,30 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                 toSerializedSVG: function () {
                     return svgCanvas.getContext('2d').getSerializedSvg();
                 },
-                toDataURL: function (type, options) {
+                toDataURL: function (type, options, callback) {
+                    if (typeof type === 'function') {
+                        callback = type;
+                        type = null;
+                    }
+                    if (typeof options === 'function') {
+                        callback = options;
+                        options = {};
+                    }
                     var serializedSVG = svgCanvas.getContext('2d').getSerializedSvg();
                     var dataURL = 'data:image/svg+xml;charset=utf-8,' + serializedSVG;
                     if (type === 'image/jpeg' || type === 'image/png') {
-                        console.log(type, options);
-                        // use canvas to export
-                        var img = new Image();
-                        img.src = dataURL;
-                        // sync mode
-                        var imageLoaded = function () {
-                            return img.width > 0 && img.height > 0;
-                        };
-                        // wait until image loaded
-                        while (!imageLoaded()) {
-                        }
                         var canvas = document.createElement('canvas');
                         canvas.width = svgCanvas.width;
                         canvas.height = svgCanvas.height;
                         var ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0);
-                        return canvas.toDataURL(type, options);
+                        var img = new Image();
+                        img.onload = function () {
+                            ctx.drawImage(img, 0, 0);
+                            callback(null, canvas.toDataURL(type, options));
+                        };
+                        img.src = dataURL;
                     } else {
-                        return dataURL;
+                        callback(null, dataURL);
                     }
                 }
             };
