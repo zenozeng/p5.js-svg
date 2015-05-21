@@ -1014,5 +1014,32 @@ define(function() {
         }
         return this.ctx;
     };
+    SVGCanvas.prototype.toDataURL = function(type, options, callback) {
+        if (typeof type === "function") {
+            callback = type;
+            type = null;
+        }
+        if (typeof options === "function") {
+            callback = options;
+            options = {};
+        }
+        var svgCanvas = this;
+        var serializedSVG = svgCanvas.getContext('2d').getSerializedSvg();
+        var dataURL = "data:image/svg+xml;charset=utf-8," + serializedSVG;
+        if (type === "image/jpeg" || type === "image/png") {
+            var canvas = document.createElement('canvas');
+            canvas.width = svgCanvas.width;
+            canvas.height = svgCanvas.height;
+            var ctx = canvas.getContext('2d');
+            var img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                callback(null, canvas.toDataURL(type, options));
+            };
+            img.src = dataURL;
+        } else {
+            callback(null, dataURL);
+        }
+    };
     return SVGCanvas;
 });
