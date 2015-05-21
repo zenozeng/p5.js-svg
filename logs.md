@@ -108,3 +108,14 @@
 - Find no way to provide toDataURL (sync), provide async version instead
 
 - SVGGraphics.toDataURL now moved to SVGCanvas.prototype.toDataURL
+
+- Update unit test, fixes #37 (circle's edge is not exactly same in SVG and canvas)
+
+    ```javascript
+    diffv = Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2) + Math.abs(a1 - a2);
+    diffv /= 255 * 4;
+    mismatchval += diffv;
+    // loop...
+    mismatchLevel = mismatchval / count;
+    matchp = mismatchLevel < 0.02;
+    ```
