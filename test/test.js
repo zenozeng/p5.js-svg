@@ -77,9 +77,6 @@ $(function() {
                 setTimeout(diff, 10);
                 return;
             }
-            console.log(svgimg.complete, canvasimg.complete);
-            console.log(svgimg.width, svgimg.height);
-            console.log(canvasimg.width, canvasimg.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(svgimg, 0, 0);
             var svgpngData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -88,6 +85,7 @@ $(function() {
             var canvaspngData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             var count = 0;
             var mismatch = 0;
+            var mismatchval = 0;
             for (var i = 0; i < svgpngData.data.length; i += 4) {
                 var r1 = svgpngData.data[i];
                 var g1 = svgpngData.data[i + 1];
@@ -108,17 +106,23 @@ $(function() {
                     canvaspngData.data[i + 2] = 0;
                     canvaspngData.data[i + 3] = 255;
                 } else {
-                    mismatch++;
-                    canvaspngData.data[i] = 255;
-                    canvaspngData.data[i + 1] = 255;
-                    canvaspngData.data[i + 2] = 255;
-                    canvaspngData.data[i + 3] = 255;
+                    var diffv = Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2) + Math.abs(a1 - a2);
+                    diffv /= 255 * 4;
+                    mismatchval += diffv;
+                    // todo: maybe use sin to make small value smaller, big value bigger?
+
+                    canvaspngData.data[i] = diffv;
+                    canvaspngData.data[i + 1] = diffv;
+                    canvaspngData.data[i + 2] = diffv;
+                    canvaspngData.data[i + 3] = diffv;
                 }
             }
 
             ctx.putImageData(canvaspngData, 0, 0);
 
-            var matchp = mismatch === 0;
+            var mismatchLevel = mismatchval / count;
+
+            var matchp = mismatchLevel <= 0.02;
             var icon = matchp ? 'fa-check': 'fa-times';
             $match.html('<i class="fa ' + icon + '"></i>');
 
@@ -127,8 +131,8 @@ $(function() {
             } else {
                 var err = JSON.stringify({
                     count: count,
-                    mismatch: mismatch,
-                    rate: mismatch / count
+                    mismatchPixels: mismatch,
+                    mismatchLevel: mismatchLevel
                 });
                 callback(new Error(err));
             }
