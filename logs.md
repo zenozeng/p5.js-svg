@@ -101,7 +101,7 @@
 
 - Display mocha results
 
-- Basic 2D Primitives (arc, ellipse, line, point quad, rect, triangle) now work (based on svgcanvas)
+- Basic 2D Primitives (arc, ellipse, line, point quad, rect, triangle) now work and covered with unit tests (based on svgcanvas)
 
     Known Issue: [circle's edge is not exactly same in SVG and canvas #37](https://github.com/zenozeng/p5.js-svg/issues/37)
 
