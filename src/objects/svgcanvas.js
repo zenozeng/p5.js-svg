@@ -894,9 +894,31 @@ define(function() {
         this.__width = width;
         this.__height = height;
         this.generations = [[]]; // used to collect element references for different generations
+        var _this = this;
+        this.__imageSmoothingEnabled = true;
+        ["mozImageSmoothingEnabled",
+         "webkitImageSmoothingEnabled",
+         "msImageSmoothingEnabled",
+         "imageSmoothingEnabled"].forEach(function(k) {
+             Object.defineProperty(_this, k, {
+                 get: function() {
+                     return _this.__imageSmoothingEnabled;
+                 },
+                 set: function(val) {
+                     _this.__imageSmoothingEnabled = val;
+                 }
+             });
+         });
     };
     Context.prototype = Object.create(C2S.prototype);
     Context.prototype.__createElement = function(elementName, properties, resetFill) {
+        if (!this.__imageSmoothingEnabled) {
+            // only shape elements can use the shape-rendering attribute
+            if (["circle", "ellipse", "line", "path", "polygon", "polyline", "rect"].indexOf(elementName) > -1) {
+                properties = properties || {};
+                properties["shape-rendering"] = "crispEdges"; // disable anti-aliasing
+            }
+        }
         var element = C2S.prototype.__createElement.call(this, elementName, properties, resetFill);
         var currentGeneration = this.generations[this.generations.length - 1];
         currentGeneration.push(element);

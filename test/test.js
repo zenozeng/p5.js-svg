@@ -2,15 +2,17 @@ $(function() {
     // see also: http://p5js.org/learn/examples/Instance_Mode_Instantiation.php
     var canvasGraphics, svgGraphics;
     var sync = true;
-    var p5canvas = new p5(function(p) {
-        p.setup = function() {
-            canvasGraphics = p.createCanvas(100, 100);
-            p.noLoop();
-        };
-    }, sync);
+
     var p5svg = new p5(function(p) {
         p.setup = function() {
             svgGraphics = p.createSVG(100, 100);
+            p.noLoop();
+        };
+    }, sync);
+
+    var p5canvas = new p5(function(p) {
+        p.setup = function() {
+            canvasGraphics = p.createCanvas(100, 100);
             p.noLoop();
         };
     }, sync);
@@ -23,6 +25,9 @@ $(function() {
             p.strokeWeight(1);
             p.fill(200);
             p.stroke(0);
+            p.ellipseMode(p.CENTER);
+            p.rectMode(p.CORNER);
+            p.smooth();
             with (p) {
                 eval(fnbody);
             }

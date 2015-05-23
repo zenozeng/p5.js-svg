@@ -92,6 +92,15 @@ describe('Shape/Attributes', function() {
             rectMode(CENTER);
             fill(100);
             rect(50, 50, 30, 30);
+        },
+        smooth: function() {
+            background(0);
+            fill(255);
+            noStroke();
+            smooth();
+            ellipse(30, 48, 36, 36);
+            noSmooth();
+            ellipse(70, 48, 36, 36);
         }
     };
 
