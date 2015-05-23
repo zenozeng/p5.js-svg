@@ -119,3 +119,4 @@
     mismatchLevel = mismatchval / count;
     matchp = mismatchLevel < 0.02;
     ```
+- svgcanvas: add documentation
