@@ -95,7 +95,7 @@
 
 - Add Bitmap Diff based unit tests
 
-- Pull request for canvas2svg: reuse __createElement ([#18](https://github.com/gliffy/canvas2svg/pull/18))
+- Pull request for canvas2svg: reuse __createElement ([#18](https://github.com/gliffy/canvas2svg/pull/18)), Merged in canvas2svg@1.0.8
 
 - svgcanvas: clearRect now will remove all elements if x, y, w, h matches the whole canvas
 
@@ -120,3 +120,35 @@
     matchp = mismatchLevel < 0.02;
     ```
 - svgcanvas: add documentation
+
+- canvas2svg: use currentDefaultPath instead of &lt;path&gt;'s d attribute, fixes stroke's different behavior in SVG and canvas. ([pull#20](https://github.com/gliffy/canvas2svg/pull/20))
+
+    Now \_\_addPathCommand will only update this.\_\_currentDefaultPath. And \_\_applyCurrentDefaultPath will be called inside stroke or fill.
+
+    The bug:
+
+    ![2015-05-21 10 40 01](https://cloud.githubusercontent.com/assets/2544489/7740542/da35f258-ffa5-11e4-8070-631651950cb7.png)
+
+    The left image is SVG, the middle image is Canvas, and the right is diff bitmap.
+
+    The following 2 code blocks should have different result:
+
+    ```javascript
+    ctx.beginPath();
+    ctx.moveTo(10,10);
+    ctx.lineTo(30, 30);
+    ctx.lineTo(60, 10);
+    ctx.stroke(); // currentDefaultPath not including the final Z
+    ctx.closePath();
+    ```
+
+    ```javascript
+    ctx.beginPath();
+    ctx.moveTo(10,10);
+    ctx.lineTo(30, 30);
+    ctx.lineTo(60, 10);
+    ctx.closePath();
+    ctx.stroke(); // currentDefaultPath including the final Z
+    ```
+
+    See also: https://github.com/zenozeng/p5.js-svg/issues/38

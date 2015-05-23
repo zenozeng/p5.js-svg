@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.0.1 May 21, 2015 */
+/*! p5.svg.js v0.0.1 May 23, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -483,28 +483,33 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
              */
             ctx.prototype.beginPath = function () {
                 var path, parent;
+                // Note that there is only one current default path, it is not part of the drawing state.
+                // See also: https://html.spec.whatwg.org/multipage/scripting.html#current-default-path
+                this.__currentDefaultPath = '';
                 path = this.__createElement('path', {}, true);
                 parent = this.__closestGroupOrSvg();
                 parent.appendChild(path);
                 this.__currentElement = path;
             };
             /**
+             * Helper function to apply currentDefaultPath to current path element
+             * @private
+             */
+            ctx.prototype.__applyCurrentDefaultPath = function () {
+                if (this.__currentElement.nodeName === 'path') {
+                    var d = this.__currentDefaultPath;
+                    this.__currentElement.setAttribute('d', d);
+                } else {
+                    throw new Error('Attempted to apply path command to node ' + this.__currentElement.nodeName);
+                }
+            };
+            /**
              * Helper function to add path command
              * @private
              */
             ctx.prototype.__addPathCommand = function (command) {
-                if (this.__currentElement.nodeName === 'path') {
-                    var d = this.__currentElement.getAttribute('d');
-                    if (d) {
-                        d += ' ';
-                    } else {
-                        d = '';
-                    }
-                    d += command;
-                    this.__currentElement.setAttribute('d', d);
-                } else {
-                    throw new Error('Attempted to add path command to node ' + this.__currentElement.nodeName);
-                }
+                this.__currentDefaultPath += ' ';
+                this.__currentDefaultPath += command;
             };
             /**
              * Adds the move command to the current path element,
@@ -562,12 +567,14 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
              * Sets the stroke property on the current element
              */
             ctx.prototype.stroke = function () {
+                this.__applyCurrentDefaultPath();
                 this.__applyStyleToCurrentElement('stroke');
             };
             /**
              * Sets fill properties on the current element
              */
             ctx.prototype.fill = function () {
+                this.__applyCurrentDefaultPath();
                 this.__applyStyleToCurrentElement('fill');
             };
             /**
@@ -918,6 +925,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
             };
             ctx.prototype.setTransform = function () {
             };
+            //add options for alternative namespace
             C2S = ctx;
         }());
         var Context = function (width, height) {
