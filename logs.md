@@ -152,3 +152,8 @@
     ```
 
     See also: https://github.com/zenozeng/p5.js-svg/issues/38
+
+- smooth and noSmooth now work (using SVG's shape-rendering attribute)
+
+- Shape/Attributes (ellipseMode, noSmooth, rectMode, smooth, strokeCap, strokeJoin, strokeWeight) now work and covered with unit tests (based on svgcanvas)
+
