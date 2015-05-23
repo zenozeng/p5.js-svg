@@ -43,11 +43,11 @@ This program incorporates work covered by the following copyright and permission
 
 - canvas2svg
 
-    The MIT License (MIT)
+    The MIT License (MIT) \
     Copyright (c) 2014 Gliffy Inc.
 
 - svgcanvas
 
-    The MIT License (MIT)
+    The MIT License (MIT) \
     Copyright (c) 2015 Zeno Zeng
 
