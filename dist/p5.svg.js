@@ -1143,6 +1143,8 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
         p5.prototype.createSVG = function (width, height) {
             var svgCanvas = new SVGCanvas();
             var svg = svgCanvas.svg;
+            width = width || 100;
+            height = height || 100;
             document.body.appendChild(svg);
             this.svg = svg;
             // override default graphics (original is created by createCanvas at _start)

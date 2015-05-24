@@ -18,6 +18,9 @@ define(function(require) {
         var svgCanvas = new SVGCanvas;
         var svg = svgCanvas.svg;
 
+        width = width || 100;
+        height = height || 100;
+
         document.body.appendChild(svg);
         this.svg = svg;
 
