@@ -49,6 +49,16 @@
 
 ## 2015-05-11 -- 2015-05-24
 
+### Time (25h18min)
+
+- canvas2svg: 1h01min
+
+- p5.js-svg: 22h
+
+- svgcanvas: 2h17min
+
+### Logs
+
 - Add shell script to generate amd for svgcanvas
 
     https://github.com/zenozeng/svgcanvas/commit/a9a860f3a040139b8187bb4cca9eb87aa3a5e12b
