@@ -25,6 +25,27 @@ describe('Shape/Vertex', function() {
             bezierVertex(80, 0, 80, 75, 30, 75);
             bezierVertex(50, 80, 60, 25, 30, 20);
             endShape();
+        },
+        curveVertex: function() {
+            noFill();
+            beginShape();
+            curveVertex(84,  91);
+            curveVertex(84,  91);
+            curveVertex(68,  19);
+            curveVertex(21,  17);
+            curveVertex(32, 100);
+            curveVertex(32, 100);
+            endShape();
+        },
+        quadraticVertex: function() {
+            noFill();
+            strokeWeight(4);
+            beginShape();
+            vertex(20, 20);
+            quadraticVertex(80, 20, 50, 50);
+            quadraticVertex(20, 80, 80, 80);
+            vertex(80, 60);
+            endShape();
         }
     };
 
