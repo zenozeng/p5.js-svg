@@ -15,7 +15,7 @@ define(function(require) {
      */
     p5.prototype.createSVG = function(width, height) {
 
-        var svgCanvas = new SVGCanvas;
+        var svgCanvas = new SVGCanvas();
         var svg = svgCanvas.svg;
 
         width = width || 100;
