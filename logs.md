@@ -157,3 +157,6 @@
 
 - Shape/Attributes (ellipseMode, noSmooth, rectMode, smooth, strokeCap, strokeJoin, strokeWeight) now work and covered with unit tests (based on svgcanvas)
 
+- Add default width & height: 100 * 100
+
+- Add grunt-contrib-jshint

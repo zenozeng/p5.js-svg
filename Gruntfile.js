@@ -2,6 +2,9 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        jshint: {
+            all: ['Gruntfile.js', 'src/**/*.js']
+        },
         requirejs: {
             unmin: {
                 options: {
@@ -57,8 +60,9 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
     grunt.registerTask('build', ['requirejs']);
-    grunt.registerTask('default', ['requirejs']);
+    grunt.registerTask('default', ['requirejs', 'jshint']);
 
 };
