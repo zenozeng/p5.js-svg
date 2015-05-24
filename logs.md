@@ -160,3 +160,5 @@
 - Add default width & height: 100 * 100
 
 - Add grunt-contrib-jshint
+
+- Make jshint happy

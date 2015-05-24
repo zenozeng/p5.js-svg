@@ -27,6 +27,7 @@ $(function() {
             p.stroke(0);
             p.ellipseMode(p.CENTER);
             p.rectMode(p.CORNER);
+            p.translate(0, 0);
             p.smooth();
             with (p) {
                 eval(fnbody);
