@@ -17,7 +17,7 @@ describe('Shape/Vertex', function() {
             vertex(20, -20);
             endContour();
             endShape(CLOSE);
-            translate(0, 0);
+            translate(-50, -50);
         },
         bezierVertex: function() {
             beginShape();
