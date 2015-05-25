@@ -14,6 +14,13 @@ module.exports = function(grunt) {
                 }
             }
         },
+        instrument: {
+            files: 'dist/*.js',
+            options: {
+                lazy: true,
+                basePath: 'test/coverage/instrument/'
+            }
+        },
         requirejs: {
             unmin: {
                 options: {
@@ -68,10 +75,11 @@ module.exports = function(grunt) {
 
     });
 
+    grunt.loadNpmTasks('grunt-istanbul');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.registerTask('build', ['requirejs']);
-    grunt.registerTask('default', ['requirejs', 'jshint']);
+    grunt.registerTask('build', ['requirejs', 'jshint', 'instrument']);
+    grunt.registerTask('default', ['build']);
 
 };

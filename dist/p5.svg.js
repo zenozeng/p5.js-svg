@@ -1176,7 +1176,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
             });
             // for debug
             window.p = this;
-            window.s = SVGGraphics;
             return SVGGraphics;
         };
     }({});

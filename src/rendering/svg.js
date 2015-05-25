@@ -50,7 +50,6 @@ define(function(require) {
 
         // for debug
         window.p = this;
-        window.s = SVGGraphics;
 
         return SVGGraphics;
     };
