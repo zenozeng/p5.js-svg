@@ -4,6 +4,7 @@
     "amdclean": "^2.7.0",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.2",
-    "grunt-contrib-requirejs": "^0.4.4"
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-contrib-watch": "^0.6.1"
   }
 }

@@ -5,6 +5,15 @@ module.exports = function(grunt) {
         jshint: {
             all: ['Gruntfile.js', 'src/**/*.js']
         },
+        watch: {
+            scripts: {
+                files: ['src/**/*.js'],
+                tasks: ['default'],
+                options: {
+                    spawn: false
+                }
+            }
+        },
         requirejs: {
             unmin: {
                 options: {
@@ -61,7 +70,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.registerTask('build', ['requirejs']);
     grunt.registerTask('default', ['requirejs', 'jshint']);
 
