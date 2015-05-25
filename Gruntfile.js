@@ -21,6 +21,13 @@ module.exports = function(grunt) {
                 basePath: 'test/coverage/instrument/'
             }
         },
+        karma: {
+            unit: {
+                options: {
+                    configFile: 'karma.conf.js'
+                }
+            }
+        },
         requirejs: {
             unmin: {
                 options: {

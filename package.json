@@ -6,6 +6,10 @@
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-requirejs": "^0.4.4",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-istanbul": "^0.5.0"
+    "grunt-istanbul": "^0.5.0",
+    "karma": "^0.12.32",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-coverage": "^0.3.1",
+    "karma-firefox-launcher": "^0.1.6"
   }
 }

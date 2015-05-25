@@ -175,6 +175,16 @@
 
 ## 2015-05-25 -- 2015-06-07
 
-- Add grunt.config.watch
+### Time
+
+Will update after 2015-06-08.
+
+### Logs
+
+- Configure grunt watch
 
 - Enable hardware acceleration using translateZ(0)
+
+- Configure istanbul
+
+- Configure Karma
