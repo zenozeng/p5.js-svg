@@ -1162,6 +1162,18 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                     svgCanvas.toDataURL(type, options, callback);
                 }
             };
+            // enable hardware acceleration
+            [
+                '-webkit-',
+                '-moz-',
+                '-ms-',
+                '-o-',
+                ''
+            ].forEach(function (prefix) {
+                var key = prefix + 'transform';
+                var value = 'translateZ(0)';
+                svg.style[key] = value;
+            });
             // for debug
             window.p = this;
             window.s = SVGGraphics;

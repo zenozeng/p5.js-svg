@@ -172,3 +172,9 @@
 - Add grunt-contrib-jshint
 
 - Make jshint happy
+
+## 2015-05-25 -- 2015-06-07
+
+- Add grunt.config.watch
+
+- Enable hardware acceleration using translateZ(0)
