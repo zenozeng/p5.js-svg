@@ -5,6 +5,7 @@
   },
   "devDependencies": {
     "amdclean": "^2.7.0",
+    "chai": "^2.3.0",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-requirejs": "^0.4.4",
@@ -16,7 +17,6 @@
     "karma-coverage": "^0.3.1",
     "karma-firefox-launcher": "^0.1.6",
     "karma-html2js-preprocessor": "^0.1.0",
-    "karma-jasmine": "^0.3.5",
     "karma-mocha": "^0.1.10",
     "karma-requirejs": "^0.2.2",
     "mocha": "^2.2.5",

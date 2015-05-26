@@ -3,29 +3,24 @@
 
 module.exports = function(config) {
     config.set({
-
-        // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
-
-        // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['mocha', 'requirejs'],
-
-        // list of files / patterns to load in the browser
+        frameworks: ['mocha'],
         files: [
-            {pattern: 'src/**/*.js', include: false},
-            {pattern: 'test/**/*.js', include: false},
-            {pattern: 'test/init.js', include: true}
+            // 'bower_components/p5.js/lib/p5.js',
+            // 'coverage/instrument/dist/p5.svg.js',
+            // 'bower_components/jquery/dist/jquery.js',
+            // 'bower_components/mocha/mocha.js',
+            // 'unit/**/*.js',
+            // 'test.js'
+            // 'test/index.html'
+            'node_modules/chai/chai.js',
+            'test/main.js'
         ],
-
         preprocessors: {
-            'src/**/*.js': ['coverage']
+            // 'test/*.html': ['html2js'],
+            // 'dist/**/*.js': ['coverage']
         },
-
-        // test results reporter to use
-        // possible values: 'dots', 'progress'
-        // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress', 'coverage'],
-
+        // reporters: ['progress', 'coverage'],
         coverageReporter: {
             type : 'html',
             dir : 'test/coverage/',
@@ -33,11 +28,9 @@ module.exports = function(config) {
                 return browser.toLowerCase().split(/[ /-]/)[0];
             }
         },
-
-        // web server port
         port: 9876,
         colors: true,
-        logLevel: config.LOG_DEBUG,
+        logLevel: config.LOG_INFO,
         autoWatch: false,
         browsers: ['Chrome'], // ['Chrome', 'Firefox'],
         // Continuous Integration mode
