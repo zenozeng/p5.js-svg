@@ -185,6 +185,8 @@ Will update after 2015-06-08.
 
 - Enable hardware acceleration using translateZ(0)
 
-- Configure istanbul
-
 - Configure Karma
+
+- Update tests for karma-firefox-launcher and karma-chrome-launcher
+
+- Update tests for karma-coverage

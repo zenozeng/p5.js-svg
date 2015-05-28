@@ -14,10 +14,9 @@ module.exports = function(config) {
             'test/unit/**/*.js'
         ],
         preprocessors: {
-            // 'test/*.html': ['html2js'],
-            // 'dist/**/*.js': ['coverage']
+            'dist/**/*.js': ['coverage']
         },
-        // reporters: ['progress', 'coverage'],
+        reporters: ['progress', 'coverage'],
         coverageReporter: {
             type : 'html',
             dir : 'test/coverage/',
