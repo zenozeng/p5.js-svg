@@ -6,15 +6,12 @@ module.exports = function(config) {
         basePath: '',
         frameworks: ['mocha'],
         files: [
-            // 'bower_components/p5.js/lib/p5.js',
-            // 'coverage/instrument/dist/p5.svg.js',
-            // 'bower_components/jquery/dist/jquery.js',
-            // 'bower_components/mocha/mocha.js',
-            // 'unit/**/*.js',
-            // 'test.js'
-            // 'test/index.html'
+            'test/bower_components/p5.js/lib/p5.js',
+            'dist/p5.svg.js',
             'node_modules/chai/chai.js',
-            'test/main.js'
+            'test/bower_components/jquery/dist/jquery.js',
+            'test/test-render.js',
+            'test/unit/**/*.js'
         ],
         preprocessors: {
             // 'test/*.html': ['html2js'],
@@ -32,9 +29,9 @@ module.exports = function(config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: false,
-        browsers: ['Chrome'], // ['Chrome', 'Firefox'],
+        browsers: ['Chrome', 'Firefox'],
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
-        singleRun: true
+        singleRun: true // output all logs to stdout instead of click debug button
     });
 };

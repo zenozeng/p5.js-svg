@@ -1,23 +1,30 @@
-$(function() {
-    // see also: http://p5js.org/learn/examples/Instance_Mode_Instantiation.php
+(function(global) {
     var canvasGraphics, svgGraphics;
     var sync = true;
 
-    var p5svg = new p5(function(p) {
-        p.setup = function() {
-            svgGraphics = p.createSVG(100, 100);
-            p.noLoop();
-        };
-    }, sync);
+    // see also: http://p5js.org/learn/examples/Instance_Mode_Instantiation.php
+    var inited = false;
+    var p5svg, p5canvas;
 
-    var p5canvas = new p5(function(p) {
-        p.setup = function() {
-            canvasGraphics = p.createCanvas(100, 100);
-            p.noLoop();
-        };
-    }, sync);
+    // init p5 canvas instance and p5-svg instance
+    var init = function() {
+        inited = true;
+        p5svg = new p5(function(p) {
+            p.setup = function() {
+                svgGraphics = p.createSVG(100, 100);
+                p.noLoop();
+            };
+        }, sync);
 
-    window.testRender = function(draw, callback) {
+        p5canvas = new p5(function(p) {
+            p.setup = function() {
+                canvasGraphics = p.createCanvas(100, 100);
+                p.noLoop();
+            };
+        }, sync);
+    };
+
+    var _testRender = function(draw, callback) {
         var fnbody = draw.toString();
         fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
         [p5svg, p5canvas].forEach(function(p) {
@@ -143,10 +150,18 @@ $(function() {
             }
         };
         diff();
+
     };
 
-    mocha.run();
-});
+    global.testRender = function(draw, callback) {
+
+        $(function() {
+            if (!inited) {
+                init();
+            }
+            _testRender(draw, callback);
+        });
 
 
-
+    };
+})(this);
