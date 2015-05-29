@@ -4,17 +4,19 @@
 module.exports = function(config) {
     config.set({
         basePath: '',
-        frameworks: ['mocha'],
+        frameworks: ['mocha', 'requirejs'],
         files: [
-            'test/bower_components/p5.js/lib/p5.js',
-            'dist/p5.svg.js',
+            // note: lower index will override greater index config
             'node_modules/chai/chai.js',
             'test/bower_components/jquery/dist/jquery.js',
-            'test/test-render.js',
-            'test/unit/**/*.js'
+            'test/bower_components/p5.js/lib/p5.js',
+            {pattern: 'test/unit/**/*.js', included: false},
+            {pattern: 'src/**/*.js', included: false},
+            {pattern: 'test/test-render.js', included: false},
+            'test/init.js'
         ],
         preprocessors: {
-            'dist/**/*.js': ['coverage']
+            'src/**/*.js': ['coverage']
         },
         reporters: ['progress', 'coverage'],
         coverageReporter: {
@@ -27,6 +29,7 @@ module.exports = function(config) {
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
+        // logLevel: config.LOG_DEBUG,
         autoWatch: false,
         browsers: ['Chrome', 'Firefox'],
         // Continuous Integration mode

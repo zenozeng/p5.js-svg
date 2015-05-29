@@ -1,4 +1,8 @@
-(function(global) {
+define(function(require) {
+
+    var p5 = require('p5');
+    require('app'); // require p5.js-svg
+
     var canvasGraphics, svgGraphics;
     var sync = true;
 
@@ -153,7 +157,7 @@
 
     };
 
-    global.testRender = function(draw, callback) {
+    var testRender = function(draw, callback) {
 
         $(function() {
             if (!inited) {
@@ -161,7 +165,7 @@
             }
             _testRender(draw, callback);
         });
-
-
     };
-})(this);
+
+    return testRender;
+});
