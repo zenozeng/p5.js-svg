@@ -1,2 +1,0 @@
-var assert = chai.assert;
-

@@ -4,7 +4,8 @@ require.config({
     baseUrl: '/base/', // for karma's base
     map: {
         '*': {
-            'core': 'p5'
+            'core': 'p5',
+            'p5.svg': 'app'
         }
     },
     paths: {

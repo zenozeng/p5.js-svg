@@ -1,0 +1,50 @@
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+
+    <script src="bower_components/mocha/mocha.js"></script>
+    <script src="bower_components/requirejs/require.js"></script>
+    <script>mocha.setup('bdd')</script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+
+    <script src="bower_components/p5.js/lib/p5.js"></script>
+    <script src="../dist/p5.svg.js"></script>
+
+    <script>
+     require.config({
+         baseUrl: '',
+         paths: {
+             testRender: "test-render"
+         }
+     });
+     requirejs([
+         "unit/shape/2d_primitives",
+         "unit/shape/attributes",
+         "unit/shape/vertex.js"
+     ], function() {
+         mocha.run();
+     });
+    </script>
+
+    <link type="text/css" rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+    <link type="text/css" rel="stylesheet" href="bower_components/mocha/mocha.css">
+    <link type="text/css" rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>p5.js-svg - Unit Test</h1>
+    <div id="mocha"></div>
+    <div id="test-graph">
+        <div class="th">
+            <div>Rendered in SVG</div>
+            <div>Rendered in Canvas<br>Converted to PNG</div>
+            <div>Diff Bitmap</div>
+            <div>Match?</div>
+            <div>Function</div>
+        </div>
+    </div>
+    <h2>SVG & Canvas</h2>
+    <div class="th">
+        <div>SVG</div>
+        <div>Canvas</div>
+    </div>
+</body>

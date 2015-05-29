@@ -1,7 +1,7 @@
 define(function(require) {
 
     var p5 = require('p5');
-    require('app'); // require p5.js-svg
+    require('p5.svg');
 
     var canvasGraphics, svgGraphics;
     var sync = true;
