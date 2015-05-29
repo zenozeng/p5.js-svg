@@ -14,13 +14,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        instrument: {
-            files: 'dist/*.js',
-            options: {
-                lazy: true,
-                basePath: 'test/coverage/instrument/'
-            }
-        },
         karma: {
             unit: {
                 options: {
@@ -82,11 +75,10 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.loadNpmTasks('grunt-istanbul');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.registerTask('build', ['requirejs', 'jshint', 'instrument']);
+    grunt.registerTask('build', ['requirejs', 'jshint']);
     grunt.registerTask('default', ['build']);
 
 };
