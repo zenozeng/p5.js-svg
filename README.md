@@ -45,6 +45,10 @@ http://zenozeng.github.io/p5.js-svg-test-reports/coverage/iceweasel/
 
 - [circle's edge is not exactly same in SVG and canvas #37](https://github.com/zenozeng/p5.js-svg/issues/37)
 
+## Project Logs
+
+https://github.com/zenozeng/p5.js-svg/blob/master/logs.md
+
 ## License
 
 Licensed under LGPL.

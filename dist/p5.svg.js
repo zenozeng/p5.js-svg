@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.0.1 May 29, 2015 */
+/*! p5.svg.js v0.0.1 May 30, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -981,6 +981,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                         if (_this.__history.length > 100) {
                             _this.__history.shift();
                         }
+                        console.debug('svgcanvas: ', call);
                         return fn.apply(_this, arguments);
                     };
                 });

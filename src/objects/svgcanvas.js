@@ -935,6 +935,7 @@ define(function() {
                     if (_this.__history.length > 100) {
                         _this.__history.shift();
                     }
+                    console.debug('svgcanvas: ', call);
                     return fn.apply(_this, arguments);
                 };
             });

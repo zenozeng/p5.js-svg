@@ -168,6 +168,7 @@ define(function(require) {
             if (!inited) {
                 init();
             }
+            console.debug('testRender', draw);
             _testRender(draw, callback);
         });
 

@@ -1,5 +1,5 @@
 define(['testRender'], function(testRender) {
-    describe('2d_primitives', function() {
+    describe('Shape/2d_primitives', function() {
         // the tests code are from p5.js's example reference
         var tests = {
             arc: function() {
