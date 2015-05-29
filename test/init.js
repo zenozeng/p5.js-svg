@@ -8,6 +8,7 @@ require.config({
             'p5.svg': 'app'
         }
     },
+    urlArgs: "_=" + (new Date()).getTime(),
     paths: {
         'app': 'src/app',
         'p5.SVGElement': 'src/objects/p5.SVGElement',

@@ -13,6 +13,7 @@
     <script>
      require.config({
          baseUrl: '',
+         urlArgs: "_=" + (new Date()).getTime(),
          paths: {
              testRender: "test-render"
          }
@@ -34,13 +35,6 @@
     <h1>p5.js-svg - Unit Test</h1>
     <div id="mocha"></div>
     <div id="test-graph">
-        <div class="th">
-            <div>Rendered in SVG</div>
-            <div>Rendered in Canvas<br>Converted to PNG</div>
-            <div>Diff Bitmap</div>
-            <div>Match?</div>
-            <div>Function</div>
-        </div>
     </div>
     <h2>SVG & Canvas</h2>
     <div class="th">

@@ -40,6 +40,7 @@ define(function(require) {
             p.rectMode(p.CORNER);
             p.smooth();
             with (p) {
+                p.canvas.getContext('2d').__history = [];
                 eval(fnbody);
             }
         });
@@ -47,6 +48,9 @@ define(function(require) {
         var img, svgpng, canvaspng, match, svgimg, canvasimg;
 
         var $container = $('#test-graph');
+
+        var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Match?</div><div class="function">p5.js</div><div>Canvas</div></div>';
+        $container.append(th);
 
         // draw original svg
         img = new Image();
@@ -86,7 +90,9 @@ define(function(require) {
         var $match = $('<div class="match"></div>');
         $container.append($match);
         $container.append('<div class="function">' + fnbody.replace(/;/g, ';<br>') + '</div>');
-        $container.append('<br><br>');
+        var history = p5svg.canvas.getContext('2d').__history;
+        $container.append('<div class="canvas-fn">' + history.join('<br>') + '</div>');
+        $container.append('<hr>');
 
         var diff = function() {
             if (!svgimgComplete || !canvasimgComplete) {

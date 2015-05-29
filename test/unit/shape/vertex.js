@@ -5,12 +5,10 @@ define(['testRender'], function(testRender) {
                 translate(50, 50);
                 stroke(255, 0, 0);
                 beginShape();
-                // Exterior part of shape, clockwise winding
                 vertex(-40, -40);
                 vertex(40, -40);
                 vertex(40, 40);
                 vertex(-40, 40);
-                // Interior part of shape, counter-clockwise winding
                 beginContour();
                 vertex(-20, -20);
                 vertex(-20, 20);

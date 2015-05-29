@@ -889,7 +889,7 @@ define(function() {
         //add options for alternative namespace
         C2S = ctx;
     }());
-    var Context = function(width, height) {
+    var Context = function(width, height, options) {
         C2S.call(this);
         this.__width = width;
         this.__height = height;
@@ -909,6 +909,33 @@ define(function() {
                  }
              });
          });
+        options = options || {};
+        if (options.debug) {
+            this.__history = []; // method history
+            var methods = [];
+            for(var key in this) {
+                if (typeof this[key] === "function") {
+                    if (key.indexOf('__') !== 0) {
+                        if (key !== 'getSerializedSvg') {
+                            methods.push(key);
+                        }
+                    }
+                }
+            }
+            methods.forEach(function(method) {
+                var fn = _this[method];
+                _this[method] = function() {
+                    var call = method + '(' + Array.prototype.slice.call(arguments).join(', ') + ');';
+                    // keep call history
+                    _this.__history.push(call);
+                    if (_this.__history.length > 100) {
+                        _this.__history.shift();
+                    }
+                    console.debug('svgcanvas context: ', call);
+                    return fn.apply(_this, arguments);
+                };
+            });
+        }
     };
     Context.prototype = Object.create(C2S.prototype);
     Context.prototype.__createElement = function(elementName, properties, resetFill) {
@@ -924,7 +951,7 @@ define(function() {
         currentGeneration.push(element);
         return element;
     };
-    Context.prototype.gc = function() {
+    Context.prototype.__gc = function() {
         this.generations.push([]);
         var ctx = this;
         // make sure it happens after current job done
@@ -989,12 +1016,13 @@ define(function() {
     };
     Context.prototype.fillRect = function(x, y, w, h) {
         if (x === 0 && y === 0 && w === this.__width && h === this.__height) {
-            this.gc();
+            this.__gc();
         }
         C2S.prototype.fillRect.call(this, x, y, w, h);
     };
-    function SVGCanvas() {
-        this.ctx = new Context();
+    function SVGCanvas(options) {
+        var debug = options && options.debug;
+        this.ctx = new Context(100, 100, {debug: debug});
         this.svg = this.ctx.__root;
         // sync attributes to svg
         var svg = this.svg;

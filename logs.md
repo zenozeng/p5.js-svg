@@ -193,3 +193,6 @@ Will update after 2015-06-08.
 
 - Move test reports to new repo: https://github.com/zenozeng/p5.js-svg-test-reports
 
+- svgcanvas: log context api call and keep in __history if debug on
+
+- Display canvas context api call history in test/index.html (to make debug easier)

@@ -3,11 +3,9 @@ define(['testRender'], function(testRender) {
         // the tests code are from p5.js's example reference
         var tests = {
             arc: function() {
-                arc(50, 55, 50, 50, 0, HALF_PI);
+                arc(50, 55, 50, 50, 0, PI * 0.5);
                 noFill();
-                arc(50, 55, 60, 60, HALF_PI, PI);
-                arc(50, 55, 70, 70, PI, PI+QUARTER_PI);
-                arc(50, 55, 80, 80, PI+QUARTER_PI, TWO_PI);
+                arc(50, 55, 60, 60, PI * 0.5, PI * 1.5);
             },
             circle: function() {
                 ellipse(56, 46, 55, 55);
