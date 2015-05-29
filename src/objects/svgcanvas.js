@@ -506,7 +506,11 @@ define(function() {
          * Adds a line to command
          */
         ctx.prototype.lineTo = function(x, y){
-            this.__addPathCommand(format("L {x} {y}", {x:x, y:y}));
+            if (this.__currentDefaultPath.indexOf('M') > -1) {
+                this.__addPathCommand(format("L {x} {y}", {x:x, y:y}));
+            } else {
+                this.__addPathCommand(format("M {x} {y}", {x:x, y:y}));
+            }
         };
         /**
          * Add a bezier command
@@ -931,7 +935,6 @@ define(function() {
                     if (_this.__history.length > 100) {
                         _this.__history.shift();
                     }
-                    console.debug('svgcanvas context: ', call);
                     return fn.apply(_this, arguments);
                 };
             });

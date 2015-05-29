@@ -5,6 +5,9 @@ module.exports = function(config) {
     config.set({
         basePath: '',
         frameworks: ['mocha', 'requirejs'],
+        client: {
+            requireJsShowNoTimestampsError: false
+        },
         files: [
             // note: lower index will override greater index config
             'node_modules/chai/chai.js',
@@ -28,7 +31,7 @@ module.exports = function(config) {
         },
         port: 9876,
         colors: true,
-        logLevel: config.LOG_INFO,
+        logLevel: config.LOG_DISABLE,
         // logLevel: config.LOG_DEBUG,
         autoWatch: false,
         browsers: ['Chrome', 'Firefox'],
