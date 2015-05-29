@@ -21,7 +21,7 @@ module.exports = function(config) {
         reporters: ['progress', 'coverage'],
         coverageReporter: {
             type : 'html',
-            dir : 'test/coverage/',
+            dir : 'test/report/coverage/',
             subdir: function(browser) {
                 return browser.toLowerCase().split(/[ /-]/)[0];
             }
