@@ -199,4 +199,17 @@ Will update after 2015-06-08.
 
 - canvas2svg: when lineTo called, use M instead of L unless subpath exists
 
-    
+    Commit: https://github.com/zenozeng/canvas2svg/commit/1c49685c9d8caab0cbba14065aa193c4c623444c
+
+    See also: https://github.com/zenozeng/p5.js-svg/issues/44
+
+- Shape/Vertex now covered with unit tests and works based on svgcanvas
+
+    - beginContour()
+    - beginShape()
+    - bezierVertex()
+    - curveVertex()
+    - endContour()
+    - endShape()
+    - quadraticVertex()
+    - vertex()
