@@ -18,6 +18,7 @@
     "karma-firefox-launcher": "^0.1.6",
     "karma-html2js-preprocessor": "^0.1.0",
     "karma-mocha": "^0.1.10",
+    "karma-mocha-reporter": "^1.0.2",
     "karma-requirejs": "^0.2.2",
     "mocha": "^2.2.5",
     "requirejs": "^2.1.17"
