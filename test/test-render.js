@@ -125,7 +125,6 @@ define(function(require) {
                     var diffv = Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2) + Math.abs(a1 - a2);
                     diffv /= 255 * 4;
                     mismatchval += diffv;
-                    // todo: maybe use sin to make small value smaller, big value bigger?
 
                     canvaspngData.data[i] = diffv;
                     canvaspngData.data[i + 1] = diffv;
@@ -165,6 +164,7 @@ define(function(require) {
             }
             _testRender(draw, callback);
         });
+
     };
 
     return testRender;

@@ -20,8 +20,6 @@ var tests = Object.keys(window.__karma__.files).filter(function(test) {
     return test.indexOf('test/unit') > -1;
 });
 
-console.log(tests);
-
 requirejs(tests, function() {
     window.__karma__.start();
 });
