@@ -131,7 +131,7 @@
     ```
 - svgcanvas: add documentation
 
-- canvas2svg: use currentDefaultPath instead of &lt;path&gt;'s d attribute, fixes stroke's different behavior in SVG and canvas. ([pull#20](https://github.com/gliffy/canvas2svg/pull/20))
+- canvas2svg: use currentDefaultPath instead of &lt;path&gt;'s d attribute, fixes stroke's different behavior in SVG and canvas. ([pull#20](https://github.com/gliffy/canvas2svg/pull/20)), Merged in canvas2svg@1.0.9
 
     Now \_\_addPathCommand will only update this.\_\_currentDefaultPath. And \_\_applyCurrentDefaultPath will be called inside stroke or fill.
 
@@ -197,7 +197,7 @@ Will update after 2015-06-08.
 
 - Display canvas context api call history in test/index.html (to make debug easier)
 
-- canvas2svg: when lineTo called, use M instead of L unless subpath exists
+- canvas2svg: when lineTo called, use M instead of L unless subpath exists ([pull#22](https://github.com/gliffy/canvas2svg/pull/22))
 
     Commit: https://github.com/zenozeng/canvas2svg/commit/1c49685c9d8caab0cbba14065aa193c4c623444c
 
@@ -217,3 +217,8 @@ Will update after 2015-06-08.
     - endShape()
     - quadraticVertex()
     - vertex()
+
+- List current API in API.md
+
+  - new API such as createSVG
+  - compatible API covered with unit tests
