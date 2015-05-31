@@ -1,10 +1,10 @@
 # p5.js-svg's API
 
-Note that the API highlighted with bold is new API, others are compatible API covered with unit tests.
+Note that the API highlighted is new API, others are compatible API covered with unit tests.
 
 ## Rendering
 
-- **createSVG**
+- _createSVG_
 
 ## Shape
 
