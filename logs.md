@@ -222,3 +222,9 @@ Will update after 2015-06-08.
 
   - new API such as createSVG
   - compatible API covered with unit tests
+
+- svgcanvas: Now also log prop's setting to history when debug on
+
+- max mismatchLevel for test now changed to 0.05
+
+- svgcanvas: Simple value check for fillStyle, strokeStyle

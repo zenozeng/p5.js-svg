@@ -143,7 +143,7 @@ define(function(require) {
 
             var mismatchLevel = mismatchval / count;
 
-            var matchp = mismatchLevel <= 0.02;
+            var matchp = mismatchLevel <= 0.05;
             var icon = matchp ? 'fa-check': 'fa-times';
             $match.html('<i class="fa ' + icon + '"></i>');
 

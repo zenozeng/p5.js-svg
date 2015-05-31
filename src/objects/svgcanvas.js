@@ -914,6 +914,20 @@ define(function() {
              });
          });
         options = options || {};
+        ["fillStyle", "strokeStyle"].forEach(function(prop) {
+            var key = "__" + prop;
+            Object.defineProperty(_this, prop, {
+                get: function() {
+                    return _this[key];
+                },
+                set: function(val) {
+                    if (val.indexOf('NaN') > -1) {
+                        throw new Error("svgcanvas: invalid value for " + prop + ", fail to set it to " + val);
+                    }
+                    _this[key] = val;
+                }
+            });
+        });
         if (options.debug) {
             this.__history = []; // method history
             var methods = [];
@@ -926,6 +940,20 @@ define(function() {
                     }
                 }
             }
+            ["__fillStyle", "__strokeStyle"].forEach(function(prop) {
+                var key = "__debug__" + prop;
+                Object.defineProperty(_this, prop, {
+                    get: function() {
+                        return _this[key];
+                    },
+                    set: function(val) {
+                        var call = prop + " = " + val;
+                        _this.__history.push(call);
+                        console.debug('svgcanvas: ', call);
+                        _this[key] = val;
+                    }
+                });
+            });
             methods.forEach(function(method) {
                 var fn = _this[method];
                 _this[method] = function() {

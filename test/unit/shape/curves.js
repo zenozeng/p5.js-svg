@@ -14,6 +14,7 @@ define(['testRender'], function(testRender) {
                 noFill();
                 bezier(85, 20, 10, 10, 90, 90, 15, 80);
                 fill(255);
+                stroke(100);
                 steps = 10;
                 for (var i = 0; i <= steps; i++) {
                     var t = i / steps;
@@ -38,7 +39,7 @@ define(['testRender'], function(testRender) {
                     stroke(255, 102, 0);
                     line(x, y, cos(a)*30 + x, sin(a)*30 + y);
                     stroke(0);
-                    ellipse(x, y, 5, 5);
+                    // ellipse(x, y, 5, 5);
                 }
             },
             curve: function() {

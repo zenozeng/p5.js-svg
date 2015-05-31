@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.0.1 May 30, 2015 */
+/*! p5.svg.js v0.0.1 May 31, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -959,6 +959,23 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                 });
             });
             options = options || {};
+            [
+                'fillStyle',
+                'strokeStyle'
+            ].forEach(function (prop) {
+                var key = '__' + prop;
+                Object.defineProperty(_this, prop, {
+                    get: function () {
+                        return _this[key];
+                    },
+                    set: function (val) {
+                        if (val.indexOf('NaN') > -1) {
+                            throw new Error('svgcanvas: invalid value for ' + prop + ', fail to set it to ' + val);
+                        }
+                        _this[key] = val;
+                    }
+                });
+            });
             if (options.debug) {
                 this.__history = [];
                 // method history
@@ -972,6 +989,23 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                         }
                     }
                 }
+                [
+                    '__fillStyle',
+                    '__strokeStyle'
+                ].forEach(function (prop) {
+                    var key = '__debug__' + prop;
+                    Object.defineProperty(_this, prop, {
+                        get: function () {
+                            return _this[key];
+                        },
+                        set: function (val) {
+                            var call = prop + ' = ' + val;
+                            _this.__history.push(call);
+                            console.debug('svgcanvas: ', call);
+                            _this[key] = val;
+                        }
+                    });
+                });
                 methods.forEach(function (method) {
                     var fn = _this[method];
                     _this[method] = function () {
