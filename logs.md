@@ -230,3 +230,13 @@ Will update after 2015-06-08.
 - svgcanvas: Simple value check for fillStyle, strokeStyle
 
 - Show test describe title for each testRender block
+
+- Shape/Curves now covered with unit tests and works based on svgcanvas
+
+  - bezier()
+  - bezierPoint()
+  - bezierTangent()
+  - curve()
+  - curveTightness()
+  - curvePoint()
+  - curveTangent()
