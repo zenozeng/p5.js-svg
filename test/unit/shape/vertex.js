@@ -51,6 +51,7 @@ define(['testRender'], function(testRender) {
         Object.keys(tests).forEach(function(key) {
             describe(key, function() {
                 it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                    testRender.describe(key);
                     testRender(tests[key], done);
                 });
             });

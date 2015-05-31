@@ -228,3 +228,5 @@ Will update after 2015-06-08.
 - max mismatchLevel for test now changed to 0.05
 
 - svgcanvas: Simple value check for fillStyle, strokeStyle
+
+- Show test describe title for each testRender block

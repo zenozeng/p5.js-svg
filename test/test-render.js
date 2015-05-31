@@ -174,5 +174,12 @@ define(function(require) {
 
     };
 
+    testRender.describe = function(str) {
+        $(function() {
+            var $container = $('#test-graph');
+            $container.append('<h2>' + str + '</h2>');
+        });
+    };
+
     return testRender;
 });
