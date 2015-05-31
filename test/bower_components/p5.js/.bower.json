@@ -1,6 +1,6 @@
 {
   "name": "p5.js",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "main": "lib/p5.min.js",
   "homepage": "http://p5js.org/",
   "authors": [
@@ -20,14 +20,13 @@
     "test",
     "tests"
   ],
-  "_release": "0.4.4",
+  "_release": "0.4.5",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.4",
-    "commit": "b1c463a6544c00f9e3a1189eb011bb661ee172f3"
+    "tag": "0.4.5",
+    "commit": "89d01025f77b11f5b96d151e52c131708d820044"
   },
   "_source": "https://github.com/processing/p5.js.git",
-  "_target": "~0.4.4",
-  "_originalSource": "https://github.com/processing/p5.js.git",
-  "_direct": true
+  "_target": "~0.4.5",
+  "_originalSource": "https://github.com/processing/p5.js.git"
 }

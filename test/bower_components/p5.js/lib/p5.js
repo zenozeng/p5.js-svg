@@ -1,4 +1,4 @@
-/*! p5.js v0.4.4 April 12, 2015 */
+/*! p5.js v0.4.5 May 27, 2015 */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd)
     define('p5', [], function () { return (root.returnExportsGlobal = factory());});
@@ -2100,20 +2100,21 @@ amdclean['colorcreating_reading'] = function (require, core, p5Color) {
     return c.getHue();
   };
   p5.prototype.lerpColor = function (c1, c2, amt) {
+    amt = Math.max(Math.min(amt, 1), 0);
     if (c1 instanceof Array) {
       var c = [];
       for (var i = 0; i < c1.length; i++) {
-        c.push(p5.prototype.lerp(c1[i], c2[i], amt));
+        c.push(Math.sqrt(p5.prototype.lerp(c1[i] * c1[i], c2[i] * c2[i], amt)));
       }
       return c;
     } else if (c1 instanceof p5.Color) {
       var pc = [];
       for (var j = 0; j < 4; j++) {
-        pc.push(p5.prototype.lerp(c1.rgba[j], c2.rgba[j], amt));
+        pc.push(Math.sqrt(p5.prototype.lerp(c1.rgba[j] * c1.rgba[j], c2.rgba[j] * c2.rgba[j], amt)));
       }
       return new p5.Color(this, pc);
     } else {
-      return p5.prototype.lerp(c1, c2, amt);
+      return Math.sqrt(p5.prototype.lerp(c1 * c1, c2 * c2, amt));
     }
   };
   p5.prototype.red = function (c) {
@@ -2224,7 +2225,78 @@ amdclean['dataconversion'] = function (require, core) {
     } else if (typeof n === 'boolean') {
       return n ? 1 : 0;
     } else if (n instanceof Array) {
-      return n.map(p5.prototype.int);
+      return n.map(function (n) {
+        return p5.prototype.int(n, radix);
+      });
+    }
+  };
+  p5.prototype.str = function (n) {
+    if (n instanceof Array) {
+      return n.map(p5.prototype.str);
+    } else {
+      return String(n);
+    }
+  };
+  p5.prototype.boolean = function (n) {
+    if (typeof n === 'number') {
+      return n !== 0;
+    } else if (typeof n === 'string') {
+      return n.toLowerCase() === 'true';
+    } else if (typeof n === 'boolean') {
+      return n;
+    } else if (n instanceof Array) {
+      return n.map(p5.prototype.boolean);
+    }
+  };
+  p5.prototype.byte = function (n) {
+    var nn = p5.prototype.int(n, 10);
+    if (typeof nn === 'number') {
+      return (nn + 128) % 256 - 128;
+    } else if (nn instanceof Array) {
+      return nn.map(p5.prototype.byte);
+    }
+  };
+  p5.prototype.char = function (n) {
+    if (typeof n === 'number' && !isNaN(n)) {
+      return String.fromCharCode(n);
+    } else if (n instanceof Array) {
+      return n.map(p5.prototype.char);
+    } else if (typeof n === 'string') {
+      return p5.prototype.char(parseInt(n, 10));
+    }
+  };
+  p5.prototype.unchar = function (n) {
+    if (typeof n === 'string' && n.length === 1) {
+      return n.charCodeAt(0);
+    } else if (n instanceof Array) {
+      return n.map(p5.prototype.unchar);
+    }
+  };
+  p5.prototype.hex = function (n, digits) {
+    digits = digits === undefined || digits === null ? digits = 8 : digits;
+    if (n instanceof Array) {
+      return n.map(function (n) {
+        return p5.prototype.hex(n, digits);
+      });
+    } else if (typeof n === 'number') {
+      if (n < 0) {
+        n = 4294967295 + n + 1;
+      }
+      var hex = Number(n).toString(16).toUpperCase();
+      while (hex.length < digits) {
+        hex = '0' + hex;
+      }
+      if (hex.length >= digits) {
+        hex = hex.substring(hex.length - digits, hex.length);
+      }
+      return hex;
+    }
+  };
+  p5.prototype.unhex = function (n) {
+    if (n instanceof Array) {
+      return n.map(p5.prototype.unhex);
+    } else {
+      return parseInt('0x' + n, 16);
     }
   };
   return p5;
@@ -3939,7 +4011,7 @@ amdclean['inputtouch'] = function (require, core) {
       this._setProperty('touchX', touchPos.x);
       this._setProperty('touchY', touchPos.y);
       var touches = [];
-      for (var i = 0; i < e.changedTouches.length; i++) {
+      for (var i = 0; i < e.touches.length; i++) {
         var pos = getTouchPos(this._curElement.elt, e, i);
         touches[i] = {
           x: pos.x,
@@ -3956,9 +4028,10 @@ amdclean['inputtouch'] = function (require, core) {
   function getTouchPos(canvas, e, i) {
     i = i || 0;
     var rect = canvas.getBoundingClientRect();
+    var touch = e.touches[i] || e.changedTouches[i];
     return {
-      x: e.changedTouches[i].clientX - rect.left,
-      y: e.changedTouches[i].clientY - rect.top
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
     };
   }
   p5.prototype._ontouchstart = function (e) {
@@ -4966,17 +5039,66 @@ amdclean['shape2d_primitives'] = function (require, core, canvas, constants) {
     }
     return this;
   };
-  p5.prototype.rect = function (a, b, c, d) {
+  p5.prototype.rect = function (x, y, w, h, tl, tr, br, bl) {
     if (!this._doStroke && !this._doFill) {
       return;
     }
-    var vals = canvas.modeAdjust(a, b, c, d, this._rectMode);
+    var vals = canvas.modeAdjust(x, y, w, h, this._rectMode);
     var ctx = this.drawingContext;
     if (this._doStroke && ctx.lineWidth % 2 === 1) {
       ctx.translate(0.5, 0.5);
     }
     ctx.beginPath();
-    ctx.rect(vals.x, vals.y, vals.w, vals.h);
+    if (typeof tl === 'undefined') {
+      ctx.rect(vals.x, vals.y, vals.w, vals.h);
+    } else {
+      if (typeof tr === 'undefined') {
+        tr = tl;
+      }
+      if (typeof br === 'undefined') {
+        br = tr;
+      }
+      if (typeof bl === 'undefined') {
+        bl = br;
+      }
+      var _x = vals.x;
+      var _y = vals.y;
+      var _w = vals.w;
+      var _h = vals.h;
+      var hw = _w / 2;
+      var hh = _h / 2;
+      if (_w < 2 * tl) {
+        tl = hw;
+      }
+      if (_h < 2 * tl) {
+        tl = hh;
+      }
+      if (_w < 2 * tr) {
+        tr = hw;
+      }
+      if (_h < 2 * tr) {
+        tr = hh;
+      }
+      if (_w < 2 * br) {
+        br = hw;
+      }
+      if (_h < 2 * br) {
+        br = hh;
+      }
+      if (_w < 2 * bl) {
+        bl = hw;
+      }
+      if (_h < 2 * bl) {
+        bl = hh;
+      }
+      ctx.beginPath();
+      ctx.moveTo(_x + tl, _y);
+      ctx.arcTo(_x + _w, _y, _x + _w, _y + _h, tr);
+      ctx.arcTo(_x + _w, _y + _h, _x, _y + _h, br);
+      ctx.arcTo(_x, _y + _h, _x, _y, bl);
+      ctx.arcTo(_x, _y, _x + _w, _y, tl);
+      ctx.closePath();
+    }
     if (this._doFill) {
       ctx.fill();
     }
@@ -5114,9 +5236,6 @@ amdclean['shapecurves'] = function (require, core) {
   p5.prototype.curveTangent = function (a, b, c, d, t) {
     var t2 = t * t, f1 = -3 * t2 / 2 + 2 * t - 0.5, f2 = 9 * t2 / 2 - 5 * t, f3 = -9 * t2 / 2 + 4 * t + 0.5, f4 = 3 * t2 / 2 - t;
     return a * f1 + b * f2 + c * f3 + d * f4;
-  };
-  p5.prototype.curveTightness = function () {
-    throw 'not yet implemented';
   };
   return p5;
 }({}, amdclean['core']);
