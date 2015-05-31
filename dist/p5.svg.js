@@ -1000,7 +1000,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                             return _this[key];
                         },
                         set: function (val) {
-                            var call = prop + ' = ' + val;
+                            var call = prop.replace(/__/g, '') + ' = ' + val;
                             _this.__history.push(call);
                             console.debug('svgcanvas: ', call);
                             _this[key] = val;
