@@ -525,6 +525,19 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                 }));
             };
             /**
+             * Adds the arcTo command to the current path
+             */
+            ctx.prototype.arcTo = function (x, y, r1, r2, angle) {
+                console.log('arcTo', x, y, r1, r2, angle);
+                this.__addPathCommand('A ' + [
+                    x,
+                    y,
+                    r1,
+                    r2,
+                    angle
+                ].join(' '));
+            };
+            /**
              * Closes the current path
              */
             ctx.prototype.closePath = function () {
@@ -927,8 +940,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
             ctx.prototype.putImageData = function () {
             };
             ctx.prototype.globalCompositeOperation = function () {
-            };
-            ctx.prototype.arcTo = function () {
             };
             ctx.prototype.setTransform = function () {
             };

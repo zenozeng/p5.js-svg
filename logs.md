@@ -240,3 +240,7 @@ Will update after 2015-06-08.
   - curveTightness()
   - curvePoint()
   - curveTangent()
+
+- svgcanvas: use xor globalCompositeOperation for diff
+
+- svgcanvas: Configure karma and Travis CI

@@ -497,6 +497,13 @@ define(function() {
             this.__addPathCommand(format("M {x} {y}", {x:x, y:y}));
         };
         /**
+         * Adds the arcTo command to the current path
+         */
+        ctx.prototype.arcTo = function(x, y, r1, r2, angle) {
+            console.log('arcTo', x, y, r1, r2, angle);
+            this.__addPathCommand("A " + [x, y, r1, r2, angle].join(' '));
+        };
+        /**
          * Closes the current path
          */
         ctx.prototype.closePath = function(){
@@ -888,7 +895,6 @@ define(function() {
         ctx.prototype.getImageData = function(){};
         ctx.prototype.putImageData = function(){};
         ctx.prototype.globalCompositeOperation = function(){};
-        ctx.prototype.arcTo = function(){};
         ctx.prototype.setTransform = function(){};
         //add options for alternative namespace
         C2S = ctx;
