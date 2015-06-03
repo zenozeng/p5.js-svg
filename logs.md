@@ -244,3 +244,5 @@ Will update after 2015-06-08.
 - svgcanvas: use xor globalCompositeOperation for diff
 
 - svgcanvas: Configure karma and Travis CI
+
+- [Future plan](plan.md) for p5.js-svg and p5.js-pdf
