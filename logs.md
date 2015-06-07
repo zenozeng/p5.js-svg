@@ -246,3 +246,7 @@ Will update after 2015-06-08.
 - svgcanvas: Configure karma and Travis CI
 
 - [Future plan](plan.md) for p5.js-svg and p5.js-pdf
+
+- svgcanvas: add basic implementation and unit tests for ctx.arcTo
+
+- svgcanvas: use XOR with thin line removed (using 8-connected neighborhood < 5) for diff
