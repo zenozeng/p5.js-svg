@@ -241,7 +241,7 @@ Will update after 2015-06-08.
   - curvePoint()
   - curveTangent()
 
-- svgcanvas: use xor globalCompositeOperation for diff
+- svgcanvas: use xor globalCompositeOperation for diff in unit tests
 
 - svgcanvas: Configure karma and Travis CI
 

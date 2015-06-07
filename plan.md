@@ -49,5 +49,5 @@ The logs can be viewed at https://github.com/zenozeng/p5.js-svg/blob/master/logs
 ## Future Plans for PDF
 
 I am now not working on PDF, the vector support for PDF needs SVG Export Support finished.
-Once SVG Export Support finished, I will begin working on it.
+Once SVG Export Support finished, I will begin working on it. Maybe use svg2pdf or svgToPdf.js.
 
