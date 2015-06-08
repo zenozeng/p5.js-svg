@@ -175,9 +175,13 @@
 
 ## 2015-05-25 -- 2015-06-07
 
-### Time
+### Time (30h48min)
 
-Will update after 2015-06-08.
+- canvas2svg: 1h11min
+
+- p5.js-svg: 16h46min
+
+- svgcanvas: 12h51min
 
 ### Logs
 
@@ -250,3 +254,12 @@ Will update after 2015-06-08.
 - svgcanvas: add basic implementation and unit tests for ctx.arcTo
 
 - svgcanvas: use XOR with thin line removed (using 8-connected neighborhood < 5) for diff
+
+
+## 2015-06-08 -- 2015-06-21
+
+### Time
+
+### Logs
+
+- svgcanvas: add more tests

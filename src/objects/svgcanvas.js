@@ -1,7 +1,18 @@
+/*!!
+ *  svgcanvas v0.1.0
+ *  Provide <canvas>'s element API and context API using SVG
+ *
+ *  Copyright (C) 2015 Zeno Zeng
+ *  Licensed under the MIT license.
+ *
+ *  This program incorporates Gliffy Inc's canvas2svg,
+ *  which is licensed under the MIT license.
+ */
+
 define(function() {
     var C2S;
     /*!!
-     *  Canvas 2 Svg v1.0.8
+     *  Canvas 2 Svg v1.0.9
      *  A low level canvas to SVG converter. Uses a mock canvas context to build an SVG document.
      *
      *  Licensed under the MIT license:
@@ -461,6 +472,7 @@ define(function() {
             // Note that there is only one current default path, it is not part of the drawing state.
             // See also: https://html.spec.whatwg.org/multipage/scripting.html#current-default-path
             this.__currentDefaultPath = "";
+            this.__currentPosition = {};
             path = this.__createElement("path", {}, true);
             parent = this.__closestGroupOrSvg();
             parent.appendChild(path);
@@ -494,14 +506,9 @@ define(function() {
             if(this.__currentElement.nodeName !== "path") {
                 this.beginPath();
             }
+            // creates a new subpath with the given point
+            this.__currentPosition = {x: x, y: y};
             this.__addPathCommand(format("M {x} {y}", {x:x, y:y}));
-        };
-        /**
-         * Adds the arcTo command to the current path
-         */
-        ctx.prototype.arcTo = function(x, y, r1, r2, angle) {
-            console.log('arcTo', x, y, r1, r2, angle);
-            this.__addPathCommand("A " + [x, y, r1, r2, angle].join(' '));
         };
         /**
          * Closes the current path
@@ -513,6 +520,7 @@ define(function() {
          * Adds a line to command
          */
         ctx.prototype.lineTo = function(x, y){
+            this.__currentPosition = {x: x, y: y};
             if (this.__currentDefaultPath.indexOf('M') > -1) {
                 this.__addPathCommand(format("L {x} {y}", {x:x, y:y}));
             } else {
@@ -523,6 +531,7 @@ define(function() {
          * Add a bezier command
          */
         ctx.prototype.bezierCurveTo = function(cp1x, cp1y, cp2x, cp2y, x, y) {
+            this.__currentPosition = {x: x, y: y};
             this.__addPathCommand(format("C {cp1x} {cp1y} {cp2x} {cp2y} {x} {y}",
                 {cp1x:cp1x, cp1y:cp1y, cp2x:cp2x, cp2y:cp2y, x:x, y:y}));
         };
@@ -530,7 +539,87 @@ define(function() {
          * Adds a quadratic curve to command
          */
         ctx.prototype.quadraticCurveTo = function(cpx, cpy, x, y){
+            this.__currentPosition = {x: x, y: y};
             this.__addPathCommand(format("Q {cpx} {cpy} {x} {y}", {cpx:cpx, cpy:cpy, x:x, y:y}));
+        };
+        /**
+         * Return a new normalized vector of given vector
+         */
+        var normalize = function(vector) {
+            var len = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
+            return [vector[0] / len, vector[1] / len];
+        };
+        /**
+         * Adds the arcTo to the current path
+         *
+         * @see http://www.w3.org/TR/2015/WD-2dcontext-20150514/#dom-context-2d-arcto
+         */
+        ctx.prototype.arcTo = function(x1, y1, x2, y2, radius) {
+            // Let the point (x0, y0) be the last point in the subpath.
+            var x0 = this.__currentPosition && this.__currentPosition.x;
+            var y0 = this.__currentPosition && this.__currentPosition.y;
+            // First ensure there is a subpath for (x1, y1).
+            if (typeof x0 == "undefined" || typeof y0 == "undefined") {
+                return;
+            }
+            // Negative values for radius must cause the implementation to throw an IndexSizeError exception.
+            if (radius < 0) {
+                throw new Error("IndexSizeError: The radius provided (" + radius + ") is negative.");
+            }
+            // If the point (x0, y0) is equal to the point (x1, y1),
+            // or if the point (x1, y1) is equal to the point (x2, y2),
+            // or if the radius radius is zero,
+            // then the method must add the point (x1, y1) to the subpath,
+            // and connect that point to the previous point (x0, y0) by a straight line.
+            if (((x0 === x1) && (y0 === y1))
+                || ((x1 === x2) && (y1 === y2))
+                || (radius === 0)) {
+                this.lineTo(x1, y1);
+                return;
+            }
+            // Otherwise, if the points (x0, y0), (x1, y1), and (x2, y2) all lie on a single straight line,
+            // then the method must add the point (x1, y1) to the subpath,
+            // and connect that point to the previous point (x0, y0) by a straight line.
+            var unit_vec_p1_p0 = normalize([x0 - x1, y0 - y1]);
+            var unit_vec_p1_p2 = normalize([x2 - x1, y2 - y1]);
+            if (unit_vec_p1_p0[0] * unit_vec_p1_p2[1] === unit_vec_p1_p0[1] * unit_vec_p1_p2[0]) {
+                this.lineTo(x1, y1);
+                return;
+            }
+            // Otherwise, let The Arc be the shortest arc given by circumference of the circle that has radius radius,
+            // and that has one point tangent to the half-infinite line that crosses the point (x0, y0) and ends at the point (x1, y1),
+            // and that has a different point tangent to the half-infinite line that ends at the point (x1, y1), and crosses the point (x2, y2).
+            // The points at which this circle touches these two lines are called the start and end tangent points respectively.
+            // note that both vectors are unit vectors, so the length is 1
+            var cos = (unit_vec_p1_p0[0] * unit_vec_p1_p2[0] + unit_vec_p1_p0[1] * unit_vec_p1_p2[1]);
+            var theta = Math.acos(Math.abs(cos));
+            // Calculate origin
+            var unit_vec_p1_origin = normalize([
+                unit_vec_p1_p0[0] + unit_vec_p1_p2[0],
+                unit_vec_p1_p0[1] + unit_vec_p1_p2[1]
+            ]);
+            var len_p1_origin = radius / Math.sin(theta / 2);
+            var x = x1 + len_p1_origin * unit_vec_p1_origin[0];
+            var y = y1 + len_p1_origin * unit_vec_p1_origin[1];
+            // Calculate start angle and end angle
+            // rotate 90deg clockwise (note that y axis points to its down)
+            var unit_vec_origin_start_tangent = [
+                -unit_vec_p1_p0[1],
+                unit_vec_p1_p0[0]
+            ];
+            // rotate 90deg counter clockwise (note that y axis points to its down)
+            var unit_vec_origin_end_tangent = [
+                unit_vec_p1_p2[1],
+                -unit_vec_p1_p2[0]
+            ];
+            var startAngle = -Math.acos(unit_vec_origin_start_tangent[0]);
+            var endAngle = Math.acos(unit_vec_origin_end_tangent[0]);
+            // Connect the point (x0, y0) to the start tangent point by a straight line
+            this.lineTo(x + unit_vec_origin_start_tangent[0] * radius,
+                        y + unit_vec_origin_start_tangent[1] * radius);
+            // Connect the start tangent point to the end tangent point by arc
+            // and adding the end tangent point to the subpath.
+            this.arc(x, y, radius, startAngle, endAngle);
         };
         /**
          * Sets the stroke property on the current element
@@ -767,6 +856,7 @@ define(function() {
             this.moveTo(startX, startY);
             this.__addPathCommand(format("A {rx} {ry} {xAxisRotation} {largeArcFlag} {sweepFlag} {endX} {endY}",
                 {rx:radius, ry:radius, xAxisRotation:0, largeArcFlag:largeArcFlag, sweepFlag:sweepFlag, endX:endX, endY:endY}));
+            this.__currentPosition = {x: endX, y: endY};
         };
         /**
          * Generates a ClipPath from the clip command.
