@@ -269,3 +269,7 @@
 - svgcanvas: fix onload issue in tests
 
     See also: https://github.com/zenozeng/svgcanvas/issues/3
+
+- canvas2svg: call lineTo instead moveTo in ctx.arc, fixes closePath issue and straight line issue ([PR#24](https://github.com/gliffy/canvas2svg/pull/24))
+
+- canvas2svg: implementation of ctx.prototype.arcTo ([PR#25](https://github.com/gliffy/canvas2svg/pull/25))

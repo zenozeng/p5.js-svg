@@ -1,5 +1,5 @@
 /*!!
- *  svgcanvas v0.1.0
+ *  svgcanvas v0.3.0
  *  Provide <canvas>'s element API and context API using SVG
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -509,6 +509,8 @@ define(function() {
             // creates a new subpath with the given point
             this.__currentPosition = {x: x, y: y};
             this.__addPathCommand(format("M {x} {y}", {x:x, y:y}));
+            // fixes https://github.com/zenozeng/p5.js-svg/issues/62
+            this.lineTo(x, y);
         };
         /**
          * Closes the current path
@@ -612,8 +614,18 @@ define(function() {
                 unit_vec_p1_p2[1],
                 -unit_vec_p1_p2[0]
             ];
-            var startAngle = -Math.acos(unit_vec_origin_start_tangent[0]);
-            var endAngle = Math.acos(unit_vec_origin_end_tangent[0]);
+            var getAngle = function(vector) {
+                // get angle (clockwise) between vector and (1, 0)
+                var x = vector[0];
+                var y = vector[1];
+                if (y >= 0) { // note that y axis points to its down
+                    return Math.acos(x);
+                } else {
+                    return -Math.acos(x);
+                }
+            };
+            var startAngle = getAngle(unit_vec_origin_start_tangent);
+            var endAngle = getAngle(unit_vec_origin_end_tangent);
             // Connect the point (x0, y0) to the start tangent point by a straight line
             this.lineTo(x + unit_vec_origin_start_tangent[0] * radius,
                         y + unit_vec_origin_start_tangent[1] * radius);
@@ -853,7 +865,7 @@ define(function() {
             } else {
                 largeArcFlag = diff > Math.PI ? 1 : 0;
             }
-            this.moveTo(startX, startY);
+            this.lineTo(startX, startY);
             this.__addPathCommand(format("A {rx} {ry} {xAxisRotation} {largeArcFlag} {sweepFlag} {endX} {endY}",
                 {rx:radius, ry:radius, xAxisRotation:0, largeArcFlag:largeArcFlag, sweepFlag:sweepFlag, endX:endX, endY:endY}));
             this.__currentPosition = {x: endX, y: endY};
@@ -1200,6 +1212,12 @@ define(function() {
             throw new Error('Unsupported type of context for SVGCanvas');
         }
         return this.ctx;
+    };
+    // you should always use URL.revokeObjectURL after your work done
+    SVGCanvas.prototype.toObjectURL = function() {
+        var data = this.getContext('2d').getSerializedSvg();
+        var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+        return URL.createObjectURL(svg);
     };
     SVGCanvas.prototype.toDataURL = function(type, options, callback) {
         if (typeof type === "function") {
