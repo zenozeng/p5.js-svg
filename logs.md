@@ -263,3 +263,9 @@
 ### Logs
 
 - svgcanvas: add more tests
+
+- svgcanvas: add canvas.toObjectURL()
+
+- svgcanvas: fix onload issue in tests
+
+    See also: https://github.com/zenozeng/svgcanvas/issues/3
