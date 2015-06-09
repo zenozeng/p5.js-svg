@@ -3,7 +3,7 @@
 SVG module for p5.js (still coding).
 The SVG based canvas API wrapper is powered by [gliffy's canvas2svg](https://github.com/gliffy/canvas2svg).
 
-![build](https://travis-ci.org/zenozeng/p5.js-svg.svg)
+[![build](https://travis-ci.org/zenozeng/p5.js-svg.svg)](https://travis-ci.org/zenozeng/p5.js-svg)
 
 ## Usage
 
