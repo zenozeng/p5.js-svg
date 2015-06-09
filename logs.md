@@ -295,3 +295,5 @@
         window.__karma__.files[file + "?_=" + now] = window.__karma__.files[file];
     }
     ```
+
+- (Pre)Release p5.js-svg@0.1.1
