@@ -41,5 +41,5 @@ define(function(require) {
     /**
      * @alias resizeCanvas
      */
-    p5.prototype.resizeSVG = this.resizeCanvas;
+    p5.prototype.resizeSVG = p5.prototype.resizeCanvas;
 });

@@ -10,9 +10,9 @@ module.exports = function(config) {
         },
         files: [
             // note: lower index will override greater index config
-            'node_modules/chai/chai.js',
             'test/bower_components/jquery/dist/jquery.js',
             'test/bower_components/p5.js/lib/p5.js',
+            {pattern: 'test/bower_components/chai/*.js', included: false},
             {pattern: 'test/unit/**/*.js', included: false},
             {pattern: 'src/**/*.js', included: false},
             {pattern: 'test/test-render.js', included: false},
@@ -31,8 +31,8 @@ module.exports = function(config) {
         },
         port: 9876,
         colors: true,
-        logLevel: config.LOG_DISABLE,
-        // logLevel: config.LOG_DEBUG,
+        // logLevel: config.LOG_DISABLE,
+        logLevel: config.LOG_DEBUG,
         autoWatch: false,
         browsers: ['Chrome', 'Firefox'],
         // Continuous Integration mode

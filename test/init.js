@@ -14,6 +14,7 @@ require.config({
         'p5.SVGElement': 'src/objects/p5.SVGElement',
         'rendering.svg': 'src/rendering/svg',
         'svgcanvas': 'src/objects/svgcanvas',
+        'chai': "test/bower_components/chai/chai",
         'testRender': 'test/test-render'
     }
 });
