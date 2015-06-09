@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.0.1 June 08, 2015 */
+/*! p5.svg.js v0.0.1 June 09, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -1373,6 +1373,10 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
             window.p = this;
             return SVGGraphics;
         };
+        /**
+         * @alias resizeCanvas
+         */
+        p5.prototype.resizeSVG = this.resizeCanvas;
     }({});
     src_app = function (require) {
         var p5 = core;

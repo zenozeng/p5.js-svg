@@ -53,4 +53,9 @@ define(function(require) {
 
         return SVGGraphics;
     };
+
+    /**
+     * @alias resizeCanvas
+     */
+    p5.prototype.resizeSVG = this.resizeCanvas;
 });
