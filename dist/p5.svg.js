@@ -1120,7 +1120,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                         set: function (val) {
                             var call = prop.replace(/__/g, '') + ' = ' + val;
                             _this.__history.push(call);
-                            console.debug('svgcanvas: ', call);
                             _this[key] = val;
                         }
                     });
@@ -1348,15 +1347,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
             this._elements.push(this._defaultGraphics);
             this._defaultGraphics.resize(width, height);
             this._defaultGraphics._applyDefaults();
-            var SVGGraphics = {
-                svg: svg,
-                toSerializedSVG: function () {
-                    return svgCanvas.getContext('2d').getSerializedSvg();
-                },
-                toDataURL: function (type, options, callback) {
-                    svgCanvas.toDataURL(type, options, callback);
-                }
-            };
             // enable hardware acceleration
             [
                 '-webkit-',
@@ -1369,14 +1359,11 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                 var value = 'translateZ(0)';
                 svg.style[key] = value;
             });
-            // for debug
-            window.p = this;
-            return SVGGraphics;
         };
         /**
          * @alias resizeCanvas
          */
-        p5.prototype.resizeSVG = this.resizeCanvas;
+        p5.prototype.resizeSVG = p5.prototype.resizeCanvas;
     }({});
     src_app = function (require) {
         var p5 = core;
