@@ -283,3 +283,15 @@
 - rewirte test/test-render and make it clean
 
 - use diff with thin line removed (8-connected neighborhood < 5)
+
+- Fix `there is no timestamp` issue in karma
+
+    This error means that file not included. This is due to requirejs's `urlArgs: "_=" + now`, so add a map will fix this:
+
+    ```javascript
+    for (var file in window.__karma__.files) {
+        // Fix there is no timestamp issue
+        // See also: https://github.com/karma-runner/karma-requirejs/issues/6
+        window.__karma__.files[file + "?_=" + now] = window.__karma__.files[file];
+    }
+    ```
