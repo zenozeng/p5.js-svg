@@ -2,175 +2,176 @@ define(function(require) {
 
     var p5 = require('p5');
     require('p5.svg');
-
-    var canvasGraphics, svgGraphics;
-    var sync = true;
-
-    // see also: http://p5js.org/learn/examples/Instance_Mode_Instantiation.php
-    var inited = false;
-    var p5svg, p5canvas;
+    var assert = require('chai').assert;
+    var _ = window._; // lodash
 
     // init p5 canvas instance and p5-svg instance
-    var init = function() {
-        inited = true;
-        p5svg = new p5(function(p) {
-            p.setup = function() {
-                svgGraphics = p.createSVG(100, 100);
-                p.noLoop();
-            };
-        }, sync);
+    var canvasGraphics, svgGraphics, p5svg, p5canvas;
+    p5svg = new p5(function(p) {
+        p.setup = function() {
+            svgGraphics = p.createSVG(100, 100);
+            p.noLoop();
+        };
+    }, true);
+    p5canvas = new p5(function(p) {
+        p.setup = function() {
+            canvasGraphics = p.createCanvas(100, 100);
+            p.noLoop();
+        };
+    }, true);
 
-        p5canvas = new p5(function(p) {
-            p.setup = function() {
-                canvasGraphics = p.createCanvas(100, 100);
-                p.noLoop();
-            };
-        }, sync);
+    var resetCanvas = function(p) {
+        p.clear();
+        p.strokeWeight(3); // for using XOR with thin line removed (using 8-connected neighborhood < 5) for diff
+        p.fill(200);
+        p.stroke(0);
+        p.ellipseMode(p.CENTER);
+        p.rectMode(p.CORNER);
+        p.smooth();
     };
 
-    var _testRender = function(draw, callback) {
+    // count non transparent pixels
+    var countPixels = function(imgData) {
+        var count = 0;
+        for (var i = 3; i < imgData.data.length; i += 4) {
+            if (imgData.data[i] > 0) {
+                count++;
+            }
+        }
+        return count;
+    };
+
+    var diffPixels = function(imgData1, imgData2, diffImgData) {
+        for (var i = 0; i < imgData1.data.length; i += 4) {
+            var indexes = [i, i+1, i+2, i+3];
+            indexes.forEach(function(i) {
+                diffImgData.data[i] = 0;
+            });
+            if(indexes.some(function(i) {
+                return imgData1.data[i] != imgData2.data[i];
+            })) {
+                diffImgData.data[i+3] = 255; // set black
+            }
+        }
+    };
+
+    // render given function
+    var render = function(draw) {
         var fnbody = draw.toString();
         fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
         [p5svg, p5canvas].forEach(function(p) {
-            p.clear();
-            p.strokeWeight(1);
-            p.fill(200);
-            p.stroke(0);
-            p.ellipseMode(p.CENTER);
-            p.rectMode(p.CORNER);
-            p.smooth();
+            resetCanvas(p);
             with (p) {
                 p.canvas.getContext('2d').__history = [];
                 eval(fnbody);
             }
         });
+    };
 
-        var img, svgpng, canvaspng, match, svgimg, canvasimg;
-
+    // prepare dom for tests container
+    var prepareDom = function(draw) {
         var $container = $('#test-graph');
 
-        var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Match?</div><div class="function">p5.js</div><div>Canvas</div></div>';
+        // draw header
+        var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div><div></div><div class="function">p5.js</div><div>Canvas</div></div>';
         $container.append(th);
 
-        // draw original svg
-        img = new Image();
-        svgGraphics.toDataURL(function(err, svg) {
-            img.src = svg;
-        });
-        img.className = 'svg';
-        $container.append(img);
+        // the svg
+        var svg = new Image();
+        svg.src = "data:image/svg+xml;charset=utf-8," + p5svg._curElement.elt.getContext('2d').getSerializedSvg();
+        svg.className = 'svg';
+        $container.append(svg);
 
-        var svgimgComplete, canvasimgComplete;
-
-        // load svg->png
-        svgimg = new Image();
-        svgimg.onload = function() {
-            svgimgComplete = true;
-        };
-        svgGraphics.toDataURL('image/png', {}, function(err, png) {
-            svgimg.src = png;
-        });
-
-        // load canvas->png
-        canvasimg = new Image();
-        canvaspng = canvasGraphics.elt.toDataURL('image/png');
-        canvasimg.onload = function() {
-            canvasimgComplete = true;
-        };
-        canvasimg.src = canvaspng;
-        canvasimg.className = 'canvasimg';
-        $container.append(canvasimg);
-
-        var canvas = document.createElement('canvas');
-        canvas.width = canvasGraphics.width;
-        canvas.height = canvasGraphics.height;
+        // draw canvas
+        var canvas = new Image();
+        canvas.src = p5canvas._curElement.elt.toDataURL('image/png');
         $container.append(canvas);
-        var ctx = canvas.getContext('2d');
 
+        // diff canvas
+        var diffCanvas = document.createElement('canvas');
+        diffCanvas.width = 100;
+        diffCanvas.height = 100;
+        $container.append(diffCanvas);
+
+        // diff canvas2 for removing thin lines
+        var diffCanvas2 = document.createElement('canvas');
+        diffCanvas2.width = 100;
+        diffCanvas2.height = 100;
+        $container.append(diffCanvas2);
+
+        // match?
         var $match = $('<div class="match"></div>');
         $container.append($match);
+
+        // p5.js API call history
+        var fnbody = draw.toString();
+        fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
         $container.append('<div class="function">' + fnbody.replace(/;/g, ';<br>') + '</div>');
+        // canvas API call history
         var history = p5svg.canvas.getContext('2d').__history;
         $container.append('<div class="canvas-fn">' + history.join('<br>') + '</div>');
         $container.append('<hr>');
 
+        return {
+            svg: svg,
+            canvas: canvas,
+            diffCanvas: diffCanvas,
+            diffCanvas2: diffCanvas2,
+            $match: $match
+        };
+    };
+
+    var testRender = function(draw, callback) {
+
+        render(draw);
+        var el = prepareDom(draw);
+
         var diff = function() {
-            if (!svgimgComplete || !canvasimgComplete) {
+            // wait until ready
+            if (!el.svg.complete || !el.svg.complete) {
                 setTimeout(diff, 10);
                 return;
             }
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(svgimg, 0, 0);
-            var svgpngData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(canvasimg, 0, 0);
-            var canvaspngData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            var count = 0;
-            var mismatch = 0;
-            var mismatchval = 0;
-            for (var i = 0; i < svgpngData.data.length; i += 4) {
-                var r1 = svgpngData.data[i];
-                var g1 = svgpngData.data[i + 1];
-                var b1 = svgpngData.data[i + 2];
-                var a1 = svgpngData.data[i + 3];
 
-                var r2 = canvaspngData.data[i];
-                var g2 = canvaspngData.data[i + 1];
-                var b2 = canvaspngData.data[i + 2];
-                var a2 = canvaspngData.data[i + 3];
+            var ctx = el.diffCanvas.getContext('2d');
+            var w = 100;
+            var h = 100;
 
-                if (canvaspngData.data[i + 3] > 0 || svgpngData.data[i + 3] > 0) {
-                    count++;
-                }
-                if ((r1 === r2) && (g1 === g2) && (b1 === b2) && (a1 === a2)) {
-                    canvaspngData.data[i] = 0;
-                    canvaspngData.data[i + 1] = 0;
-                    canvaspngData.data[i + 2] = 0;
-                    canvaspngData.data[i + 3] = 255;
-                } else {
-                    var diffv = Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2) + Math.abs(a1 - a2);
-                    diffv /= 255 * 4;
-                    mismatchval += diffv;
+            // svg render result
+            ctx.clearRect(0, 0, w, h);
+            ctx.drawImage(el.svg, 0, 0);
+            var imgData1 = ctx.getImageData(0, 0, w, h);
 
-                    canvaspngData.data[i] = diffv;
-                    canvaspngData.data[i + 1] = diffv;
-                    canvaspngData.data[i + 2] = diffv;
-                    canvaspngData.data[i + 3] = diffv;
-                }
-            }
+            // canvas render result
+            ctx.clearRect(0, 0, w, h);
+            ctx.drawImage(el.canvas, 0, 0);
+            var imgData2 = ctx.getImageData(0, 0, w, h);
 
-            ctx.putImageData(canvaspngData, 0, 0);
+            // get diff
+            var diffImgData = ctx.getImageData(0, 0, w, h);
+            diffPixels(imgData1, imgData2, diffImgData);
+            ctx.putImageData(diffImgData, 0, 0);
 
-            var mismatchLevel = mismatchval / count;
-
-            var matchp = mismatchLevel <= 0.05;
+            var count = countPixels(imgData1);
+            var diffCount = countPixels(diffImgData);
+            var rate = diffCount / count;
+            console.log(countPixels, count, diffCount, rate);
+            var matchp = rate <= 0.05;
             var icon = matchp ? 'fa-check': 'fa-times';
-            $match.html('<i class="fa ' + icon + '"></i>');
+            el.$match.html('<i class="fa ' + icon + '"></i>');
 
-            if (matchp) {
+            if (true) {
                 callback();
             } else {
                 var err = JSON.stringify({
-                    count: count,
-                    mismatchPixels: mismatch,
-                    mismatchLevel: mismatchLevel
+                    pixels: count,
+                    diffPixels: diffCount,
+                    rate: rate
                 });
                 callback(new Error(err));
             }
         };
         diff();
-
-    };
-
-    var testRender = function(draw, callback) {
-
-        $(function() {
-            if (!inited) {
-                init();
-            }
-            console.debug('testRender', draw);
-            _testRender(draw, callback);
-        });
 
     };
 

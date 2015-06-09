@@ -1,0 +1,38 @@
+{
+  "name": "chai",
+  "version": "3.0.0",
+  "description": "BDD/TDD assertion library for node.js and the browser. Test framework agnostic.",
+  "license": "MIT",
+  "keywords": [
+    "test",
+    "assertion",
+    "assert",
+    "testing",
+    "chai"
+  ],
+  "main": "chai.js",
+  "ignore": [
+    "build",
+    "components",
+    "lib",
+    "node_modules",
+    "support",
+    "test",
+    "index.js",
+    "Makefile",
+    ".*"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "homepage": "https://github.com/chaijs/chai",
+  "_release": "3.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "3.0.0",
+    "commit": "084a419d81338b4559fb56a53ec48bb552f2be82"
+  },
+  "_source": "git://github.com/chaijs/chai.git",
+  "_target": "~3.0.0",
+  "_originalSource": "chai",
+  "_direct": true
+}

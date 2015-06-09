@@ -2,7 +2,6 @@ define(function(require) {
     "use strict";
 
     var p5 = require('core');
-
     var SVGCanvas = require('svgcanvas');
 
     /**
@@ -31,27 +30,12 @@ define(function(require) {
         this._defaultGraphics.resize(width, height);
         this._defaultGraphics._applyDefaults();
 
-        var SVGGraphics = {
-            svg: svg,
-            toSerializedSVG: function() {
-                return svgCanvas.getContext('2d').getSerializedSvg();
-            },
-            toDataURL: function(type, options, callback) {
-                svgCanvas.toDataURL(type, options, callback);
-            }
-        };
-
         // enable hardware acceleration
         ['-webkit-', '-moz-', '-ms-', '-o-', ''].forEach(function(prefix) {
             var key = prefix + 'transform';
             var value = 'translateZ(0)';
             svg.style[key] = value;
         });
-
-        // for debug
-        window.p = this;
-
-        return SVGGraphics;
     };
 
     /**
