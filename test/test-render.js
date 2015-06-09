@@ -55,6 +55,55 @@ define(function(require) {
         }
     };
 
+    // remove thin lines using 8-connected neighborhood < 5
+    var removeThinLines = function(canvas) {
+        var ctx = canvas.getContext('2d');
+        var width = canvas.width;
+        var height = canvas.height;
+        var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var imgDataCopy = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        var getPixelIndex = function(x, y) {
+            return (y * width + x) * 4 + 3;
+        };
+
+        var getPixel = function(x, y) {
+            var alphaIndex = getPixelIndex(x, y);
+            return imgDataCopy.data[alphaIndex];
+        };
+
+        var setPixel = function(x, y, value) {
+            imgData.data[getPixelIndex(x, y)] = value;
+        };
+
+        for (var x = 1; x < width - 1; x++) {
+            for (var y = 1; y < height - 1; y++) {
+                if (getPixel(x, y) == 0) {
+                    continue; // ignore transparents
+                }
+                var links = [
+                    {x: x - 1, y: y - 1},
+                    {x: x, y: y - 1},
+                    {x: x + 1, y: y - 1},
+                    {x: x - 1, y: y},
+                    {x: x + 1, y: y},
+                    {x: x - 1, y: y + 1},
+                    {x: x, y: y + 1},
+                    {x: x + 1, y: y + 1}
+                ].map(function(p) {
+                    return getPixel(p.x, p.y);
+                }).filter(function(val) {
+                    return val > 0; // not transparent?
+                }).length;
+
+                if (links < 5) { // is a thin line
+                    setPixel(x, y, 0); // make it transparent
+                }
+            }
+        }
+        canvas.getContext('2d').putImageData(imgData, 0, 0);
+    };
+
     // render given function
     var render = function(draw) {
         var fnbody = draw.toString();
@@ -152,15 +201,20 @@ define(function(require) {
             diffPixels(imgData1, imgData2, diffImgData);
             ctx.putImageData(diffImgData, 0, 0);
 
+            // get diff with thin line removed (8-connected neighborhood < 5)
+            ctx = el.diffCanvas2.getContext('2d');
+            ctx.putImageData(diffImgData, 0, 0);
+            removeThinLines(el.diffCanvas2);
+            var diffImgData2 = ctx.getImageData(0, 0, w, h);
+
             var count = countPixels(imgData1);
-            var diffCount = countPixels(diffImgData);
+            var diffCount = countPixels(diffImgData2);
             var rate = diffCount / count;
-            console.log(countPixels, count, diffCount, rate);
-            var matchp = rate <= 0.05;
-            var icon = matchp ? 'fa-check': 'fa-times';
+            var match = rate <= 0.05;
+            var icon = match ? 'fa-check': 'fa-times';
             el.$match.html('<i class="fa ' + icon + '"></i>');
 
-            if (true) {
+            if (match) {
                 callback();
             } else {
                 var err = JSON.stringify({
