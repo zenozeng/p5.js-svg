@@ -5,9 +5,9 @@ module.exports = function(config) {
     config.set({
         basePath: '',
         frameworks: ['mocha', 'requirejs'],
-        client: {
-            requireJsShowNoTimestampsError: false
-        },
+        // client: {
+        //     // requireJsShowNoTimestampsError: false
+        // },
         files: [
             // note: lower index will override greater index config
             'test/bower_components/jquery/dist/jquery.js',
