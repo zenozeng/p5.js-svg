@@ -277,3 +277,9 @@
 - p5.prototype.resizeSVG
 
 - Configure Travis CI
+
+- p5.prototype.saveSVG
+
+- rewirte test/test-render and make it clean
+
+- use diff with thin line removed (8-connected neighborhood < 5)

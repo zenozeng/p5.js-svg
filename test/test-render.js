@@ -177,7 +177,7 @@ define(function(require) {
 
         var diff = function() {
             // wait until ready
-            if (!el.svg.complete || !el.svg.complete) {
+            if (!el.svg.complete || !el.canvas.complete) {
                 setTimeout(diff, 10);
                 return;
             }
@@ -207,13 +207,17 @@ define(function(require) {
             removeThinLines(el.diffCanvas2);
             var diffImgData2 = ctx.getImageData(0, 0, w, h);
 
+            // match?
             var count = countPixels(imgData1);
             var diffCount = countPixels(diffImgData2);
             var rate = diffCount / count;
             var match = rate <= 0.05;
+
+            // update $match
             var icon = match ? 'fa-check': 'fa-times';
             el.$match.html('<i class="fa ' + icon + '"></i>');
 
+            // callback
             if (match) {
                 callback();
             } else {

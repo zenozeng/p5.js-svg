@@ -31,8 +31,8 @@ module.exports = function(config) {
         },
         port: 9876,
         colors: true,
-        // logLevel: config.LOG_DISABLE,
-        logLevel: config.LOG_DEBUG,
+        logLevel: config.LOG_DISABLE,
+        // logLevel: config.LOG_DEBUG,
         autoWatch: false,
         browsers: ['Chrome', 'Firefox'],
         // Continuous Integration mode
