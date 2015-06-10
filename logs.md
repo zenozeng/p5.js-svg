@@ -305,3 +305,5 @@
     See also: https://github.com/zenozeng/p5.js-svg/issues/63
 
     See also: https://github.com/gliffy/canvas2svg/issues/23
+
+- svgcanvas: make Travis CI happy

@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.0.1 June 09, 2015 */
+/*! p5.svg.js v0.1.1 June 10, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -529,8 +529,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
                     x: x,
                     y: y
                 }));
-                // fixes https://github.com/zenozeng/p5.js-svg/issues/62
-                this.lineTo(x, y);
             };
             /**
              * Closes the current path
@@ -690,6 +688,9 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
              * Sets the stroke property on the current element
              */
             ctx.prototype.stroke = function () {
+                if (this.__currentElement.nodeName === 'path') {
+                    this.__currentElement.setAttribute('paint-order', 'fill stroke markers');
+                }
                 this.__applyCurrentDefaultPath();
                 this.__applyStyleToCurrentElement('stroke');
             };
@@ -697,6 +698,9 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
              * Sets fill properties on the current element
              */
             ctx.prototype.fill = function () {
+                if (this.__currentElement.nodeName === 'path') {
+                    this.__currentElement.setAttribute('paint-order', 'stroke fill markers');
+                }
                 this.__applyCurrentDefaultPath();
                 this.__applyStyleToCurrentElement('fill');
             };

@@ -1,5 +1,5 @@
 /*!!
- *  svgcanvas v0.3.0
+ *  svgcanvas v0.4.0
  *  Provide <canvas>'s element API and context API using SVG
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -509,8 +509,6 @@ define(function() {
             // creates a new subpath with the given point
             this.__currentPosition = {x: x, y: y};
             this.__addPathCommand(format("M {x} {y}", {x:x, y:y}));
-            // fixes https://github.com/zenozeng/p5.js-svg/issues/62
-            this.lineTo(x, y);
         };
         /**
          * Closes the current path
@@ -637,6 +635,9 @@ define(function() {
          * Sets the stroke property on the current element
          */
         ctx.prototype.stroke = function(){
+            if(this.__currentElement.nodeName === "path") {
+                this.__currentElement.setAttribute("paint-order", "fill stroke markers");
+            }
             this.__applyCurrentDefaultPath();
             this.__applyStyleToCurrentElement("stroke");
         };
@@ -644,6 +645,9 @@ define(function() {
          * Sets fill properties on the current element
          */
         ctx.prototype.fill = function(){
+            if(this.__currentElement.nodeName === "path") {
+                this.__currentElement.setAttribute("paint-order", "stroke fill markers");
+            }
             this.__applyCurrentDefaultPath();
             this.__applyStyleToCurrentElement("fill");
         };
