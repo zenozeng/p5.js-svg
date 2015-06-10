@@ -297,3 +297,11 @@
     ```
 
 - (Pre)Release p5.js-svg@0.1.1
+
+- svgcanvas: fix paint order issue (lineWidth issue) ([canvas2svg - PR#26](https://github.com/gliffy/canvas2svg/pull/26))
+
+    In canvas, the order of stroke and fill was determined by call of stroke() and fill(), in SVG, we should use paint-order to simulate it.
+
+    See also: https://github.com/zenozeng/p5.js-svg/issues/63
+
+    See also: https://github.com/gliffy/canvas2svg/issues/23
