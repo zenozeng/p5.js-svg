@@ -308,7 +308,7 @@
 
 - svgcanvas: make Travis CI happy
 
-- svgcanvas: sync version toDataURL
+- svgcanvas: sync version of toDataURL
 
     Note that sync API for jpeg/png is only available in chrome due to image load issue.
     Already tried iframe and web worker but no good luck.
