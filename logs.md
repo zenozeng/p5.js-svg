@@ -307,3 +307,8 @@
     See also: https://github.com/gliffy/canvas2svg/issues/23
 
 - svgcanvas: make Travis CI happy
+
+- svgcanvas: sync version toDataURL
+
+    Note that sync API for jpeg/png is only available in chrome due to image load issue.
+    Already tried iframe and web worker but no good luck.
