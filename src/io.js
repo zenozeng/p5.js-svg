@@ -67,6 +67,18 @@ define(function (require) {
         });
     };
 
+    var _saveFrames = p5.prototype.saveFrames;
+    p5.prototype.saveFrames = function(filename, extension, duration, fps, callback) {
+        var args = arguments;
+
+        if (!this.svg) {
+            _saveFrames.apply(this, args);
+            return;
+        }
+
+        // TODO
+    };
+
 
     var _save = p5.prototype.save;
     p5.prototype.save = function() {
@@ -82,15 +94,4 @@ define(function (require) {
 
     };
 
-    var _saveFrames = p5.prototype.saveFrames;
-    p5.prototype.saveFrames = function() {
-        var args = arguments;
-
-        if (!this.svg) {
-            _saveFrames.apply(this, args);
-            return;
-        }
-
-        // TODO
-    };
 });
