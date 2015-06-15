@@ -79,6 +79,20 @@ define(function (require) {
         });
     };
 
+    /**
+     * Capture a sequence of frames that can be used to create a movie.
+     * Accepts a callback. For example, you may wish to send the frames
+     * to a server where they can be stored or converted into a movie.
+     * If no callback is provided, the browser will attempt to download
+     * all of the images that have just been created.
+     *
+     * @method saveFrames
+     * @param {String} filename filename
+     * @param {String} extension extension
+     * @param {Number} duration duration
+     * @param {Number]} fps fps
+     * @param {Function} callback callback
+     */
     var _saveFrames = p5.prototype.saveFrames;
     p5.prototype.saveFrames = function(filename, extension, duration, fps, callback) {
         var args = arguments;
@@ -88,7 +102,6 @@ define(function (require) {
             return;
         }
 
-
         duration = duration || 3;
         duration = p5.prototype.constrain(duration, 0, 15);
         duration = duration * 1000;
@@ -96,10 +109,42 @@ define(function (require) {
         fps = p5.prototype.constrain(fps, 0, 22);
         var count = 0;
 
-        var makeFrame = p5.prototype._makeFrame;
+        var frames = [];
+        var pending = 0;
 
+        var p = this;
+        var makeFrame = p5.prototype._makeSVGFrame;
+        var frameFactory = setInterval(function () {
+            (function(count) {
+                pending++;
+                p._makeSVGFrame(filename + count, extension, function(err, frame) {
+                    frames[count] = frame;
+                    pending--;
+                });
+                makeFrame(filename + count, extension);
+            })(count);
+            count++;
+        }, 1000 / fps);
 
-        // TODO
+        var done = function() {
+            if (pending > 0) {
+                setTimeout(function() {
+                    done();
+                }, 10);
+            }
+            if (callback) {
+                callback(frames);
+            } else {
+                frames.forEach(function(f) {
+                    p.downloadFile(f.imageData, f.filename, f.ext);
+                });
+            }
+        };
+
+        setTimeout(function () {
+            clearInterval(frameFactory);
+            done();
+        }, duration + 0.01);
     };
 
 
