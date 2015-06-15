@@ -314,3 +314,5 @@
     Already tried iframe and web worker but no good luck.
 
 - Rewrite p5.prototype.saveSVG and write unit test for it.
+
+- svgcanvas: toDataURL now will call encodeURI

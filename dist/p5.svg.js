@@ -1298,7 +1298,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             return URL.createObjectURL(svg);
         };
         SVGCanvas.prototype.toDataURL = function (type, options) {
-            var SVGDataURL = 'data:image/svg+xml;charset=utf-8,' + this.getContext('2d').getSerializedSvg();
+            var SVGDataURL = 'data:image/svg+xml;charset=utf-8,' + encodeURI(this.getContext('2d').getSerializedSvg());
             if (type === 'image/svg+xml' || !type) {
                 return SVGDataURL;
             }
@@ -1369,7 +1369,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
         var p5 = core;
         // convert SVG data url to jpeg / png data url
         var svg2img = function (SVG, mine, callback) {
-            console.log(SVG, mine);
             if (mine == 'image/svg+xml') {
                 callback(null, SVG);
                 return;
@@ -1416,7 +1415,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             svg2img(svg, mine[ext], function (err, dataURL) {
                 var downloadMime = 'image/octet-stream';
                 dataURL = dataURL.replace(mine[ext], downloadMime);
-                console.log(dataURL, filename, ext);
                 p.downloadFile(dataURL, filename, ext);
             });
         };

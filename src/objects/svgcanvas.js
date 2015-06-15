@@ -1,5 +1,5 @@
 /*!!
- *  svgcanvas v0.5.0
+ *  svgcanvas v0.5.1
  *  Provide <canvas>'s element API and context API using SVG
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -1222,7 +1222,7 @@ define(function() {
         return URL.createObjectURL(svg);
     };
     SVGCanvas.prototype.toDataURL = function(type, options) {
-        var SVGDataURL = "data:image/svg+xml;charset=utf-8," + this.getContext('2d').getSerializedSvg();
+        var SVGDataURL = "data:image/svg+xml;charset=utf-8," + encodeURI(this.getContext('2d').getSerializedSvg());
         if (type === "image/svg+xml" || !type) {
             return SVGDataURL;
         }

@@ -12,8 +12,6 @@ define(function (require) {
 
     // convert SVG data url to jpeg / png data url
     var svg2img = function(SVG, mine, callback) {
-        console.log(SVG, mine);
-
         if (mine == 'image/svg+xml') {
             callback(null, SVG);
             return;
@@ -62,7 +60,6 @@ define(function (require) {
         svg2img(svg, mine[ext], function(err, dataURL) {
             var downloadMime = 'image/octet-stream';
             dataURL = dataURL.replace(mine[ext], downloadMime);
-            console.log(dataURL, filename, ext);
             p.downloadFile(dataURL, filename, ext);
         });
     };
