@@ -1462,7 +1462,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             var frames = [];
             var pending = 0;
             var p = this;
-            var makeFrame = p5.prototype._makeSVGFrame;
             var frameFactory = setInterval(function () {
                 (function (count) {
                     pending++;
@@ -1470,7 +1469,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
                         frames[count] = frame;
                         pending--;
                     });
-                    makeFrame(filename + count, extension);
                 }(count));
                 count++;
             }, 1000 / fps);
@@ -1479,6 +1477,8 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
                     setTimeout(function () {
                         done();
                     }, 10);
+                    console.log(pending, frames);
+                    return;
                 }
                 if (callback) {
                     callback(frames);
@@ -1491,7 +1491,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             setTimeout(function () {
                 clearInterval(frameFactory);
                 done();
-            }, duration + 0.01);
+            }, duration + 1);
         };
         var _save = p5.prototype.save;
         p5.prototype.save = function () {

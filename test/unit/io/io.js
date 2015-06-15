@@ -59,6 +59,31 @@ define(function(require) {
         });
 
         describe('IO/saveFrames', function() {
+            it('should download canvas frames', function() {
+                new p5(function(p) {
+                    p.setup = function() {
+                        p.createCanvas(100, 100);
+                        p.saveFrames('hello', 'png', 1, 10);
+                    };
+                    p.draw = function() {
+                        var i = p.frameCount;
+                        p.line(0, 0, i, i);
+                    };
+                });
+            });
+
+            it('should download svg frames', function() {
+                new p5(function(p) {
+                    p.setup = function() {
+                        p.createSVG(100, 100);
+                        p.saveFrames('hello', 'svg', 1, 10);
+                    };
+                    p.draw = function() {
+                        var i = p.frameCount;
+                        p.line(0, 0, i, i);
+                    };
+                });
+            });
         });
     });
 });

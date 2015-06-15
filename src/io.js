@@ -113,7 +113,6 @@ define(function (require) {
         var pending = 0;
 
         var p = this;
-        var makeFrame = p5.prototype._makeSVGFrame;
         var frameFactory = setInterval(function () {
             (function(count) {
                 pending++;
@@ -121,7 +120,6 @@ define(function (require) {
                     frames[count] = frame;
                     pending--;
                 });
-                makeFrame(filename + count, extension);
             })(count);
             count++;
         }, 1000 / fps);
@@ -131,6 +129,8 @@ define(function (require) {
                 setTimeout(function() {
                     done();
                 }, 10);
+                console.log(pending, frames);
+                return;
             }
             if (callback) {
                 callback(frames);
