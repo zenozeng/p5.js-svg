@@ -1385,8 +1385,16 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             };
             img.src = SVG;
         };
+        // private method
         // get current SVG frame, and convert to target type
-        p5.prototype._getSVGFrame = function (ext, callback) {
+        p5.prototype._makeSVGFrame = function (filename, ext, callback) {
+            filename = filename || 'untitled';
+            ext = ext || this._checkFileExtension(filename, ext)[1];
+            var regexp = new RegExp('\\.' + ext + '$');
+            filename = filename.replace(regexp, '');
+            if (ext === '') {
+                ext = 'svg';
+            }
             var mine = {
                 png: 'image/png',
                 jpeg: 'image/jpeg',
@@ -1401,7 +1409,11 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             svg2img(svg, mine[ext], function (err, dataURL) {
                 var downloadMime = 'image/octet-stream';
                 dataURL = dataURL.replace(mine[ext], downloadMime);
-                callback(err, dataURL);
+                callback(err, {
+                    imageData: dataURL,
+                    filename: filename,
+                    ext: ext
+                });
             });
         };
         /**
@@ -1415,16 +1427,9 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
          * @param {[String]} extension 'svg' or 'jpg' or 'png'
          */
         p5.prototype.saveSVG = function (filename, ext) {
-            filename = filename || 'untitled';
-            ext = ext || this._checkFileExtension(filename, ext)[1];
-            var regexp = new RegExp('\\.' + ext + '$');
-            filename = filename.replace(regexp, '');
-            if (ext === '') {
-                ext = 'svg';
-            }
             var p = this;
-            this._getSVGFrame(ext, function (err, dataURL) {
-                p.downloadFile(dataURL, filename, ext);
+            this._makeSVGFrame(filename, ext, function (err, frame) {
+                p.downloadFile(frame.imageData, frame.filename, frame.ext);
             });
         };
         var _saveFrames = p5.prototype.saveFrames;
