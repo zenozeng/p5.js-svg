@@ -29,6 +29,27 @@ define(function (require) {
         img.src = SVG;
     };
 
+    // get current SVG frame, and convert to target type
+    p5.prototype._getSVGFrame = function(ext, callback) {
+        var mine = {
+            png: 'image/png',
+            jpeg: 'image/jpeg',
+            jpg: 'image/jpeg',
+            svg: 'image/svg+xml'
+        };
+        if (!mine[ext]) {
+            throw new Error('Fail to getFrame, invalid extension, please use png | jpeg | jpg | svg.');
+        }
+        var canvas = this._curElement && this._curElement.elt;
+        var svg = canvas.toDataURL('image/svg+xml');
+
+        svg2img(svg, mine[ext], function(err, dataURL) {
+            var downloadMime = 'image/octet-stream';
+            dataURL = dataURL.replace(mine[ext], downloadMime);
+            callback(err, dataURL);
+        });
+    };
+
     /**
      * Save the current SVG as an image. In Safari, will open the
      * image in the window and the user must provide their own
@@ -47,22 +68,8 @@ define(function (require) {
         if (ext === '') {
             ext = 'svg';
         }
-        var mine = {
-            png: 'image/png',
-            jpeg: 'image/jpeg',
-            jpg: 'image/jpeg',
-            svg: 'image/svg+xml'
-        };
-        if (!mine[ext]) {
-            throw new Error('Fail to call saveSVG, invalid extension, please use png|jpeg|jpg|svg.');
-        }
-        var canvas = this._curElement && this._curElement.elt;
-        var svg = canvas.toDataURL('image/svg+xml');
-
         var p = this;
-        svg2img(svg, mine[ext], function(err, dataURL) {
-            var downloadMime = 'image/octet-stream';
-            dataURL = dataURL.replace(mine[ext], downloadMime);
+        this._getSVGFrame(ext, function(err, dataURL) {
             p.downloadFile(dataURL, filename, ext);
         });
     };

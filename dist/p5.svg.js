@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.1.1 June 15, 2015 */
+/*! p5.svg.js v0.1.1 June 16, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -1385,6 +1385,25 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             };
             img.src = SVG;
         };
+        // get current SVG frame, and convert to target type
+        p5.prototype._getSVGFrame = function (ext, callback) {
+            var mine = {
+                png: 'image/png',
+                jpeg: 'image/jpeg',
+                jpg: 'image/jpeg',
+                svg: 'image/svg+xml'
+            };
+            if (!mine[ext]) {
+                throw new Error('Fail to getFrame, invalid extension, please use png | jpeg | jpg | svg.');
+            }
+            var canvas = this._curElement && this._curElement.elt;
+            var svg = canvas.toDataURL('image/svg+xml');
+            svg2img(svg, mine[ext], function (err, dataURL) {
+                var downloadMime = 'image/octet-stream';
+                dataURL = dataURL.replace(mine[ext], downloadMime);
+                callback(err, dataURL);
+            });
+        };
         /**
          * Save the current SVG as an image. In Safari, will open the
          * image in the window and the user must provide their own
@@ -1403,23 +1422,18 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             if (ext === '') {
                 ext = 'svg';
             }
-            var mine = {
-                png: 'image/png',
-                jpeg: 'image/jpeg',
-                jpg: 'image/jpeg',
-                svg: 'image/svg+xml'
-            };
-            if (!mine[ext]) {
-                throw new Error('Fail to call saveSVG, invalid extension, please use png|jpeg|jpg|svg.');
-            }
-            var canvas = this._curElement && this._curElement.elt;
-            var svg = canvas.toDataURL('image/svg+xml');
             var p = this;
-            svg2img(svg, mine[ext], function (err, dataURL) {
-                var downloadMime = 'image/octet-stream';
-                dataURL = dataURL.replace(mine[ext], downloadMime);
+            this._getSVGFrame(ext, function (err, dataURL) {
                 p.downloadFile(dataURL, filename, ext);
             });
+        };
+        var _saveFrames = p5.prototype.saveFrames;
+        p5.prototype.saveFrames = function (filename, extension, duration, fps, callback) {
+            var args = arguments;
+            if (!this.svg) {
+                _saveFrames.apply(this, args);
+                return;
+            }    // TODO
         };
         var _save = p5.prototype.save;
         p5.prototype.save = function () {
@@ -1430,14 +1444,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             }
             if (args.length === 0) {
             }
-        };
-        var _saveFrames = p5.prototype.saveFrames;
-        p5.prototype.saveFrames = function () {
-            var args = arguments;
-            if (!this.svg) {
-                _saveFrames.apply(this, args);
-                return;
-            }    // TODO
         };
     }({});
     src_app = function (require) {
