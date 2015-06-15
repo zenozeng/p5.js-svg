@@ -312,3 +312,5 @@
 
     Note that sync API for jpeg/png is only available in chrome due to image load issue.
     Already tried iframe and web worker but no good luck.
+
+- Rewrite p5.prototype.saveSVG and write unit test for it.

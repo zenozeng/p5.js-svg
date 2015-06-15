@@ -30,6 +30,7 @@ module.exports = function(grunt) {
                     optimize: 'none',
                     paths: {
                         'app': 'src/app',
+                        'io': 'src/io',
                         'core': 'src/core/core',
                         'p5.SVGElement': 'src/objects/p5.SVGElement',
                         'rendering.svg': 'src/rendering/svg',

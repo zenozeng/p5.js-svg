@@ -1,5 +1,5 @@
 /*!!
- *  svgcanvas v0.4.0
+ *  svgcanvas v0.5.0
  *  Provide <canvas>'s element API and context API using SVG
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -1221,32 +1221,29 @@ define(function() {
         var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
         return URL.createObjectURL(svg);
     };
-    SVGCanvas.prototype.toDataURL = function(type, options, callback) {
-        if (typeof type === "function") {
-            callback = type;
-            type = null;
+    SVGCanvas.prototype.toDataURL = function(type, options) {
+        var SVGDataURL = "data:image/svg+xml;charset=utf-8," + this.getContext('2d').getSerializedSvg();
+        if (type === "image/svg+xml" || !type) {
+            return SVGDataURL;
         }
-        if (typeof options === "function") {
-            callback = options;
-            options = {};
-        }
-        var svgCanvas = this;
-        var serializedSVG = svgCanvas.getContext('2d').getSerializedSvg();
-        var dataURL = "data:image/svg+xml;charset=utf-8," + serializedSVG;
         if (type === "image/jpeg" || type === "image/png") {
             var canvas = document.createElement('canvas');
-            canvas.width = svgCanvas.width;
-            canvas.height = svgCanvas.height;
+            canvas.width = this.width;
+            canvas.height = this.height;
             var ctx = canvas.getContext('2d');
             var img = new Image();
-            img.onload = function() {
+            img.src = SVGDataURL;
+            if (img.complete && img.width > 0 && img.height > 0) {
+                // for chrome, it's ready immediately
                 ctx.drawImage(img, 0, 0);
-                callback(null, canvas.toDataURL(type, options));
-            };
-            img.src = dataURL;
-        } else {
-            callback(null, dataURL);
+                return canvas.toDataURL(type, options);
+            } else {
+                // for firefox, it's not possible to provide sync api in current thread
+                // and web worker doesn't provide canvas API, so
+                throw new Error('svgcanvas.toDataURL() for jpeg/png is only available in Chrome.');
+            }
         }
+        throw new Error('Unknown type for SVGCanvas.prototype.toDataURL, please use image/jpeg | image/png | image/svg+xml.');
     };
     return SVGCanvas;
 });

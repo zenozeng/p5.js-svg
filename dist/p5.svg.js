@@ -1,6 +1,6 @@
 ;(function() {
-/*! p5.svg.js v0.1.1 June 10, 2015 */
-var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
+/*! p5.svg.js v0.1.1 June 15, 2015 */
+var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
         define('p5.svg', ['p5'], function (p5) {
@@ -1297,32 +1297,29 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
             var svg = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
             return URL.createObjectURL(svg);
         };
-        SVGCanvas.prototype.toDataURL = function (type, options, callback) {
-            if (typeof type === 'function') {
-                callback = type;
-                type = null;
+        SVGCanvas.prototype.toDataURL = function (type, options) {
+            var SVGDataURL = 'data:image/svg+xml;charset=utf-8,' + this.getContext('2d').getSerializedSvg();
+            if (type === 'image/svg+xml' || !type) {
+                return SVGDataURL;
             }
-            if (typeof options === 'function') {
-                callback = options;
-                options = {};
-            }
-            var svgCanvas = this;
-            var serializedSVG = svgCanvas.getContext('2d').getSerializedSvg();
-            var dataURL = 'data:image/svg+xml;charset=utf-8,' + serializedSVG;
             if (type === 'image/jpeg' || type === 'image/png') {
                 var canvas = document.createElement('canvas');
-                canvas.width = svgCanvas.width;
-                canvas.height = svgCanvas.height;
+                canvas.width = this.width;
+                canvas.height = this.height;
                 var ctx = canvas.getContext('2d');
                 var img = new Image();
-                img.onload = function () {
+                img.src = SVGDataURL;
+                if (img.complete && img.width > 0 && img.height > 0) {
+                    // for chrome, it's ready immediately
                     ctx.drawImage(img, 0, 0);
-                    callback(null, canvas.toDataURL(type, options));
-                };
-                img.src = dataURL;
-            } else {
-                callback(null, dataURL);
+                    return canvas.toDataURL(type, options);
+                } else {
+                    // for firefox, it's not possible to provide sync api in current thread
+                    // and web worker doesn't provide canvas API, so
+                    throw new Error('svgcanvas.toDataURL() for jpeg/png is only available in Chrome.');
+                }
             }
+            throw new Error('Unknown type for SVGCanvas.prototype.toDataURL, please use image/jpeg | image/png | image/svg+xml.');
         };
         return SVGCanvas;
     }();
@@ -1368,10 +1365,85 @@ var core, p5SVGElement, svgcanvas, renderingsvg, src_app;
          */
         p5.prototype.resizeSVG = p5.prototype.resizeCanvas;
     }({});
+    io = function (require) {
+        var p5 = core;
+        // convert SVG data url to jpeg / png data url
+        var svg2img = function (SVG, mine, callback) {
+            console.log(SVG, mine);
+            if (mine == 'image/svg+xml') {
+                callback(null, SVG);
+                return;
+            }
+            var img = new Image();
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            img.onload = function () {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                var dataURL = canvas.toDataURL(mine);
+                callback(null, dataURL);
+            };
+            img.src = SVG;
+        };
+        /**
+         * Save the current SVG as an image. In Safari, will open the
+         * image in the window and the user must provide their own
+         * filename on save-as. Other browsers will either save the
+         * file immediately, or prompt the user with a dialogue window.
+         *
+         * @method saveSVG
+         * @param {[String]} filename
+         * @param {[String]} extension 'svg' or 'jpg' or 'png'
+         */
+        p5.prototype.saveSVG = function (filename, ext) {
+            ext = ext || p5.prototype._checkFileExtension(filename, ext)[1];
+            if (ext === '') {
+                ext = 'svg';
+            }
+            var mine = {
+                png: 'image/png',
+                jpeg: 'image/jpeg',
+                jpg: 'image/jpeg',
+                svg: 'image/svg+xml'
+            };
+            if (!mine[ext]) {
+                throw new Error('Fail to call saveSVG, invalid extension, please use png|jpeg|jpg|svg.');
+            }
+            var canvas = this._curElement && this._curElement.elt;
+            var svg = canvas.toDataURL('image/svg+xml');
+            var p = this;
+            svg2img(svg, mine[ext], function (err, dataURL) {
+                var downloadMime = 'image/octet-stream';
+                dataURL = dataURL.replace(mine[ext], downloadMime);
+                console.log(dataURL, filename, ext);
+                p.downloadFile(dataURL, filename, ext);
+            });
+        };
+        var _save = p5.prototype.save;
+        p5.prototype.save = function () {
+            var args = arguments;
+            if (!this.svg) {
+                _save.apply(this, args);
+                return;
+            }
+            if (args.length === 0) {
+            }
+        };
+        var _saveFrames = p5.prototype.saveFrames;
+        p5.prototype.saveFrames = function () {
+            var args = arguments;
+            if (!this.svg) {
+                _saveFrames.apply(this, args);
+                return;
+            }    // TODO
+        };
+    }({});
     src_app = function (require) {
         var p5 = core;
         p5SVGElement;
         renderingsvg;
+        io;
         /**
          * Create SVG element with given tag in the current SVG target.
          *
