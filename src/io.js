@@ -40,7 +40,10 @@ define(function (require) {
      * @param {[String]} extension 'svg' or 'jpg' or 'png'
      */
     p5.prototype.saveSVG = function(filename, ext) {
-        ext = ext || p5.prototype._checkFileExtension(filename, ext)[1];
+        filename = filename || 'untitled';
+        ext = ext || this._checkFileExtension(filename, ext)[1];
+        var regexp = new RegExp('\\.' + ext + '$');
+        filename = filename.replace(regexp, '');
         if (ext === '') {
             ext = 'svg';
         }
