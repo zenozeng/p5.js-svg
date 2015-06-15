@@ -19,7 +19,8 @@ module.exports = function(config) {
             'test/init.js'
         ],
         preprocessors: {
-            'src/**/*.js': ['coverage']
+            'src/**/!(svgcanvas).js': ['coverage']
+            // 'src/**/*.js': ['coverage']
         },
         reporters: ['progress', 'coverage', 'mocha'],
         coverageReporter: {

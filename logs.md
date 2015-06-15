@@ -316,3 +316,5 @@
 - Rewrite p5.prototype.saveSVG and write unit test for it.
 
 - svgcanvas: toDataURL now will call encodeURI
+
+- Wrap p5.prototype.saveFrames for exporting SVG

@@ -57,5 +57,8 @@ define(function(require) {
                 }, done);
             });
         });
+
+        describe('IO/saveFrames', function() {
+        });
     });
 });
