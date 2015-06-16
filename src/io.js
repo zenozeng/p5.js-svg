@@ -69,8 +69,8 @@ define(function (require) {
      * file immediately, or prompt the user with a dialogue window.
      *
      * @method saveSVG
-     * @param {[String]} filename
-     * @param {[String]} extension 'svg' or 'jpg' or 'png'
+     * @param {String} filename
+     * @param {String} extension 'svg' or 'jpg' or 'png'
      */
     p5.prototype.saveSVG = function(filename, ext) {
         var p = this;

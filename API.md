@@ -1,14 +1,22 @@
-# p5.js-svg's API
+## p5.js-svg's API
 
-Note that the API highlighted is new API, others are compatible API covered with unit tests.
+# New API
 
-## Rendering
+### Rendering
 
-- _createSVG_
+- _createSVG(width, height)_
 
-## Shape
+### IO
 
-### 2d_primitives
+- _saveSVG(filename, ext = 'svg' || 'jpg' || 'png')_
+
+- _saveFrames(filename, ext = 'svg' || 'jpg' || 'png', duration, fps, callback)_
+
+## Compatible (in SVG and Canvas) API covered with unit tests
+
+### Shape
+
+#### 2d_primitives
 
 - arc
 - ellipse
@@ -18,7 +26,7 @@ Note that the API highlighted is new API, others are compatible API covered with
 - rect
 - triangle
 
-### Attributes
+#### Attributes
 
 - strokeWeight
 - strokeCap
@@ -28,7 +36,7 @@ Note that the API highlighted is new API, others are compatible API covered with
 - smooth
 - noSmooth
 
-### Vertex
+#### Vertex
 
 - beginContour
 - beginShape
@@ -39,4 +47,13 @@ Note that the API highlighted is new API, others are compatible API covered with
 - quadraticVertex
 - vertex
 
-### (Still Working) Curves
+#### Curves
+
+- bezier()
+- bezierPoint()
+- bezierTangent()
+- curve()
+- curveTightness()
+- curvePoint()
+- curveTangent()
+
