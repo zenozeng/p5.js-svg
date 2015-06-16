@@ -318,3 +318,5 @@
 - svgcanvas: toDataURL now will call encodeURI
 
 - Wrap p5.prototype.saveFrames for exporting SVG
+
+- Add unit tests for saveFrames

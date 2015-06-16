@@ -129,7 +129,6 @@ define(function (require) {
                 setTimeout(function() {
                     done();
                 }, 10);
-                console.log(pending, frames);
                 return;
             }
             if (callback) {

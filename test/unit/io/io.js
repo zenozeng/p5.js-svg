@@ -13,13 +13,11 @@ define(function(require) {
                         p.stroke(0, 0, 0);
                         p.line(0, 0, 100, 100);
 
-                        var _downloadFile = p.downloadFile;
                         p.downloadFile = function(dataURL, _filename, _ext) {
                             try {
                                 assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
                                 assert.equal(_filename, filename);
                                 assert.equal(_ext, ext);
-                                p.downloadFile = _downloadFile;
                                 done();
                                 p.svg.remove();
                             } catch(e) {
@@ -59,27 +57,67 @@ define(function(require) {
         });
 
         describe('IO/saveFrames', function() {
-            it('should download canvas frames', function() {
+            it('should capture canvas frames', function(done) {
                 new p5(function(p) {
                     p.setup = function() {
                         p.createCanvas(100, 100);
-                        p.saveFrames('hello', 'png', 1, 10);
+                        p.strokeWeight(3);
+                        p.saveFrames('hello', 'png', 0.5, 10, function(frames) {
+                            try {
+                                assert.ok(frames.length > 1);
+                                done();
+                            } catch (e) {
+                                done(e);
+                            }
+                            p.canvas.remove();
+                        });
                     };
                     p.draw = function() {
-                        var i = p.frameCount;
+                        var i = p.frameCount * 2;
                         p.line(0, 0, i, i);
                     };
                 });
             });
 
-            it('should download svg frames', function() {
+            it('should capture svg frames', function(done) {
                 new p5(function(p) {
                     p.setup = function() {
                         p.createSVG(100, 100);
-                        p.saveFrames('hello', 'svg', 1, 10);
+                        p.strokeWeight(3);
+                        p.saveFrames('hello', 'svg', 0.5, 10, function(frames) {
+                            try {
+                                assert.ok(frames.length > 1);
+                                done();
+                            } catch (e) {
+                                done(e);
+                            }
+                            p.svg.remove();
+                        });
                     };
                     p.draw = function() {
-                        var i = p.frameCount;
+                        var i = p.frameCount * 2;
+                        p.line(0, 0, i, i);
+                    };
+                });
+            });
+
+            it('should download svg frames', function(done) {
+                new p5(function(p) {
+                    p.setup = function() {
+                        p.createSVG(100, 100);
+                        var _downloadFile = p.downloadFile;
+                        var count = 0;
+                        p.downloadFile = function() {
+                            count++;
+                            if (count > 1) {
+                                done();
+                                p.svg.remove();
+                            }
+                        };
+                        p.saveFrames('hello', 'svg', 0.5, 10);
+                    };
+                    p.draw = function() {
+                        var i = p.frameCount * 2;
                         p.line(0, 0, i, i);
                     };
                 });

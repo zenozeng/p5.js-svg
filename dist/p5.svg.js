@@ -1477,7 +1477,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
                     setTimeout(function () {
                         done();
                     }, 10);
-                    console.log(pending, frames);
                     return;
                 }
                 if (callback) {
@@ -1491,7 +1490,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             setTimeout(function () {
                 clearInterval(frameFactory);
                 done();
-            }, duration + 1);
+            }, duration + 0.01);
         };
         var _save = p5.prototype.save;
         p5.prototype.save = function () {
