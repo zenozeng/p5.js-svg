@@ -195,20 +195,39 @@ define(function (require) {
      * @method save
      * @param {Graphics|SVGElement} source Source to save (optional)
      * @param {String} filename filename
-     * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
-     * @param {Number} duration duration
-     * @param {Number]} fps fps
-     * @param {Function} callback callback
      */
     var _save = p5.prototype.save;
     p5.prototype.save = function() {
         var args = arguments;
+        args = [args[0], args[1]];
 
-        if (!this.svg) {
-            _save.apply(this, args);
-            return;
+        var svg;
+
+        if (args[0] instanceof p5.Graphics) {
+            var svgcanvas = args[0].elt;
+            svg = svgcanvas.svg;
+            args.shift();
         }
 
-    };
+        if (typeof args[0] == "object") {
+            svg = args[0];
+            args.shift();
+        }
 
+        svg = svg || this.svg;
+
+        var filename = args[0];
+        var supportedExtensions = ['jpeg', 'png', 'jpg', 'svg'];
+        var ext = this._checkFileExtension(filename, '');
+
+        var useSVG = svg && svg.nodeName && svg.nodeName.toLowerCase() === 'svg' && supportedExtensions.indexOf(ext) > -1;
+        useSVG = useSVG || arguments.length === 0;
+
+        if (useSVG) {
+            this.saveSVG(svg, filename);
+        } else {
+            _save.apply(this, arguments);
+            return;
+        }
+    };
 });

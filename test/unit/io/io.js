@@ -3,31 +3,41 @@ define(function(require) {
     require('p5.svg');
     var assert = require('chai').assert;
 
-    describe('IO', function() {
-        describe('IO/saveSVG', function() {
-            var testDownload = function(filename, ext, fn, done) {
-                new p5(function(p) {
-                    p.setup = function() {
-                        p.createSVG(100, 100);
-                        p.background(255);
-                        p.stroke(0, 0, 0);
-                        p.line(0, 0, 100, 100);
+    var testDownload = function(filename, ext, fn, done) {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createSVG(100, 100);
+                p.background(255);
+                p.stroke(0, 0, 0);
+                p.line(0, 0, 100, 100);
 
-                        p.downloadFile = function(dataURL, _filename, _ext) {
-                            try {
-                                assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
-                                assert.equal(_filename, filename);
-                                assert.equal(_ext, ext);
-                                done();
-                                p.svg.remove();
-                            } catch(e) {
-                                done(e);
-                            }
-                        };
-                        fn(p);
-                    };
-                });
+                p.downloadFile = function(dataURL, _filename, _ext) {
+                    try {
+                        assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
+                        assert.equal(_filename, filename);
+                        assert.equal(_ext, ext);
+                        done();
+                        p.svg.remove();
+                    } catch(e) {
+                        done(e);
+                    }
+                };
+                fn(p);
             };
+        });
+    };
+
+    describe('IO', function() {
+
+        describe('IO/save', function() {
+            it('save()', function(done) {
+                testDownload('untitled', 'svg', function(p) {
+                    p.save();
+                }, done);
+            });
+        });
+
+        describe('IO/saveSVG', function() {
 
             it('should save untitled.svg', function(done) {
                 testDownload('untitled', 'svg', function(p) {
@@ -131,6 +141,34 @@ define(function(require) {
                         p.createSVG(100, 100);
                         var _downloadFile = p.downloadFile;
                         var count = 0;
+                        p.downloadFile = function() {
+                            count++;
+                            if (count > 1) {
+                                done();
+                                p.svg.remove();
+                            }
+                        };
+                        p.saveFrames('hello', 'svg', 0.5, 10);
+                    };
+                    p.draw = function() {
+                        var i = p.frameCount * 2;
+                        p.line(0, 0, i, i);
+                    };
+                });
+            });
+
+            it('should wait all pending jobs done', function(done) {
+                new p5(function(p) {
+                    p.setup = function() {
+                        p.createSVG(100, 100);
+                        var _downloadFile = p.downloadFile;
+                        var count = 0;
+                        p._makeSVGFrame = function(options) {
+                            // slow version
+                            setTimeout(function() {
+                                options.callback();
+                            }, 500);
+                        };
                         p.downloadFile = function() {
                             count++;
                             if (count > 1) {
