@@ -41,6 +41,16 @@ define(function(require) {
     };
 
     /**
+     * Remove the svg element created by createSVG
+     */
+    p5.prototype.noSVG = function() {
+        if (this.svg) {
+            this.svg.remove();
+            this.svg = null;
+        }
+    };
+
+    /**
      * @alias resizeCanvas
      */
     p5.prototype.resizeSVG = p5.prototype.resizeCanvas;

@@ -1362,6 +1362,15 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
             return this._defaultGraphics;
         };
         /**
+         * Remove the svg element created by createSVG
+         */
+        p5.prototype.noSVG = function () {
+            if (this.svg) {
+                this.svg.remove();
+                this.svg = null;
+            }
+        };
+        /**
          * @alias resizeCanvas
          */
         p5.prototype.resizeSVG = p5.prototype.resizeCanvas;
@@ -1539,6 +1548,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
          * Extends p5's save method with SVG support
          *
          * @method save
+         * @param {Graphics|SVGElement} source Source to save (optional)
          * @param {String} filename filename
          * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
          * @param {Number} duration duration

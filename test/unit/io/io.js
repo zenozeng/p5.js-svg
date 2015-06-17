@@ -74,6 +74,7 @@ define(function(require) {
                         assert.throws(function() {
                             p.saveSVG('hello.txt');
                         });
+                        p.svg.remove();
                     };
                 });
             });

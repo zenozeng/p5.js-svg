@@ -8,9 +8,11 @@
 
 ### IO
 
-- saveSVG(filename, ext = 'svg' || 'jpg' || 'png')
+- saveSVG
 
-- saveFrames(filename, ext = 'svg' || 'jpg' || 'png', duration, fps, callback)
+- saveFrames
+
+- noSVG
 
 ## Compatible (in SVG and Canvas) API covered with unit tests
 
