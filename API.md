@@ -4,13 +4,13 @@
 
 ### Rendering
 
-- _createSVG(width, height)_
+- createSVG(width, height)
 
 ### IO
 
-- _saveSVG(filename, ext = 'svg' || 'jpg' || 'png')_
+- saveSVG(filename, ext = 'svg' || 'jpg' || 'png')
 
-- _saveFrames(filename, ext = 'svg' || 'jpg' || 'png', duration, fps, callback)_
+- saveFrames(filename, ext = 'svg' || 'jpg' || 'png', duration, fps, callback)
 
 ## Compatible (in SVG and Canvas) API covered with unit tests
 

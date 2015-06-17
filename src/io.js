@@ -10,10 +10,19 @@ define(function (require) {
 
     var p5 = require('core');
 
-    // convert SVG data url to jpeg / png data url
-    var svg2img = function(SVG, mine, callback) {
+    /**
+     * Convert SVG Element to jpeg / png data url
+     *
+     * @private
+     * @param {SVGElement} svg SVG Element
+     * @param {String} mine Mine
+     * @param {Function} callback
+     */
+    var svg2img = function(svg, mine, callback) {
+        svg = (new XMLSerializer()).serializeToString(svg);
+        svg = "data:image/svg+xml;charset=utf-8," + encodeURI(svg);
         if (mine == 'image/svg+xml') {
-            callback(null, SVG);
+            callback(null, svg);
             return;
         }
         var img = new Image();
@@ -26,13 +35,22 @@ define(function (require) {
             var dataURL = canvas.toDataURL(mine);
             callback(null, dataURL);
         };
-        img.src = SVG;
+        img.src = svg;
     };
 
-    // private method
-    // get current SVG frame, and convert to target type
-    p5.prototype._makeSVGFrame = function(filename, ext, callback) {
-        filename = filename || 'untitled';
+    /**
+     * Get SVG frame, and convert to target type
+     *
+     * @private
+     * @param {Object} options
+     * @param {SVGElement} options.svg SVG Element, defaults to current svg element
+     * @param {String} options.filename
+     * @param {String} options.ext Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
+     * @param {Function} options.callback
+     */
+    p5.prototype._makeSVGFrame = function(options) {
+        var filename = options.filename || 'untitled';
+        var ext = options.extension;
         ext = ext || this._checkFileExtension(filename, ext)[1];
         var regexp = new RegExp('\\.' + ext + '$');
         filename = filename.replace(regexp, '');
@@ -44,17 +62,16 @@ define(function (require) {
             jpeg: 'image/jpeg',
             jpg: 'image/jpeg',
             svg: 'image/svg+xml'
-        };
-        if (!mine[ext]) {
+        }[ext];
+        if (!mine) {
             throw new Error('Fail to getFrame, invalid extension, please use png | jpeg | jpg | svg.');
         }
-        var canvas = this._curElement && this._curElement.elt;
-        var svg = canvas.toDataURL('image/svg+xml');
 
-        svg2img(svg, mine[ext], function(err, dataURL) {
+        var svg = options.svg || this.svg;
+        svg2img(svg, mine, function(err, dataURL) {
             var downloadMime = 'image/octet-stream';
-            dataURL = dataURL.replace(mine[ext], downloadMime);
-            callback(err, {
+            dataURL = dataURL.replace(mine, downloadMime);
+            options.callback(err, {
                 imageData: dataURL,
                 filename: filename,
                 ext: ext
@@ -69,26 +86,48 @@ define(function (require) {
      * file immediately, or prompt the user with a dialogue window.
      *
      * @method saveSVG
+     * @param {Graphics|SVGElement} svg Source to save (optional)
      * @param {String} filename
-     * @param {String} extension 'svg' or 'jpg' or 'png'
+     * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png' (optional)
      */
-    p5.prototype.saveSVG = function(filename, ext) {
+    p5.prototype.saveSVG = function() {
+        // don't use slice on arguments because it prevents optimizations
+        var args = arguments;
+        args = [args[0], args[1], args[2]];
+
+        var svg;
+
+        if (args[0] instanceof p5.Graphics) {
+            var svgcanvas = args[0].elt;
+            svg = svgcanvas.svg;
+            args.shift();
+        }
+
+        if (typeof args[0] == "object") {
+            svg = args[0];
+            args.shift();
+        }
+
+        var filename = args[0];
+        var ext = args[1];
+
         var p = this;
-        this._makeSVGFrame(filename, ext, function(err, frame) {
-            p.downloadFile(frame.imageData, frame.filename, frame.ext);
+        this._makeSVGFrame({
+            svg: svg,
+            filename: filename,
+            extension: ext,
+            callback: function(err, frame) {
+                p.downloadFile(frame.imageData, frame.filename, frame.ext);
+            }
         });
     };
 
     /**
-     * Capture a sequence of frames that can be used to create a movie.
-     * Accepts a callback. For example, you may wish to send the frames
-     * to a server where they can be stored or converted into a movie.
-     * If no callback is provided, the browser will attempt to download
-     * all of the images that have just been created.
+     * Extends p5's saveFrames with SVG support
      *
      * @method saveFrames
      * @param {String} filename filename
-     * @param {String} extension extension
+     * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
      * @param {Number} duration duration
      * @param {Number]} fps fps
      * @param {Function} callback callback
@@ -116,9 +155,13 @@ define(function (require) {
         var frameFactory = setInterval(function () {
             (function(count) {
                 pending++;
-                p._makeSVGFrame(filename + count, extension, function(err, frame) {
-                    frames[count] = frame;
-                    pending--;
+                p._makeSVGFrame({
+                    filename: filename + count,
+                    extension: extension,
+                    callback: function(err, frame) {
+                        frames[count] = frame;
+                        pending--;
+                    }
                 });
             })(count);
             count++;
@@ -147,6 +190,16 @@ define(function (require) {
     };
 
 
+    /**
+     * Extends p5's save method with SVG support
+     *
+     * @method save
+     * @param {String} filename filename
+     * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
+     * @param {Number} duration duration
+     * @param {Number]} fps fps
+     * @param {Function} callback callback
+     */
     var _save = p5.prototype.save;
     p5.prototype.save = function() {
         var args = arguments;
@@ -154,9 +207,6 @@ define(function (require) {
         if (!this.svg) {
             _save.apply(this, args);
             return;
-        }
-
-        if (args.length === 0) {
         }
 
     };

@@ -36,6 +36,8 @@ define(function(require) {
             var value = 'translateZ(0)';
             svg.style[key] = value;
         });
+
+        return this._defaultGraphics;
     };
 
     /**

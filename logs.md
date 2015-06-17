@@ -320,3 +320,5 @@
 - Wrap p5.prototype.saveFrames for exporting SVG
 
 - Add unit tests for saveFrames
+
+- Rewrite svg2img, _makeSVGFrame and saveSVG to allow saving a non-default SVG
