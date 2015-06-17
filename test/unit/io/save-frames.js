@@ -12,11 +12,11 @@ define(function(require) {
                     p.saveFrames('hello', 'png', 0.5, 10, function(frames) {
                         try {
                             assert.ok(frames.length > 1);
+                            p.noCanvas();
                             done();
                         } catch (e) {
-                            done(e);
-                        } finally {
                             p.noCanvas();
+                            done(e);
                         }
                     });
                 };
@@ -35,11 +35,12 @@ define(function(require) {
                     p.saveFrames('hello', 'svg', 0.5, 10, function(frames) {
                         try {
                             assert.ok(frames.length > 1);
+                            p.noSVG();
                             done();
                         } catch (e) {
+                            p.noSVG();
                             done(e);
                         }
-                        p.noSVG();
                     });
                 };
                 p.draw = function() {
@@ -58,11 +59,12 @@ define(function(require) {
                     p.saveFrames('hello', 'svg', null, null, function(frames) {
                         try {
                             assert.ok(frames.length > 1);
+                            p.noSVG();
                             done();
                         } catch (e) {
+                            p.noSVG();
                             done(e);
                         }
-                        p.noSVG();
                     });
                 };
                 p.draw = function() {
@@ -78,11 +80,15 @@ define(function(require) {
                     p.createSVG(100, 100);
                     var _downloadFile = p.downloadFile;
                     var count = 0;
+                    var _done;
                     p.downloadFile = function() {
                         count++;
                         if (count > 1) {
-                            done();
                             p.noSVG();
+                            if (!_done) {
+                                done();
+                                _done = true;
+                            }
                         }
                     };
                     p.saveFrames('hello', 'svg', 0.5, 10);
@@ -111,8 +117,8 @@ define(function(require) {
                     p.downloadFile = function() {
                         pending--;
                         if (pending === 0) {
-                            done();
                             p.noSVG();
+                            done();
                         }
                     };
                     p.saveFrames('hello', 'svg', 0.5, 10);
