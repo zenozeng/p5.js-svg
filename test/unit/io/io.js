@@ -54,6 +54,29 @@ define(function(require) {
                     p.saveSVG('hello.png');
                 }, done);
             });
+            it('source is Graphics', function(done) {
+                testDownload('source-graphics', 'png', function(p) {
+                    p.saveSVG(p._defaultGraphics, 'source-graphics.png');
+                }, done);
+            });
+            it('source is <svg>', function(done) {
+                testDownload('source-svg', 'png', function(p) {
+                    p.saveSVG(p.svg, 'source-svg.png');
+                }, done);
+            });
+            it('should throw if given unsupported type', function() {
+                new p5(function(p) {
+                    p.setup = function() {
+                        p.createSVG(100, 100);
+                        p.background(255);
+                        p.stroke(0, 0, 0);
+                        p.line(0, 0, 100, 100);
+                        assert.throws(function() {
+                            p.saveSVG('hello.txt');
+                        });
+                    };
+                });
+            });
         });
 
         describe('IO/saveFrames', function() {

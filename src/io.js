@@ -189,11 +189,11 @@ define(function (require) {
         }, duration + 0.01);
     };
 
-
     /**
      * Extends p5's save method with SVG support
      *
      * @method save
+     * @param {Graphics|SVGElement} source Source to save (optional)
      * @param {String} filename filename
      * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
      * @param {Number} duration duration
