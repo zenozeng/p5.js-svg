@@ -8,7 +8,7 @@ The logs can be viewed at https://github.com/zenozeng/p5.js-svg/blob/master/logs
 
 ## Future Plans for SVG
 
-1. After shape API done, I will add Vector Export API for SVG:  saveSVG(filename, extension) and saveFrames
+1. [DONE] ~~After shape API done, I will add Vector Export API for SVG:  saveSVG(filename, extension) and saveFrames~~
 
 2. SVGShape API (a OOP API in SVG's manner)
 
