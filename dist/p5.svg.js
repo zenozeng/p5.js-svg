@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.1.1 June 18, 2015 */
+/*! p5.svg.js v0.2.0 June 18, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
