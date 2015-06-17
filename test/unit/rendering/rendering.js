@@ -5,6 +5,17 @@ define(function(require) {
     var assert = require('chai').assert;
 
     describe('Rendering', function() {
+        describe('createSVG', function() {
+            it('should be 100 * 100 by default', function() {
+                new p5(function(p) {
+                    p.setup = function() {
+                        p.createSVG();
+                        assert.equal(p.canvas.width, 100);
+                        assert.equal(p.canvas.height, 100);
+                    };
+                });
+            });
+        });
         describe('noSVG', function() {
             it('should remove the <svg> created by createSVG', function() {
                 new p5(function(p) {
