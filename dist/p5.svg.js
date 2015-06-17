@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.1.1 June 17, 2015 */
+/*! p5.svg.js v0.1.1 June 18, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -1367,7 +1367,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
         p5.prototype.noSVG = function () {
             if (this.svg) {
                 this.svg.remove();
-                this.svg = null;
+                this.svg = null;    // this.canvas = null;
             }
         };
         /**
@@ -1574,11 +1574,11 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
                 'jpeg',
                 'png',
                 'jpg',
-                'svg'
+                'svg',
+                ''
             ];
-            var ext = this._checkFileExtension(filename, '');
+            var ext = this._checkFileExtension(filename, '')[1];
             var useSVG = svg && svg.nodeName && svg.nodeName.toLowerCase() === 'svg' && supportedExtensions.indexOf(ext) > -1;
-            useSVG = useSVG || arguments.length === 0;
             if (useSVG) {
                 this.saveSVG(svg, filename);
             } else {

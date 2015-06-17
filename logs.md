@@ -324,3 +324,9 @@
 - Rewrite svg2img, _makeSVGFrame and saveSVG to allow saving a non-default SVG
 
 - add noSVG
+
+- Extends p5's save method with SVG support
+
+- Unit test for pending jobs in saveFrames
+
+- Unit tests for save()

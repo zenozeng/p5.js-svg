@@ -217,11 +217,10 @@ define(function (require) {
         svg = svg || this.svg;
 
         var filename = args[0];
-        var supportedExtensions = ['jpeg', 'png', 'jpg', 'svg'];
-        var ext = this._checkFileExtension(filename, '');
+        var supportedExtensions = ['jpeg', 'png', 'jpg', 'svg', ''];
+        var ext = this._checkFileExtension(filename, '')[1];
 
         var useSVG = svg && svg.nodeName && svg.nodeName.toLowerCase() === 'svg' && supportedExtensions.indexOf(ext) > -1;
-        useSVG = useSVG || arguments.length === 0;
 
         if (useSVG) {
             this.saveSVG(svg, filename);

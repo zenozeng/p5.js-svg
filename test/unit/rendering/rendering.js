@@ -15,6 +15,7 @@ define(function(require) {
                         p.noSVG();
                         assert.strictEqual(svg.parentElement, null);
                         assert.strictEqual(p.svg, null);
+                        // assert.strictEqual(p.canvas, null);
                     };
                 });
             });

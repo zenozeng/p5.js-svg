@@ -47,6 +47,7 @@ define(function(require) {
         if (this.svg) {
             this.svg.remove();
             this.svg = null;
+            // this.canvas = null;
         }
     };
 
