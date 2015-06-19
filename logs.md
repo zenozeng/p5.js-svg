@@ -330,3 +330,5 @@
 - Unit test for pending jobs in saveFrames
 
 - Unit tests for save()
+
+- (Pre)Release p5.js-svg@0.2.0
