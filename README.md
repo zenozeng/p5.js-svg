@@ -39,6 +39,10 @@ v0.2.0 | v0.4.5
 
 - [circle's edge is not exactly same in SVG and canvas #37](https://github.com/zenozeng/p5.js-svg/issues/37)
 
+### P3D is not supported yet
+
+- https://github.com/zenozeng/p5.js-svg/issues/51
+
 ## API
 
 https://github.com/zenozeng/p5.js-svg/blob/master/API.md
