@@ -5,7 +5,7 @@ define(function(require) {
 
     require('p5.SVGElement');
     require('rendering.svg');
-    require('io');
+    require('output');
 
     /**
      * Create SVG element with given tag in the current SVG target.

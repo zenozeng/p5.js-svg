@@ -1,6 +1,6 @@
 ;(function() {
-/*! p5.svg.js v0.2.0 June 18, 2015 */
-var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
+/*! p5.svg.js v0.2.0 June 20, 2015 */
+var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
         define('p5.svg', ['p5'], function (p5) {
@@ -1375,7 +1375,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
          */
         p5.prototype.resizeSVG = p5.prototype.resizeCanvas;
     }({});
-    io = function (require) {
+    output = function (require) {
         var p5 = core;
         /**
          * Convert SVG Element to jpeg / png data url
@@ -1591,7 +1591,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, io, src_app;
         var p5 = core;
         p5SVGElement;
         renderingsvg;
-        io;
+        output;
         /**
          * Create SVG element with given tag in the current SVG target.
          *
