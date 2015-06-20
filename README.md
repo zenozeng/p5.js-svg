@@ -5,33 +5,11 @@
 p5.js-svg is a runtime for p5.js plus some API designed for SVG (still coding).
 The SVG based canvas API wrapper is powered by [gliffy's canvas2svg](https://github.com/gliffy/canvas2svg) with [patches](https://github.com/gliffy/canvas2svg/issues?utf8=%E2%9C%93&q=author%3Azenozeng+). I hope basically we can write once and run on both canvas and svg. So we can use canvas for perfermence and use svg for exporting or oop api. Also, I hope that we could only maintain the 2d shapes in canvas API, and let p5.js-svg automatically render it in SVG.
 
-## Usage
-
-### Global
-
-Simply include p5.svg.js and that's all.
-
-### AMD
-
-```javascript
-define(function(require) {
-    require('p5.svg');
-    // your code here
-});
-```
-
-### CommonJS
-
-```javascript
-var p5 = require('p5');
-require('./p5.svg.js')(p5);
-```
-
 ## Compatible p5.js
 
 p5.SVG Version | p5.js Version
 -------------------|----------------------
-v0.2.0 | v0.4.5
+v0.2.0 | v0.4.5+
 
 ## Known Issue
 
@@ -39,9 +17,9 @@ v0.2.0 | v0.4.5
 
 - [circle's edge is not exactly same in SVG and canvas #37](https://github.com/zenozeng/p5.js-svg/issues/37)
 
-### P3D is not supported yet
+### 3D
 
-- https://github.com/zenozeng/p5.js-svg/issues/51
+- [P3D is not supported yet](https://github.com/zenozeng/p5.js-svg/issues/51)
 
 ## API
 
@@ -84,4 +62,3 @@ This program incorporates work covered by the following copyright and permission
     The MIT License (MIT)
     Copyright (c) 2015 Zeno Zeng
     ```
-
