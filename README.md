@@ -27,19 +27,11 @@ var p5 = require('p5');
 require('./p5.svg.js')(p5);
 ```
 
-## Unit Test
+## Compatible p5.js
 
-http://zenozeng.github.io/p5.js-svg/test/
-
-### Coverage Report
-
-#### Chrome
-
-http://zenozeng.github.io/p5.js-svg-test-reports/coverage/chrome/
-
-#### Firefox
-
-http://zenozeng.github.io/p5.js-svg-test-reports/coverage/iceweasel/
+p5.SVG Version | p5.js Version
+-------------------|----------------------
+v0.2.0 | v0.4.5
 
 ## Known Issue
 
@@ -54,6 +46,20 @@ https://github.com/zenozeng/p5.js-svg/blob/master/API.md
 ## Project Logs
 
 https://github.com/zenozeng/p5.js-svg/blob/master/logs.md
+
+## Unit Test
+
+http://zenozeng.github.io/p5.js-svg/test/
+
+### Coverage Report
+
+#### Chrome
+
+http://zenozeng.github.io/p5.js-svg-test-reports/coverage/chrome/
+
+#### Firefox
+
+http://zenozeng.github.io/p5.js-svg-test-reports/coverage/iceweasel/
 
 ## License
 
