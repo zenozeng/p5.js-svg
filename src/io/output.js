@@ -225,8 +225,7 @@ define(function (require) {
         if (useSVG) {
             this.saveSVG(svg, filename);
         } else {
-            _save.apply(this, arguments);
-            return;
+            return _save.apply(this, arguments);
         }
     };
 });

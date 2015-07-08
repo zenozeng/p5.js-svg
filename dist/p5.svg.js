@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.2.0 June 20, 2015 */
+/*! p5.svg.js v0.2.0 July 08, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -1327,6 +1327,44 @@ var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
         var p5 = core;
         var SVGCanvas = svgcanvas;
         /**
+         * Creates and returns a new p5.Graphics object. Use this class if you need
+         * to draw into an off-screen graphics buffer. The two parameters define the
+         * width and height in pixels.
+         *
+         * @method createGraphics
+         * @param {Number} width - Width of the offscreen graphics buffer
+         * @param {Number} height - Height of the offscreen graphics buffer
+         * @param {String} renderer - either 'p2d' or 'webgl' or 'svg'. undefined defaults to p2d
+         * @return {Object} offscreen graphics buffer
+         */
+        var _createGraphics = p5.prototype.createGraphics;
+        p5.prototype.createGraphics = function (width, height, renderer) {
+            if (typeof renderer === 'string' && renderer.toLowerCase() === 'svg') {
+                width = width || 100;
+                height = height || 100;
+                var svgCanvas = new SVGCanvas();
+                var svg = svgCanvas.svg;
+                var node = this._userNode || document.body;
+                node.appendChild(svg);
+                var pg = new p5.Graphics(svgCanvas, this, false);
+                this._elements.push(pg);
+                for (var p in p5.prototype) {
+                    if (!pg.hasOwnProperty(p)) {
+                        if (typeof p5.prototype[p] === 'function') {
+                            pg[p] = p5.prototype[p].bind(pg);
+                        } else {
+                            pg[p] = p5.prototype[p];
+                        }
+                    }
+                }
+                pg.resize(width, height);
+                pg._applyDefaults();
+                return pg;
+            } else {
+                return _createGraphics.apply(this, arguments);
+            }
+        };
+        /**
          * Creates a SVG element in the document, and sets its width and
          * height in pixels. This method should be called only once at
          * the start of setup.
@@ -1582,8 +1620,7 @@ var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
             if (useSVG) {
                 this.saveSVG(svg, filename);
             } else {
-                _save.apply(this, arguments);
-                return;
+                return _save.apply(this, arguments);
             }
         };
     }({});
