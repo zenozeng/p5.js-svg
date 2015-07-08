@@ -25,10 +25,6 @@ v0.2.0 | v0.4.5+
 
 https://github.com/zenozeng/p5.js-svg/blob/master/API.md
 
-## Project Logs
-
-https://github.com/zenozeng/p5.js-svg/blob/master/logs.md
-
 ## Unit Test
 
 http://zenozeng.github.io/p5.js-svg/test/
