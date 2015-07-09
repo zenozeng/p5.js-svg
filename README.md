@@ -13,10 +13,6 @@ v0.2.0 | v0.4.5+
 
 ## Known Issue
 
-### Shape
-
-- [circle's edge is not exactly same in SVG and canvas #37](https://github.com/zenozeng/p5.js-svg/issues/37)
-
 ### Rendering
 
 - blendMode() is not yet supported
