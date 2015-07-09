@@ -1,5 +1,5 @@
 ;(function() {
-/*! p5.svg.js v0.2.0 July 08, 2015 */
+/*! p5.svg.js v0.2.0 July 09, 2015 */
 var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
@@ -1143,6 +1143,13 @@ var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
             }
         };
         Context.prototype = Object.create(C2S.prototype);
+        Context.prototype.scale = function (x, y) {
+            if (x === undefined || y === undefined) {
+                return;
+            } else {
+                C2S.prototype.scale.apply(this, arguments);
+            }
+        };
         Context.prototype.__createElement = function (elementName, properties, resetFill) {
             if (!this.__imageSmoothingEnabled) {
                 // only shape elements can use the shape-rendering attribute
@@ -1348,15 +1355,22 @@ var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
                 node.appendChild(svg);
                 var pg = new p5.Graphics(svgCanvas, this, false);
                 this._elements.push(pg);
+                var fns = [];
                 for (var p in p5.prototype) {
                     if (!pg.hasOwnProperty(p)) {
                         if (typeof p5.prototype[p] === 'function') {
-                            pg[p] = p5.prototype[p].bind(pg);
+                            fns.push(p);
                         } else {
                             pg[p] = p5.prototype[p];
                         }
                     }
                 }
+                fns.forEach(function (p) {
+                    // allow use the latest function even if p5.prototype[p] changed
+                    pg[p] = function () {
+                        return p5.prototype[p].apply(pg, arguments);
+                    };
+                });
                 pg.resize(width, height);
                 pg._applyDefaults();
                 return pg;

@@ -29,15 +29,23 @@ define(function(require) {
             var pg = new p5.Graphics(svgCanvas, this, false);
             this._elements.push(pg);
 
+            var fns = [];
             for (var p in p5.prototype) {
                 if (!pg.hasOwnProperty(p)) {
                     if (typeof p5.prototype[p] === 'function') {
-                        pg[p] = p5.prototype[p].bind(pg);
+                        fns.push(p);
                     } else {
                         pg[p] = p5.prototype[p];
                     }
                 }
             }
+            fns.forEach(function(p) {
+                // allow use the latest function even if p5.prototype[p] changed
+                pg[p] = function() {
+                    return p5.prototype[p].apply(pg, arguments);
+                };
+            });
+
             pg.resize(width, height);
             pg._applyDefaults();
             return pg;

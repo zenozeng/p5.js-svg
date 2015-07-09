@@ -1,5 +1,5 @@
 /*!!
- *  svgcanvas v0.5.1
+ *  svgcanvas v0.5.2
  *  Provide <canvas>'s element API and context API using SVG
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -1081,6 +1081,13 @@ define(function() {
         }
     };
     Context.prototype = Object.create(C2S.prototype);
+    Context.prototype.scale = function(x, y) {
+        if (x === undefined || y === undefined) {
+            return;
+        } else {
+            C2S.prototype.scale.apply(this, arguments);
+        }
+    };
     Context.prototype.__createElement = function(elementName, properties, resetFill) {
         if (!this.__imageSmoothingEnabled) {
             // only shape elements can use the shape-rendering attribute
