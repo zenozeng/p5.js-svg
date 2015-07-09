@@ -11,6 +11,7 @@ define(function(require) {
         p.setup = function() {
             svgGraphics = p.createSVG(100, 100);
             p.noLoop();
+            p.isSVGTest = true;
         };
     }, true);
     p5canvas = new p5(function(p) {
@@ -156,7 +157,6 @@ define(function(require) {
         var fnbody = draw.toString();
         fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
         // re-indent
-        console.log(fnbody.match(/( +)/));
         var indent = fnbody.match(/( +)/)[0].length;
         indent = new RegExp('^[ ]{' + indent + '}', 'gm');
         fnbody = fnbody.replace(indent, '');

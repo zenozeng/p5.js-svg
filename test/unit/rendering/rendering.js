@@ -3,6 +3,7 @@ define(function(require) {
     var p5 = require('p5');
     require('p5.svg');
     var assert = require('chai').assert;
+    var testRender = require('testRender');
 
     describe('Rendering', function() {
         describe('createSVG', function() {
@@ -29,6 +30,15 @@ define(function(require) {
                         // assert.strictEqual(p.canvas, null);
                     };
                 });
+            });
+        });
+        describe('createGraphics', function() {
+            it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
+                testRender.describe('createGraphics');
+                testRender(function() {
+                    if (isSVGTest) {
+                    }
+                }, done);
             });
         });
     });
