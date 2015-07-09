@@ -36,8 +36,13 @@ define(function(require) {
             it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
                 testRender.describe('createGraphics');
                 testRender(function() {
-                    if (isSVG) {
-                    }
+                    pg = createGraphics(100, 100, isSVG ? 'svg' : 'p2d');
+                    background(200);
+                    pg.background(100);
+                    pg.noStroke();
+                    pg.ellipse(pg.width/2, pg.height/2, 50, 50);
+                    image(pg, 50, 50);
+                    image(pg, 0, 0, 50, 50);
                 }, done);
             });
         });
