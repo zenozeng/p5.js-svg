@@ -11,13 +11,14 @@ define(function(require) {
         p.setup = function() {
             svgGraphics = p.createSVG(100, 100);
             p.noLoop();
-            p.isSVGTest = true;
+            p.isSVG = true;
         };
     }, true);
     p5canvas = new p5(function(p) {
         p.setup = function() {
             canvasGraphics = p.createCanvas(100, 100);
             p.noLoop();
+            p.isSVG = false;
         };
     }, true);
 

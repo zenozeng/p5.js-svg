@@ -36,7 +36,7 @@ define(function(require) {
             it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
                 testRender.describe('createGraphics');
                 testRender(function() {
-                    if (isSVGTest) {
+                    if (isSVG) {
                     }
                 }, done);
             });
