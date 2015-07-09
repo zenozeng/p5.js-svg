@@ -122,7 +122,7 @@ define(function(require) {
         var $container = $('#test-graph');
 
         // draw header
-        var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div><div></div><div class="function">p5.js</div><div>Canvas</div></div>';
+        var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div><div></div><div class="function">p5.js</div></div>';
         $container.append(th);
 
         // the svg
@@ -155,10 +155,17 @@ define(function(require) {
         // p5.js API call history
         var fnbody = draw.toString();
         fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
-        $container.append('<div class="function">' + fnbody.replace(/;/g, ';<br>') + '</div>');
+        // re-indent
+        console.log(fnbody.match(/( +)/));
+        var indent = fnbody.match(/( +)/)[0].length;
+        indent = new RegExp('^[ ]{' + indent + '}', 'gm');
+        fnbody = fnbody.replace(indent, '');
+        $container.append('<pre class="function">' + fnbody + '</pre>');
+
         // canvas API call history
-        var history = p5svg.canvas.getContext('2d').__history;
-        $container.append('<div class="canvas-fn">' + history.join('<br>') + '</div>');
+        // var history = p5svg.canvas.getContext('2d').__history;
+        // $container.append('<div class="canvas-fn">' + history.join('<br>') + '</div>');
+
         $container.append('<hr>');
 
         return {
