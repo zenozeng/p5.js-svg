@@ -90,19 +90,4 @@ define(function(require) {
         return this._defaultGraphics;
     };
 
-    /**
-     * Remove the svg element created by createSVG
-     */
-    p5.prototype.noSVG = function() {
-        if (this.svg) {
-            this.svg.remove();
-            this.svg = null;
-            // this.canvas = null;
-        }
-    };
-
-    /**
-     * @alias resizeCanvas
-     */
-    p5.prototype.resizeSVG = p5.prototype.resizeCanvas;
 });

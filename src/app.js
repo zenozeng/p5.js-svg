@@ -1,9 +1,11 @@
 define(function(require) {
-    'use strict';
-
     var p5 = require('core');
-
-    require('p5.SVGElement');
     require('rendering.svg');
     require('output');
+
+    // attach constants to p5 instance
+    var constants = require('constants');
+    constants.keys().forEach(function(k) {
+        p5.prototype[k] = constants[k];
+    });
 });
