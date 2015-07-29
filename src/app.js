@@ -4,8 +4,8 @@ define(function(require) {
     require('output');
 
     // attach constants to p5 instance
-    var constants = require('constants');
-    constants.keys().forEach(function(k) {
-        p5.prototype[k] = constants[k];
+    var cons = require('constants');
+    Object.keys(cons).forEach(function(k) {
+        p5.prototype[k] = cons[k];
     });
 });

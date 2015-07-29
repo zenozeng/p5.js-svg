@@ -2,13 +2,14 @@
 <head>
     <meta charset="UTF-8">
 
+    <script src="bower_components/p5.js/p5.js"></script>
+
     <script src="bower_components/lodash/lodash.js"></script>
     <script src="bower_components/mocha/mocha.js"></script>
     <script src="bower_components/requirejs/require.js"></script>
     <script>mocha.setup('bdd')</script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
 
-    <script src="bower_components/p5.js/lib/p5.js"></script>
     <script src="../dist/p5.svg.js"></script>
 
 
@@ -31,6 +32,7 @@
          baseUrl: '',
          urlArgs: "_=" + (new Date()).getTime(),
          paths: {
+             p5: "p5-wrapper",
              testRender: "test-render",
              chai: "bower_components/chai/chai"
          }

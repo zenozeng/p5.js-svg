@@ -1,6 +1,6 @@
 ;(function() {
-/*! p5.svg.js v0.2.0 July 09, 2015 */
-var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
+/*! p5.svg.js v0.3.0 July 29, 2015 */
+var core, svgcanvas, renderingsvg, output, constants, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
         define('p5.svg', ['p5'], function (p5) {
@@ -14,21 +14,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
     core = function () {
         return p5;
     }();
-    p5SVGElement = function (require) {
-        var p5 = core;
-        /**
-         * @class p5.SVGElement
-         * @extends p5.Element
-         * @constructor
-         * @param {Element} element - DOM Element
-         * @param {Object} p5Instance - P5 Instance
-         */
-        p5.SVGElement = function (element, p5Instance) {
-            p5.Element.call(this, element);
-        };
-        // extends p5.Element
-        p5.SVGElement.prototype = Object.create(p5.Element);    // p5.SVGElement.prototype.
-    }({});
     svgcanvas = function () {
         var C2S;
         (function () {
@@ -1413,19 +1398,6 @@ var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
             });
             return this._defaultGraphics;
         };
-        /**
-         * Remove the svg element created by createSVG
-         */
-        p5.prototype.noSVG = function () {
-            if (this.svg) {
-                this.svg.remove();
-                this.svg = null;    // this.canvas = null;
-            }
-        };
-        /**
-         * @alias resizeCanvas
-         */
-        p5.prototype.resizeSVG = p5.prototype.resizeCanvas;
     }({});
     output = function (require) {
         var p5 = core;
@@ -1638,27 +1610,19 @@ var core, p5SVGElement, svgcanvas, renderingsvg, output, src_app;
             }
         };
     }({});
+    constants = function (require) {
+        var constants = { SVG: 'svg' };
+        return constants;
+    }({});
     src_app = function (require) {
         var p5 = core;
-        p5SVGElement;
         renderingsvg;
         output;
-        /**
-         * Create SVG element with given tag in the current SVG target.
-         *
-         * @param {String} tag - Tag for the new SVG elemenet
-         * @param {Object} attributes - Attributes for the new SVG element
-         */
-        p5.prototype.createSVGElement = function (tag, attributes) {
-            if (typeof this.svg === 'undefined') {
-                throw new Error('createSVG() must be called before using createSVGElement()');
-            }
-            var element;
-            Object.keys(attributes || {}).forEach(function (key) {
-                element.setAttribute(key, attributes[key]);
-            });
-            return new p5.SVGElement(element);
-        };
+        // attach constants to p5 instance
+        var cons = constants;
+        Object.keys(cons).forEach(function (k) {
+            p5.prototype[k] = cons[k];
+        });
     }({});
 }));
 }());

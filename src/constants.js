@@ -1,7 +1,9 @@
 define(function(require) {
     'use strict';
 
-    module.exports = {
+    var constants = {
         SVG: 'svg'
     };
+
+    return constants;
 });
