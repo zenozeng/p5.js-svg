@@ -11,7 +11,7 @@ module.exports = function(config) {
         files: [
             // note: lower index will override greater index config
             'test/bower_components/jquery/dist/jquery.js',
-            'test/bower_components/p5.js/lib/p5.js',
+            'test/bower_components/p5.js/p5.js',
             {pattern: 'test/bower_components/chai/*.js', included: false},
             {pattern: 'test/unit/**/*.js', included: false},
             {pattern: 'src/**/*.js', included: false},

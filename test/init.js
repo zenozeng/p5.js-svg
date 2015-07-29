@@ -12,6 +12,7 @@ require.config({
     urlArgs: "_=" + now,
     paths: {
         'app': 'src/app',
+        'constants': 'src/constants',
         'input': 'src/io/input',
         'output': 'src/io/output',
         'p5.SVGElement': 'src/objects/p5.SVGElement',
