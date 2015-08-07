@@ -63,31 +63,13 @@ define(function(require) {
      * @return {Object} {toDataURL}
      */
     p5.prototype.createSVG = function(width, height) {
-
-        var svgCanvas = new SVGCanvas({debug: true});
-        var svg = svgCanvas.svg;
-
-        width = width || 100;
-        height = height || 100;
-
-        document.body.appendChild(svg);
-        this.svg = svg;
-
-        // override default graphics (original is created by createCanvas at _start)
-        this.noCanvas();
-        this._defaultGraphics = new p5.Graphics(svgCanvas, this, true);
-        this._elements.push(this._defaultGraphics);
-        this._defaultGraphics.resize(width, height);
-        this._defaultGraphics._applyDefaults();
-
-        // enable hardware acceleration
-        ['-webkit-', '-moz-', '-ms-', '-o-', ''].forEach(function(prefix) {
-            var key = prefix + 'transform';
-            var value = 'translateZ(0)';
-            svg.style[key] = value;
-        });
-
-        return this._defaultGraphics;
+        var graphics = this.createCanvas(width, height);
+        var c = graphics.elt;
+        this._setProperty('_graphics', new p5.RendererSVG(c, this, true));
+        this._isdefaultGraphics = true;
+        this._graphics.resize(width, height);
+        this._graphics._applyDefaults();
+        return this._graphics;
     };
 
 });

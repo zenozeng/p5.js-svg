@@ -2,6 +2,7 @@ define(function(require) {
     var p5 = require('core');
     require('rendering.svg');
     require('output');
+    require('RendererSVG');
 
     // attach constants to p5 instance
     var cons = require('constants');

@@ -1,6 +1,6 @@
 ;(function() {
-/*! p5.svg.js v0.3.0 July 29, 2015 */
-var core, svgcanvas, renderingsvg, output, constants, src_app;
+/*! p5.svg.js v0.3.0 August 08, 2015 */
+var core, svgcanvas, renderingsvg, output, RendererSVG, constants, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
         define('p5.svg', ['p5'], function (p5) {
@@ -1232,12 +1232,15 @@ var core, svgcanvas, renderingsvg, output, constants, src_app;
             // sync attributes to svg
             var svg = this.svg;
             var _this = this;
+            var wrapper = document.createElement('div');
+            wrapper.style.display = 'inline-block';
+            this.wrapper = wrapper;
             Object.defineProperty(this, 'className', {
                 get: function () {
-                    return svg.getAttribute('class') || '';
+                    return wrapper.getAttribute('class') || '';
                 },
                 set: function (val) {
-                    return svg.setAttribute('class', val);
+                    return wrapper.setAttribute('class', val);
                 }
             });
             [
@@ -1249,10 +1252,12 @@ var core, svgcanvas, renderingsvg, output, constants, src_app;
                         return svg.getAttribute(prop) | 0;
                     },
                     set: function (val) {
-                        if (typeof val !== 'undefined') {
-                            _this.ctx['__' + prop] = val;
-                            return svg.setAttribute(prop, val);
+                        if (isNaN(val) || typeof val === 'undefined') {
+                            return;
                         }
+                        _this.ctx['__' + prop] = val;
+                        svg.setAttribute(prop, val);
+                        return wrapper[prop] = val;
                     }
                 });
             });
@@ -1262,11 +1267,11 @@ var core, svgcanvas, renderingsvg, output, constants, src_app;
             ].forEach(function (prop) {
                 Object.defineProperty(_this, prop, {
                     get: function () {
-                        return svg[prop];
+                        return wrapper[prop];
                     },
                     set: function (val) {
                         if (typeof val !== 'undefined') {
-                            return svg.setAttribute(prop, val);
+                            return wrapper[prop] = val;
                         }
                     }
                 });
@@ -1312,6 +1317,10 @@ var core, svgcanvas, renderingsvg, output, constants, src_app;
                 }
             }
             throw new Error('Unknown type for SVGCanvas.prototype.toDataURL, please use image/jpeg | image/png | image/svg+xml.');
+        };
+        // will return wrapper element: <div><svg></svg></div>
+        SVGCanvas.prototype.getElement = function () {
+            return this.wrapper;
         };
         return SVGCanvas;
     }();
@@ -1372,31 +1381,13 @@ var core, svgcanvas, renderingsvg, output, constants, src_app;
          * @return {Object} {toDataURL}
          */
         p5.prototype.createSVG = function (width, height) {
-            var svgCanvas = new SVGCanvas({ debug: true });
-            var svg = svgCanvas.svg;
-            width = width || 100;
-            height = height || 100;
-            document.body.appendChild(svg);
-            this.svg = svg;
-            // override default graphics (original is created by createCanvas at _start)
-            this.noCanvas();
-            this._defaultGraphics = new p5.Graphics(svgCanvas, this, true);
-            this._elements.push(this._defaultGraphics);
-            this._defaultGraphics.resize(width, height);
-            this._defaultGraphics._applyDefaults();
-            // enable hardware acceleration
-            [
-                '-webkit-',
-                '-moz-',
-                '-ms-',
-                '-o-',
-                ''
-            ].forEach(function (prefix) {
-                var key = prefix + 'transform';
-                var value = 'translateZ(0)';
-                svg.style[key] = value;
-            });
-            return this._defaultGraphics;
+            var graphics = this.createCanvas(width, height);
+            var c = graphics.elt;
+            this._setProperty('_graphics', new p5.RendererSVG(c, this, true));
+            this._isdefaultGraphics = true;
+            this._graphics.resize(width, height);
+            this._graphics._applyDefaults();
+            return this._graphics;
         };
     }({});
     output = function (require) {
@@ -1610,6 +1601,37 @@ var core, svgcanvas, renderingsvg, output, constants, src_app;
             }
         };
     }({});
+    RendererSVG = function (require) {
+        var p5 = core;
+        var SVGCanvas = svgcanvas;
+        function RendererSVG(elt, pInst, isMainCanvas) {
+            var svgCanvas = new SVGCanvas();
+            var svg = svgCanvas.svg;
+            // replace <canvas> with <svg> and copy id, className
+            var parent = elt.parentNode;
+            var id = elt.id;
+            var className = elt.className;
+            parent.replaceChild(svg, elt);
+            svgCanvas.id = id;
+            svgCanvas.className = className;
+            elt = svgCanvas;
+            // our fake <canvas>
+            p5.Renderer2D.call(this, elt, pInst, isMainCanvas);
+            this.isSVG = true;
+            return this;
+        }
+        RendererSVG.prototype = Object.create(p5.Renderer2D.prototype);
+        /**
+         * Remove the svg element created
+         */
+        RendererSVG.prototype.noCanvas = function () {
+            if (this.svg) {
+                this.svg.remove();
+                this.svg = null;
+            }
+        };
+        p5.RendererSVG = RendererSVG;
+    }({});
     constants = function (require) {
         var constants = { SVG: 'svg' };
         return constants;
@@ -1618,6 +1640,7 @@ var core, svgcanvas, renderingsvg, output, constants, src_app;
         var p5 = core;
         renderingsvg;
         output;
+        RendererSVG;
         // attach constants to p5 instance
         var cons = constants;
         Object.keys(cons).forEach(function (k) {

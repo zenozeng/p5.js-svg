@@ -12,10 +12,10 @@ define(function(require) {
         var parent = elt.parentNode;
         var id = elt.id;
         var className = elt.className;
-        parent.replaceChild(elt, svg);
+        parent.replaceChild(svg, elt);
         svgCanvas.id = id;
         svgCanvas.className = className;
-        elt = svgCanvas;
+        elt = svgCanvas; // our fake <canvas>
 
         p5.Renderer2D.call(this, elt, pInst, isMainCanvas);
         this.isSVG = true;
