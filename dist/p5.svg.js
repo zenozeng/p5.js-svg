@@ -1232,13 +1232,11 @@ var core, svgcanvas, constants, renderingsvg, output, RendererSVG, src_app;
             canvas.width = this.__width;
             canvas.height = this.__height;
             var args = arguments;
-            console.log(args);
             var ctx = canvas.getContext('2d');
             ctx.drawImage.apply(ctx, args);
             // Note: don't use foreign object,
             // otherwise the saved SVG may be unusable for other application
             var image = canvas.toDataURL('image/png');
-            console.log(image);
             image = this.__createElement('image', {
                 x: 0,
                 y: 0,
@@ -1411,11 +1409,13 @@ var core, svgcanvas, constants, renderingsvg, output, RendererSVG, src_app;
             if (graphics._graphics.svg) {
                 var svg = graphics._graphics.svg;
                 svg = new XMLSerializer().serializeToString(svg);
-                svg = 'data:image/svg+xml;charset=utf-8,' + encodeURI(svg);
+                svg = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+                var url = URL.createObjectURL(svg);
                 var img = new Image();
                 var pg = this.createGraphics(graphics.width, graphics.height);
-                pg.loadImage(svg, function (img) {
+                pg.loadImage(url, function (img) {
                     pg.image(img);
+                    URL.revokeObjectURL(url);
                     successCallback(pg);
                 });
             } else {

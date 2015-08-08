@@ -58,11 +58,13 @@ define(function(require) {
         if (graphics._graphics.svg) {
             var svg = graphics._graphics.svg;
             svg = (new XMLSerializer()).serializeToString(svg);
-            svg = "data:image/svg+xml;charset=utf-8," + encodeURI(svg);
+            svg = new Blob([svg], {type: 'image/svg+xml;charset=utf-8'});
+            var url = URL.createObjectURL(svg);
             var img = new Image();
             var pg = this.createGraphics(graphics.width, graphics.height);
-            pg.loadImage(svg, function(img) {
+            pg.loadImage(url, function(img) {
                 pg.image(img);
+                URL.revokeObjectURL(url);
                 successCallback(pg);
             });
         } else {

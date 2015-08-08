@@ -32,10 +32,11 @@ define(function(require) {
                     loadGraphics(pg, function(pg) {
                         image(pg, 50, 50);
                         image(pg, 0, 0, 50, 50);
+                        ellipse(width/2, height/2, 50, 50);
                     }, function(err) {
                         console.error(err);
                     });
-                    testRender.wait(100); // wait loadGraphics before run diff
+                    testRender.wait(1000); // wait loadGraphics before run diff
                 }, done);
             });
         });

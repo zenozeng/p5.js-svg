@@ -187,7 +187,9 @@ define(function(require) {
             // wait until ready
             if (!el.svg.complete || !el.canvas.complete) {
                 // 100 is workround for NS_ERROR_NOT_AVAILABLE in karma
-                setTimeout(diff, 100);
+                setTimeout(function() {
+                    diff(el);
+                }, 100);
                 return;
             }
 
