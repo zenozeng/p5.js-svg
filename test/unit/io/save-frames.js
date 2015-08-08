@@ -84,8 +84,8 @@ define(function(require) {
                     p.downloadFile = function() {
                         count++;
                         if (count > 1) {
-                            p.noCanvas();
                             if (!_done) {
+                                p.noCanvas();
                                 done();
                                 _done = true;
                             }

@@ -97,8 +97,6 @@ define(function (require) {
 
         var svg;
 
-        console.log(args);
-
         if (args[0] instanceof p5.Graphics) {
             svg = args[0]._graphics.svg;
             args.shift();
@@ -113,11 +111,6 @@ define(function (require) {
         var ext = args[1];
 
         var p = this;
-        console.log({
-            svg: svg,
-            filename: filename,
-            extension: ext
-        });
         this._makeSVGFrame({
             svg: svg,
             filename: filename,
@@ -142,7 +135,7 @@ define(function (require) {
     p5.prototype.saveFrames = function(filename, extension, duration, fps, callback) {
         var args = arguments;
 
-        if (!this.svg) {
+        if (!this._graphics.svg) {
             _saveFrames.apply(this, args);
             return;
         }
