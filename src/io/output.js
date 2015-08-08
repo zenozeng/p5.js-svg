@@ -68,7 +68,7 @@ define(function (require) {
             throw new Error('Fail to getFrame, invalid extension, please use png | jpeg | jpg | svg.');
         }
 
-        var svg = options.svg || this.svg;
+        var svg = options.svg || this._graphics.svg;
         svg2img(svg, mine, function(err, dataURL) {
             var downloadMime = 'image/octet-stream';
             dataURL = dataURL.replace(mine, downloadMime);
@@ -99,8 +99,7 @@ define(function (require) {
         var svg;
 
         if (args[0] instanceof p5.Graphics) {
-            var svgcanvas = args[0].elt;
-            svg = svgcanvas.svg;
+            svg = args[0]._graphics.svg;
             args.shift();
         }
 
