@@ -12,13 +12,25 @@ define(function(require) {
         var parent = elt.parentNode;
         var id = elt.id;
         var className = elt.className;
-        parent.replaceChild(svg, elt);
+        parent.replaceChild(svgCanvas.getElement(), elt);
         svgCanvas.id = id;
         svgCanvas.className = className;
         elt = svgCanvas; // our fake <canvas>
 
+        elt.parentNode = {
+            // fake parentNode.removeChild so that noCanvas will work
+            removeChild: function(element) {
+                if (element === elt) {
+                    var wrapper = svgCanvas.getElement();
+                    console.log(wrapper.parentNode);
+                    wrapper.parentNode.removeChild(wrapper);
+                }
+            }
+        };
+
         p5.Renderer2D.call(this, elt, pInst, isMainCanvas);
         this.isSVG = true;
+        this.svg = svg;
 
         return this;
     }

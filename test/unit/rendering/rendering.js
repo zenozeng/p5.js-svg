@@ -6,28 +6,16 @@ define(function(require) {
     var testRender = require('testRender');
 
     describe('Rendering', function() {
-        describe('createSVG', function() {
-            it('should be 100 * 100 by default', function() {
-                new p5(function(p) {
-                    p.setup = function() {
-                        p.createSVG();
-                        assert.equal(p.canvas.width, 100);
-                        assert.equal(p.canvas.height, 100);
-                    };
-                });
-            });
-        });
-        describe('noSVG', function() {
-            it('should remove the <svg> created by createSVG', function() {
+        describe('noCanvas', function() {
+            it('should remove the <svg> created by createCanvas', function() {
                 new p5(function(p) {
                     p.setup = function() {
                         p.createSVG(100, 100);
-                        var svg = p.svg;
+                        var svg = p._graphics.svg;
+                        assert.strictEqual(true, document.body.contains(svg));
                         p.line(0, 0, 100, 100);
-                        p.noSVG();
-                        assert.strictEqual(svg.parentElement, null);
-                        assert.strictEqual(p.svg, null);
-                        // assert.strictEqual(p.canvas, null);
+                        p.noCanvas();
+                        assert.strictEqual(false, document.body.contains(svg));
                     };
                 });
             });

@@ -18,10 +18,10 @@ define(function(require) {
                         assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
                         assert.equal(_filename, filename);
                         assert.equal(_ext, ext);
-                        useCanvas ? p.noCanvas() : p.noSVG();
+                        p.noCanvas();
                         done();
                     } catch(e) {
-                        useCanvas ? p.noCanvas() : p.noSVG();
+                        p.noCanvas();
                         done(e);
                     }
                 };

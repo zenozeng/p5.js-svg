@@ -1234,6 +1234,7 @@ var core, svgcanvas, renderingsvg, output, RendererSVG, constants, src_app;
             var _this = this;
             var wrapper = document.createElement('div');
             wrapper.style.display = 'inline-block';
+            wrapper.appendChild(svg);
             this.wrapper = wrapper;
             Object.defineProperty(this, 'className', {
                 get: function () {
@@ -1414,6 +1415,7 @@ var core, svgcanvas, renderingsvg, output, RendererSVG, constants, src_app;
                 canvas.width = img.width;
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
+                console.log(canvas);
                 var dataURL = canvas.toDataURL(mine);
                 callback(null, dataURL);
             };
@@ -1583,7 +1585,7 @@ var core, svgcanvas, renderingsvg, output, RendererSVG, constants, src_app;
                 svg = args[0];
                 args.shift();
             }
-            svg = svg || this.svg;
+            svg = svg || this._graphics && this._graphics.svg;
             var filename = args[0];
             var supportedExtensions = [
                 'jpeg',
@@ -1611,13 +1613,24 @@ var core, svgcanvas, renderingsvg, output, RendererSVG, constants, src_app;
             var parent = elt.parentNode;
             var id = elt.id;
             var className = elt.className;
-            parent.replaceChild(svg, elt);
+            parent.replaceChild(svgCanvas.getElement(), elt);
             svgCanvas.id = id;
             svgCanvas.className = className;
             elt = svgCanvas;
             // our fake <canvas>
+            elt.parentNode = {
+                // fake parentNode.removeChild so that noCanvas will work
+                removeChild: function (element) {
+                    if (element === elt) {
+                        var wrapper = svgCanvas.getElement();
+                        console.log(wrapper.parentNode);
+                        wrapper.parentNode.removeChild(wrapper);
+                    }
+                }
+            };
             p5.Renderer2D.call(this, elt, pInst, isMainCanvas);
             this.isSVG = true;
+            this.svg = svg;
             return this;
         }
         RendererSVG.prototype = Object.create(p5.Renderer2D.prototype);

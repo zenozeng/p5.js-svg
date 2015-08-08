@@ -32,6 +32,7 @@ define(function (require) {
             canvas.width = img.width;
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
+            console.log(canvas);
             var dataURL = canvas.toDataURL(mine);
             callback(null, dataURL);
         };
@@ -214,7 +215,7 @@ define(function (require) {
             args.shift();
         }
 
-        svg = svg || this.svg;
+        svg = svg || (this._graphics && this._graphics.svg);
 
         var filename = args[0];
         var supportedExtensions = ['jpeg', 'png', 'jpg', 'svg', ''];

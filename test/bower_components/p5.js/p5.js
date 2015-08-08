@@ -5679,7 +5679,7 @@ var p5 = function(sketch, node, sync) {
     // Otherwise displays and removes user provided loading screen
     this._loadingScreen = document.getElementById(this._loadingScreenId);
     if(!this._loadingScreen){
-      this._loadingScreen = document.createElement('loadingDiv');
+      this._loadingScreen = document.createElement('div');
       this._loadingScreen.innerHTML = 'loading...';
       this._loadingScreen.style.position = 'absolute';
       var node = this._userNode || document.body;
@@ -5768,6 +5768,7 @@ var p5 = function(sketch, node, sync) {
     this._setupDone = true;
 
     // Removes the loading screen if it's in the DOM
+
     this._loadingScreen.parentNode.removeChild(this._loadingScreen);
 
   }.bind(this);

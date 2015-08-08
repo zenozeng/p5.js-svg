@@ -35,10 +35,10 @@ define(function(require) {
                     p.saveFrames('hello', 'svg', 0.5, 10, function(frames) {
                         try {
                             assert.ok(frames.length > 1);
-                            p.noSVG();
+                            p.noCanvas();
                             done();
                         } catch (e) {
-                            p.noSVG();
+                            p.noCanvas();
                             done(e);
                         }
                     });
@@ -59,10 +59,10 @@ define(function(require) {
                     p.saveFrames('hello', 'svg', null, null, function(frames) {
                         try {
                             assert.ok(frames.length > 1);
-                            p.noSVG();
+                            p.noCanvas();
                             done();
                         } catch (e) {
-                            p.noSVG();
+                            p.noCanvas();
                             done(e);
                         }
                     });
@@ -84,7 +84,7 @@ define(function(require) {
                     p.downloadFile = function() {
                         count++;
                         if (count > 1) {
-                            p.noSVG();
+                            p.noCanvas();
                             if (!_done) {
                                 done();
                                 _done = true;
@@ -117,7 +117,7 @@ define(function(require) {
                     p.downloadFile = function() {
                         pending--;
                         if (pending === 0) {
-                            p.noSVG();
+                            p.noCanvas();
                             done();
                         }
                     };

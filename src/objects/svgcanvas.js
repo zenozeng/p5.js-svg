@@ -1,5 +1,5 @@
 /*!!
- *  svgcanvas v0.6.0
+ *  svgcanvas v0.6.1
  *  Provide <canvas>'s element API and context API using SVG
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -1179,6 +1179,7 @@ define(function() {
         var _this = this;
         var wrapper = document.createElement('div');
         wrapper.style.display = 'inline-block';
+        wrapper.appendChild(svg);
         this.wrapper = wrapper;
         Object.defineProperty(this, 'className', {
             get: function() {
