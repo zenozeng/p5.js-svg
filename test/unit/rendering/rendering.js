@@ -35,7 +35,7 @@ define(function(require) {
                     }, function(err) {
                         console.error(err);
                     });
-                    testRender.wait(1000); // wait loadGraphics 1000ms before run diff
+                    testRender.wait(100); // wait loadGraphics before run diff
                 }, done);
             });
         });

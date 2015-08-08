@@ -1,5 +1,5 @@
 /*!!
- *  svgcanvas v0.6.1
+ *  svgcanvas v0.7.0
  *  Provide <canvas>'s element API and context API using SVG
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -1169,6 +1169,28 @@ define(function() {
             this.__gc();
         }
         C2S.prototype.fillRect.call(this, x, y, w, h);
+    };
+    // Simple version of drawImage
+    // Note that this version does not handle drawing mock context
+    Context.prototype.drawImage = function() {
+        var canvas = document.createElement('canvas');
+        canvas.width = this.__width;
+        canvas.height = this.__height;
+        var args = arguments;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage.apply(ctx, args);
+        // Note: don't use foreign object,
+        // otherwise the saved SVG may be unusable for other application
+        var image = canvas.toDataURL('image/png');
+        image = this.__createElement('image', {
+            x: 0,
+            y: 0,
+            width: canvas.width,
+            height: canvas.height,
+            'xlink:href': image
+        });
+        var parent = this.__closestGroupOrSvg();
+        parent.appendChild(image);
     };
     function SVGCanvas(options) {
         var debug = options && options.debug;
