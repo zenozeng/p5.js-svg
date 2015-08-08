@@ -1,7 +1,9 @@
 {
     "name": "p5.js-svg",
     "version": "0.3.0",
+    "main": "./src/index.js",
     "scripts": {
+        "build": "browserify --entry src/browser.js --outfile dist/p5.svg.js",
         "test": "karma start"
     },
     "devDependencies": {
@@ -26,7 +28,9 @@
     "directories": {
         "test": "test"
     },
-    "dependencies": {},
+    "dependencies": {
+        "svgcanvas": "latest"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/zenozeng/p5.js-svg.git"

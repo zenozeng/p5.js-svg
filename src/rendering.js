@@ -1,16 +1,12 @@
-define(function(require) {
-    "use strict";
+var constants = require('./constants');
 
-    var p5 = require('core');
-    var SVGCanvas = require('svgcanvas');
-    var cons = require('constants');
-
+module.exports = function(p5) {
     // patch p5.Graphics for SVG
     var _graphics = p5.Graphics;
     p5.Graphics = function(w, h, renderer, pInst) {
         var args = arguments;
         _graphics.apply(this, args);
-        if (renderer === cons.SVG) {
+        if (renderer === constants.SVG) {
             // replace <canvas> with <svg>
             var c = this._graphics.elt;
             this._graphics = new p5.RendererSVG(c, pInst, false); // replace renderer
@@ -89,5 +85,4 @@ define(function(require) {
         this._graphics._applyDefaults();
         return this._graphics;
     };
-
-});
+};

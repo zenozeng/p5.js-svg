@@ -1,15 +1,4 @@
-/**
- * @module Data
- * @submodule Output
- * @for p5
- * @requires core
- */
-define(function (require) {
-
-    'use strict';
-
-    var p5 = require('core');
-
+module.exports = function(p5) {
     /**
      * Convert SVG Element to jpeg / png data url
      *
@@ -227,4 +216,4 @@ define(function (require) {
             return _save.apply(this, arguments);
         }
     };
-});
+};
