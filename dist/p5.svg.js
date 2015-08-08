@@ -1,4 +1,28 @@
+/*!!
+ *  p5.svg v0.3.0
+ *  SVG Runtime for p5.js.
+ *
+ *  Copyright (C) 2015 Zeno Zeng
+ *  Licensed under the LGPL license.
+ */
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define('p5.svg', ['p5'], function (p5) {
+            factory(p5);
+        });
+    }
+    else if (typeof exports === 'object') {
+        module.exports = factory;
+    }
+    else {
+        factory(root['p5']);
+    }
+})(this, function (p5) {
+
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+require('../src/index.js')(p5);
+
+},{"../src/index.js":6}],2:[function(require,module,exports){
 /*!!
  *  Canvas 2 Svg v1.0.9
  *  A low level canvas to SVG converter. Uses a mock canvas context to build an SVG document.
@@ -1107,7 +1131,7 @@
 
 }());
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var C2S = require('./canvas2svg');
 
 var Context = function(width, height, options) {
@@ -1318,7 +1342,7 @@ Context.prototype.drawImage = function() {
 
 module.exports = Context;
 
-},{"./canvas2svg":1}],3:[function(require,module,exports){
+},{"./canvas2svg":2}],4:[function(require,module,exports){
 var Context = require('./context');
 
 function SVGCanvas(options) {
@@ -1429,28 +1453,7 @@ SVGCanvas.prototype.getElement = function() {
 
 module.exports = SVGCanvas;
 
-},{"./context":2}],4:[function(require,module,exports){
-(function (root, factory) {
-    console.log('fired！');
-    if (typeof define === 'function' && define.amd) {
-        console.log(1);
-        define('p5.svg', ['p5'], function (p5) {
-            factory(p5);
-        });
-    }
-    else if (typeof exports === 'object') {
-        console.log(2);
-        module.exports = factory;
-    }
-    else {
-        console.log(3);
-        factory(root['p5']);
-    }
-})(this, function (p5) {
-    require('./index')(p5);
-});
-
-},{"./index":6}],5:[function(require,module,exports){
+},{"./context":3}],5:[function(require,module,exports){
 var constants = {
     SVG: 'svg'
 };
@@ -1733,7 +1736,7 @@ module.exports = function(p5) {
 
 
 
-},{"svgcanvas":3}],9:[function(require,module,exports){
+},{"svgcanvas":4}],9:[function(require,module,exports){
 var constants = require('./constants');
 
 module.exports = function(p5) {
@@ -1823,4 +1826,5 @@ module.exports = function(p5) {
     };
 };
 
-},{"./constants":5}]},{},[4]);
+},{"./constants":5}]},{},[1]);
+});
