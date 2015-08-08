@@ -1339,11 +1339,18 @@ var core, svgcanvas, constants, renderingsvg, output, RendererSVG, src_app;
             var args = arguments;
             _graphics.apply(this, args);
             if (renderer === cons.SVG) {
+                // replace <canvas> with <svg>
                 var c = this._graphics.elt;
                 this._graphics = new p5.RendererSVG(c, pInst, false);
+                // replace renderer
+                c = this._graphics.elt;
+                this.elt = c;
+                // replace this.elt
+                // do default again
                 this._graphics.resize(w, h);
                 this._graphics._applyDefaults();
             }
+            return this;
         };
         p5.Graphics.prototype = _graphics.prototype;
         /**
@@ -1376,19 +1383,17 @@ var core, svgcanvas, constants, renderingsvg, output, RendererSVG, src_app;
          * </div>
          *
          */
-        p5.prototype.loadGraphics = function (graphics, successCallback) {
-            console.log(graphics, graphics.elt, graphics.isSVG, graphics.svg);
-            if (graphics.svg) {
-                var svg = graphics.svg;
+        p5.prototype.loadGraphics = function (graphics, successCallback, failureCallback) {
+            if (graphics._graphics.svg) {
+                var svg = graphics._graphics.svg;
                 svg = new XMLSerializer().serializeToString(svg);
                 svg = 'data:image/svg+xml;charset=utf-8,' + encodeURI(svg);
                 var img = new Image();
-                img.onload = function () {
-                    var pg = this.createGraphics(graphics.width, graphics.height);
+                var pg = this.createGraphics(graphics.width, graphics.height);
+                pg.loadImage(svg, function (img) {
                     pg.image(img);
                     successCallback(pg);
-                };
-                img.src = svg;
+                });
             } else {
                 successCallback(graphics);
             }

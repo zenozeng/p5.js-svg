@@ -5,7 +5,6 @@ define(function(require) {
     var SVGCanvas = require('svgcanvas');
 
     function RendererSVG(elt, pInst, isMainCanvas) {
-
         var svgCanvas = new SVGCanvas();
         var svg = svgCanvas.svg;
 
@@ -29,6 +28,7 @@ define(function(require) {
         };
 
         p5.Renderer2D.call(this, elt, pInst, isMainCanvas);
+
         this.isSVG = true;
         this.svg = svg;
 

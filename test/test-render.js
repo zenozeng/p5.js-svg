@@ -181,14 +181,8 @@ define(function(require) {
     var testRender = function(draw, callback) {
 
         render(draw);
-        var el = prepareDom(draw);
 
-        var diff = function() {
-            // handle testRender.wait(ms);
-            if (testRender.waitUntil && (Date.now() < testRender.waitUntil)) {
-                setTimeout(diff, 100);
-                return;
-            }
+        var diff = function(el) {
 
             // wait until ready
             if (!el.svg.complete || !el.canvas.complete) {
@@ -244,8 +238,18 @@ define(function(require) {
                 callback(new Error(err));
             }
         };
-        diff();
 
+        var next = function() {
+            // handle testRender.wait(ms);
+            if (testRender.waitUntil && (Date.now() < testRender.waitUntil)) {
+                setTimeout(next, 100);
+                return;
+            }
+            var el = prepareDom(draw);
+            diff(el);
+        };
+
+        next();
     };
 
     testRender.describe = function(str) {
