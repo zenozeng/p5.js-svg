@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm run build-dist & npm run build-test",
     "build-dist": "./build/build.sh",
-    "build-test": "browserify test/unit/index.js -t uglifyify --outfile test/unit/bundle.js",
+    "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
     "test": "karma start"
   },
   "devDependencies": {
