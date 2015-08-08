@@ -1431,15 +1431,19 @@ module.exports = SVGCanvas;
 
 },{"./context":2}],4:[function(require,module,exports){
 (function (root, factory) {
+    console.log('fired！');
     if (typeof define === 'function' && define.amd) {
+        console.log(1);
         define('p5.svg', ['p5'], function (p5) {
             factory(p5);
         });
     }
     else if (typeof exports === 'object') {
+        console.log(2);
         module.exports = factory;
     }
     else {
+        console.log(3);
         factory(root['p5']);
     }
 })(this, function (p5) {

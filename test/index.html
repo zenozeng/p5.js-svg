@@ -3,15 +3,12 @@
     <meta charset="UTF-8">
 
     <script src="bower_components/p5.js/p5.js"></script>
+    <script src="../dist/p5.svg.js"></script>
 
     <script src="bower_components/lodash/lodash.js"></script>
     <script src="bower_components/mocha/mocha.js"></script>
-    <script src="bower_components/requirejs/require.js"></script>
     <script>mocha.setup('bdd')</script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
-
-    <script src="../dist/p5.svg.js"></script>
-
 
     <link type="text/css" rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
     <link type="text/css" rel="stylesheet" href="bower_components/mocha/mocha.css">
@@ -27,41 +24,7 @@
         <div>SVG</div>
         <div>Canvas</div>
     </div>
-    <script>
-     require.config({
-         baseUrl: '',
-         urlArgs: "_=" + (new Date()).getTime(),
-         paths: {
-             p5: "p5-wrapper",
-             testRender: "test-render",
-             chai: "bower_components/chai/chai"
-         }
-     });
-     var requireQueue = function(modules, callback) {
-         function load(queue, results) {
-             if (queue.length) {
-                 require([queue.shift()], function(result) {
-                     results.push(result);
-                     load(queue, results);
-                 });
-             } else {
-                 callback.apply(null, results);
-             }
-         }
 
-         load(modules, []);
-     };
-     requireQueue([
-         "unit/rendering/rendering",
-         "unit/shape/2d_primitives",
-         "unit/shape/attributes",
-         "unit/shape/vertex",
-         "unit/shape/curves",
-         "unit/io/save",
-         "unit/io/save-svg",
-         "unit/io/save-frames"
-     ], function() {
-         mocha.run();
-     });
-    </script>
+    <script src="unit/bundle.js"></script>
 </body>
+

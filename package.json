@@ -1,47 +1,51 @@
 {
-    "name": "p5.js-svg",
-    "version": "0.3.0",
-    "main": "./src/index.js",
-    "scripts": {
-        "build": "browserify --entry src/browser.js --outfile dist/p5.svg.js",
-        "test": "karma start"
-    },
-    "devDependencies": {
-        "amdclean": "^2.7.0",
-        "chai": "^2.3.0",
-        "grunt": "^0.4.5",
-        "grunt-contrib-jshint": "^0.11.2",
-        "grunt-contrib-requirejs": "^0.4.4",
-        "grunt-contrib-watch": "^0.6.1",
-        "grunt-istanbul": "^0.5.0",
-        "karma": "^0.12.32",
-        "karma-chrome-launcher": "^0.1.12",
-        "karma-coverage": "^0.3.1",
-        "karma-firefox-launcher": "^0.1.6",
-        "karma-mocha": "^0.1.10",
-        "karma-mocha-reporter": "^1.0.2",
-        "karma-requirejs": "^0.2.2",
-        "mocha": "^2.2.5",
-        "grunt-amd-wrap": "^1.0.1",
-        "requirejs": "^2.1.17"
-    },
-    "directories": {
-        "test": "test"
-    },
-    "dependencies": {
-        "svgcanvas": "latest"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/zenozeng/p5.js-svg.git"
-    },
-    "keywords": [
-        "p5.js",
-        "svg"
-    ],
-    "author": "Zeno Zeng",
-    "license": "LGPL",
-    "bugs": {
-        "url": "https://github.com/zenozeng/p5.js-svg/issues"
-    }
+  "name": "p5.js-svg",
+  "version": "0.3.0",
+  "main": "./src/index.js",
+  "scripts": {
+    "build": "npm run build-dist & npm run build-test",
+    "build-dist": "browserify --entry src/browser.js --outfile dist/p5.svg.js",
+    "build-test": "browserify --entry test/unit/index.js -t uglifyify --outfile test/unit/bundle.js",
+    "test": "karma start"
+  },
+  "devDependencies": {
+    "amdclean": "^2.7.0",
+    "chai": "^2.3.0",
+    "grunt": "^0.4.5",
+    "grunt-amd-wrap": "^1.0.1",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-istanbul": "^0.5.0",
+    "karma": "^0.12.32",
+    "karma-browserify": "^4.3.0",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-coverage": "^0.3.1",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.1.10",
+    "karma-mocha-reporter": "^1.0.2",
+    "karma-requirejs": "^0.2.2",
+    "mocha": "^2.2.5",
+    "requirejs": "^2.1.17",
+    "uglifyify": "^3.0.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "svgcanvas": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zenozeng/p5.js-svg.git"
+  },
+  "keywords": [
+    "p5.js",
+    "svg"
+  ],
+  "author": "Zeno Zeng",
+  "license": "LGPL",
+  "bugs": {
+    "url": "https://github.com/zenozeng/p5.js-svg/issues"
+  }
 }

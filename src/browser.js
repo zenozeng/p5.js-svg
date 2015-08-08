@@ -8,6 +8,7 @@
         module.exports = factory;
     }
     else {
+        console.log(3);
         factory(root['p5']);
     }
 })(this, function (p5) {
