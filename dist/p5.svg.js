@@ -1731,6 +1731,13 @@ module.exports = function(p5) {
 
     RendererSVG.prototype = Object.create(p5.Renderer2D.prototype);
 
+    RendererSVG.prototype.resize = function(w, h) {
+        // Canvas should be cleared when resize called
+        // http://p5js.org/reference/#p5/resizeCanvas
+        this.clear();
+        p5.Renderer2D.prototype.resize.call(this, w, h);
+    };
+
     p5.RendererSVG = RendererSVG;
 };
 
