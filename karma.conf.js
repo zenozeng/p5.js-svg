@@ -4,27 +4,29 @@
 module.exports = function(config) {
     config.set({
         basePath: '',
-        frameworks: ['mocha'],
-        // client: {
-        //     // requireJsShowNoTimestampsError: false
-        // },
+        frameworks: ['browserify', 'mocha'],
         files: [
             // note: lower index will override greater index config
             'test/bower_components/p5.js/p5.js',
             'test/bower_components/jquery/dist/jquery.js',
-            {pattern: 'test/bower_components/chai/*.js', included: false},
-            {pattern: 'test/unit/**/*.js', included: false},
+            // 'dist/p5.svg.js',
+            'build/entry.js',
             {pattern: 'src/**/*.js', included: false},
-            {pattern: 'test/test-render.js', included: false},
-            'test/bower_components/requirejs/require.js',
-            'test/init.js'
+            'test/unit/bundle.js'
         ],
         preprocessors: {
-            'src/**/!(svgcanvas).js': ['coverage']
-            // 'src/**/*.js': ['coverage']
+            'build/entry.js': ['browserify']
+        },
+        "browserify": {
+            "debug": true,
+            "transform": ["browserify-istanbul"]
         },
         reporters: ['progress', 'coverage', 'mocha'],
         coverageReporter: {
+            // "reporters": [
+            //     {"type": "html"},
+            //     {"type": "text-summary"}
+            // ]
             type : 'html',
             dir : 'test/report/coverage/',
             subdir: function(browser) {
@@ -34,8 +36,8 @@ module.exports = function(config) {
         port: 9876,
         colors: true,
         // logLevel: config.LOG_DISABLE,
-        logLevel: config.LOG_DEBUG,
-        // logLevel: config.LOG_INFO,
+        // logLevel: config.LOG_DEBUG,
+        logLevel: config.LOG_INFO,
         autoWatch: false,
         browsers: ['Chrome', 'Firefox'],
         // Continuous Integration mode
