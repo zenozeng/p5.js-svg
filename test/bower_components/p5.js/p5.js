@@ -4395,8 +4395,6 @@ p5.prototype.noFill = function() {
  * </div>
  */
 p5.prototype.noStroke = function() {
-    console.log(this);
-    console.log(this._setProperty);
   this._setProperty('_doStroke', false);
   return this;
 };
@@ -7744,8 +7742,6 @@ var constants = require('./constants');
  * @param {Boolean} whether we're using it as main canvas
  */
 p5.Graphics = function(w, h, renderer, pInst) {
-
-    console.log(w, h, renderer, pInst);
 
   var r = renderer || constants.P2D;
 

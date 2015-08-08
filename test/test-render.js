@@ -184,6 +184,12 @@ define(function(require) {
         var el = prepareDom(draw);
 
         var diff = function() {
+            // handle testRender.wait(ms);
+            if (testRender.waitUntil && (Date.now() < testRender.waitUntil)) {
+                setTimeout(diff, 100);
+                return;
+            }
+
             // wait until ready
             if (!el.svg.complete || !el.canvas.complete) {
                 // 100 is workround for NS_ERROR_NOT_AVAILABLE in karma
@@ -247,6 +253,10 @@ define(function(require) {
             var $container = $('#test-graph');
             $container.append('<h2>' + str + '</h2>');
         });
+    };
+
+    testRender.wait = function(ms) {
+        testRender.waitUntil = Date.now() + ms;
     };
 
     return testRender;

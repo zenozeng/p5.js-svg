@@ -5,6 +5,7 @@ define(function(require) {
     var SVGCanvas = require('svgcanvas');
 
     function RendererSVG(elt, pInst, isMainCanvas) {
+
         var svgCanvas = new SVGCanvas();
         var svg = svgCanvas.svg;
 
@@ -35,16 +36,6 @@ define(function(require) {
     }
 
     RendererSVG.prototype = Object.create(p5.Renderer2D.prototype);
-
-    /**
-     * Remove the svg element created
-     */
-    RendererSVG.prototype.noCanvas = function() {
-        if (this.svg) {
-            this.svg.remove();
-            this.svg = null;
-        }
-    };
 
     p5.RendererSVG = RendererSVG;
 });

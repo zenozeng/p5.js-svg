@@ -9,7 +9,6 @@ define(function(require) {
     var _graphics = p5.Graphics;
     p5.Graphics = function(w, h, renderer, pInst) {
         var args = arguments;
-        console.log(p5.Graphics.prototype);
         _graphics.apply(this, args);
         if (renderer === cons.SVG) {
             var c = this._graphics.elt;
@@ -19,6 +18,54 @@ define(function(require) {
         }
     };
     p5.Graphics.prototype = _graphics.prototype;
+
+    /**
+     * Due to a known issue (image is not surely ready before onload fires),
+     * we have no way to draw SVG element synchronously.
+     * So, this method will load a SVG Graphics
+     * and then convert it to Canvas Graphics asynchronously
+     *
+     * @see https://github.com/zenozeng/p5.js-svg/issues/78
+     *
+     * @method loadGraphics
+     * @param {p5.Graphics} graphics the p5.Grphaics object
+     * @param {Function(p5.Graphics)} [successCallback] Function to be called once
+     *                                 the SVG Graphics is loaded. Will be passed the
+     *                                 p5.Graphics.
+     * @param {Function(Event)}    [failureCallback] called with event error.
+     *
+     * @example
+     * <div>
+     * <code>
+     * pg = createGraphics(100, 100, SVG);
+     * background(200);
+     * pg.background(100);
+     * pg.ellipse(pg.width/2, pg.height/2, 50, 50);
+     * loadGraphics(pg, function(pgCanvas) {
+     *      image(pgCanvas, 50, 50);
+     *      image(pgCanvas, 0, 0, 50, 50);
+     * });
+     * </code>
+     * </div>
+     *
+     */
+    p5.prototype.loadGraphics = function(graphics, successCallback) {
+        console.log(graphics, graphics.elt, graphics.isSVG, graphics.svg);
+        if (graphics.svg) {
+            var svg = graphics.svg;
+            svg = (new XMLSerializer()).serializeToString(svg);
+            svg = "data:image/svg+xml;charset=utf-8," + encodeURI(svg);
+            var img = new Image();
+            img.onload = function() {
+                var pg = this.createGraphics(graphics.width, graphics.height);
+                pg.image(img);
+                successCallback(pg);
+            };
+            img.src = svg;
+        } else {
+            successCallback(graphics);
+        }
+    };
 
     /**
      * Creates a SVG element in the document, and sets its width and

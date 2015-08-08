@@ -24,13 +24,17 @@ define(function(require) {
             it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
                 testRender.describe('createGraphics');
                 testRender(function() {
-                    pg = createGraphics(100, 100, isSVG ? SVG : P2D);
+                    pg = createGraphics(100, 100, SVG);
                     background(200);
                     pg.background(100);
                     pg.noStroke();
                     pg.ellipse(pg.width/2, pg.height/2, 50, 50);
-                    image(pg, 50, 50);
-                    image(pg, 0, 0, 50, 50);
+                    loadGraphics(pg, function(pg) {
+                        console.log(pg);
+                        image(pg, 50, 50);
+                        image(pg, 0, 0, 50, 50);
+                    });
+                    testRender.wait(1000); // wait loadGraphics 1000ms before run diff
                 }, done);
             });
         });
