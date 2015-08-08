@@ -27,13 +27,29 @@ var tests = Object.keys(window.__karma__.files).filter(function(test) {
     return test.indexOf('test/unit') > -1;
 });
 
+console.log(tests);
+console.log(requirejs);
+
+
 for (var file in window.__karma__.files) {
     // Fix there is no timestamp issue
     // See also: https://github.com/karma-runner/karma-requirejs/issues/6
     window.__karma__.files[file + "?_=" + now] = window.__karma__.files[file];
 }
 
+var started = false;
+
+var iter = function() {
+    console.log('iter');
+    if (!started) {
+        setTimeout(iter, 20);
+    }
+};
+iter();
+
 requirejs(tests, function() {
+    started = true;
+    console.log('started');
     window.__karma__.start();
 });
 

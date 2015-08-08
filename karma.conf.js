@@ -4,7 +4,7 @@
 module.exports = function(config) {
     config.set({
         basePath: '',
-        frameworks: ['mocha', 'requirejs'],
+        frameworks: ['mocha'],
         // client: {
         //     // requireJsShowNoTimestampsError: false
         // },
@@ -16,6 +16,7 @@ module.exports = function(config) {
             {pattern: 'test/unit/**/*.js', included: false},
             {pattern: 'src/**/*.js', included: false},
             {pattern: 'test/test-render.js', included: false},
+            'test/bower_components/requirejs/require.js',
             'test/init.js'
         ],
         preprocessors: {
@@ -32,8 +33,9 @@ module.exports = function(config) {
         },
         port: 9876,
         colors: true,
-        logLevel: config.LOG_DISABLE,
-        // logLevel: config.LOG_DEBUG,
+        // logLevel: config.LOG_DISABLE,
+        logLevel: config.LOG_DEBUG,
+        // logLevel: config.LOG_INFO,
         autoWatch: false,
         browsers: ['Chrome', 'Firefox'],
         // Continuous Integration mode
