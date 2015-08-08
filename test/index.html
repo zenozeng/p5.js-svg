@@ -52,14 +52,14 @@
          load(modules, []);
      };
      requireQueue([
-         "unit/shape/2d_primitives",
+         "unit/rendering/rendering",
+         /* "unit/shape/2d_primitives",
          "unit/shape/attributes",
          "unit/shape/vertex",
          "unit/shape/curves",
          "unit/io/save",
-         "unit/rendering/rendering",
          "unit/io/save-svg",
-         "unit/io/save-frames"
+         "unit/io/save-frames" */
      ], function() {
          mocha.run();
      });

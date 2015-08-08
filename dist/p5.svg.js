@@ -1,6 +1,6 @@
 ;(function() {
 /*! p5.svg.js v0.3.0 August 08, 2015 */
-var core, svgcanvas, renderingsvg, output, RendererSVG, constants, src_app;
+var core, svgcanvas, constants, renderingsvg, output, RendererSVG, src_app;
 (function (root, factory) {
     if (typeof define === 'function' && define.amd)
         define('p5.svg', ['p5'], function (p5) {
@@ -1325,54 +1325,28 @@ var core, svgcanvas, renderingsvg, output, RendererSVG, constants, src_app;
         };
         return SVGCanvas;
     }();
+    constants = function (require) {
+        var constants = { SVG: 'svg' };
+        return constants;
+    }({});
     renderingsvg = function (require) {
         var p5 = core;
         var SVGCanvas = svgcanvas;
-        /**
-         * Creates and returns a new p5.Graphics object. Use this class if you need
-         * to draw into an off-screen graphics buffer. The two parameters define the
-         * width and height in pixels.
-         *
-         * @method createGraphics
-         * @param {Number} width - Width of the offscreen graphics buffer
-         * @param {Number} height - Height of the offscreen graphics buffer
-         * @param {String} renderer - either 'p2d' or 'webgl' or 'svg'. undefined defaults to p2d
-         * @return {Object} offscreen graphics buffer
-         */
-        var _createGraphics = p5.prototype.createGraphics;
-        p5.prototype.createGraphics = function (width, height, renderer) {
-            if (typeof renderer === 'string' && renderer.toLowerCase() === 'svg') {
-                width = width || 100;
-                height = height || 100;
-                var svgCanvas = new SVGCanvas();
-                var svg = svgCanvas.svg;
-                var node = this._userNode || document.body;
-                node.appendChild(svg);
-                var pg = new p5.Graphics(svgCanvas, this, false);
-                this._elements.push(pg);
-                var fns = [];
-                for (var p in p5.prototype) {
-                    if (!pg.hasOwnProperty(p)) {
-                        if (typeof p5.prototype[p] === 'function') {
-                            fns.push(p);
-                        } else {
-                            pg[p] = p5.prototype[p];
-                        }
-                    }
-                }
-                fns.forEach(function (p) {
-                    // allow use the latest function even if p5.prototype[p] changed
-                    pg[p] = function () {
-                        return p5.prototype[p].apply(pg, arguments);
-                    };
-                });
-                pg.resize(width, height);
-                pg._applyDefaults();
-                return pg;
-            } else {
-                return _createGraphics.apply(this, arguments);
+        var cons = constants;
+        // patch p5.Graphics for SVG
+        var _graphics = p5.Graphics;
+        p5.Graphics = function (w, h, renderer, pInst) {
+            var args = arguments;
+            console.log(p5.Graphics.prototype);
+            _graphics.apply(this, args);
+            if (renderer === cons.SVG) {
+                var c = this._graphics.elt;
+                this._graphics = new p5.RendererSVG(c, pInst, false);
+                this._graphics.resize(w, h);
+                this._graphics._applyDefaults();
             }
         };
+        p5.Graphics.prototype = _graphics.prototype;
         /**
          * Creates a SVG element in the document, and sets its width and
          * height in pixels. This method should be called only once at
@@ -1623,7 +1597,6 @@ var core, svgcanvas, renderingsvg, output, RendererSVG, constants, src_app;
                 removeChild: function (element) {
                     if (element === elt) {
                         var wrapper = svgCanvas.getElement();
-                        console.log(wrapper.parentNode);
                         wrapper.parentNode.removeChild(wrapper);
                     }
                 }
@@ -1644,10 +1617,6 @@ var core, svgcanvas, renderingsvg, output, RendererSVG, constants, src_app;
             }
         };
         p5.RendererSVG = RendererSVG;
-    }({});
-    constants = function (require) {
-        var constants = { SVG: 'svg' };
-        return constants;
     }({});
     src_app = function (require) {
         var p5 = core;

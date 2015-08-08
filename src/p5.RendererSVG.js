@@ -22,7 +22,6 @@ define(function(require) {
             removeChild: function(element) {
                 if (element === elt) {
                     var wrapper = svgCanvas.getElement();
-                    console.log(wrapper.parentNode);
                     wrapper.parentNode.removeChild(wrapper);
                 }
             }

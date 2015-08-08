@@ -4395,6 +4395,8 @@ p5.prototype.noFill = function() {
  * </div>
  */
 p5.prototype.noStroke = function() {
+    console.log(this);
+    console.log(this._setProperty);
   this._setProperty('_doStroke', false);
   return this;
 };
@@ -7743,6 +7745,8 @@ var constants = require('./constants');
  */
 p5.Graphics = function(w, h, renderer, pInst) {
 
+    console.log(w, h, renderer, pInst);
+
   var r = renderer || constants.P2D;
 
   var c = document.createElement('canvas');
@@ -7750,6 +7754,8 @@ p5.Graphics = function(w, h, renderer, pInst) {
   node.appendChild(c);
 
   p5.Element.call(this, c, pInst, false);
+
+
   this._styles = [];
   this.width = w;
   this.height = h;
@@ -7758,7 +7764,7 @@ p5.Graphics = function(w, h, renderer, pInst) {
   if (r === constants.WEBGL) {
     this._graphics = new p5.Renderer3D(c, this, false);
   } else {
-    this._graphics = new p5.Renderer2D(c, this, false);
+    this._graphics = new p5.Renderer2D(c, pInst, false);
   }
 
   this._graphics.resize(w, h);
