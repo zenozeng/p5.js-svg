@@ -33,12 +33,16 @@ define(function(require) {
         });
         it('source is Graphics', function(done) {
             testDownload('source-graphics', 'png', function(p) {
-                p.saveSVG(p._defaultGraphics, 'source-graphics.png');
+                var pg = p.createGraphics(100, 100, p.SVG);
+                pg.background(100);
+                p.saveSVG(pg, 'source-graphics.png');
             }, done);
         });
         it('source is <svg>', function(done) {
             testDownload('source-svg', 'png', function(p) {
-                p.saveSVG(p.svg, 'source-svg.png');
+                var pg = p.createGraphics(100, 100, p.SVG);
+                pg.background(100);
+                p.saveSVG(pg._graphics.svg, 'source-svg.png');
             }, done);
         });
         it('should throw if given unsupported type', function() {
@@ -51,7 +55,7 @@ define(function(require) {
                     assert.throws(function() {
                         p.saveSVG('hello.txt');
                     });
-                    p.svg.remove();
+                    p.noCanvas();
                 };
             });
         });

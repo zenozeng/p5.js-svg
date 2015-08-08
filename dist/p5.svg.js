@@ -1465,7 +1465,6 @@ var core, svgcanvas, constants, renderingsvg, output, RendererSVG, src_app;
                 canvas.width = img.width;
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
-                console.log(canvas);
                 var dataURL = canvas.toDataURL(mine);
                 callback(null, dataURL);
             };
@@ -1497,7 +1496,7 @@ var core, svgcanvas, constants, renderingsvg, output, RendererSVG, src_app;
                 svg: 'image/svg+xml'
             }[ext];
             if (!mine) {
-                throw new Error('Fail to getFrame, invalid extension, please use png | jpeg | jpg | svg.');
+                throw new Error('Fail to getFrame, invalid extension: ' + ext + ', please use png | jpeg | jpg | svg.');
             }
             var svg = options.svg || this._graphics.svg;
             svg2img(svg, mine, function (err, dataURL) {
@@ -1530,6 +1529,7 @@ var core, svgcanvas, constants, renderingsvg, output, RendererSVG, src_app;
                 args[2]
             ];
             var svg;
+            console.log(args);
             if (args[0] instanceof p5.Graphics) {
                 svg = args[0]._graphics.svg;
                 args.shift();
@@ -1541,6 +1541,11 @@ var core, svgcanvas, constants, renderingsvg, output, RendererSVG, src_app;
             var filename = args[0];
             var ext = args[1];
             var p = this;
+            console.log({
+                svg: svg,
+                filename: filename,
+                extension: ext
+            });
             this._makeSVGFrame({
                 svg: svg,
                 filename: filename,
