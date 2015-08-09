@@ -190,13 +190,12 @@ var testRender = function(draw, callback) {
             return;
         }
 
+        console.log('svg', el.svg.width, el.svg.height);
+        console.log('canvas', el.canvas.width, el.canvas.height);
+
         var ctx = el.diffCanvas.getContext('2d');
         var w = 100;
         var h = 100;
-
-        console.log(el.svg, el.svg.width, el.svg.height);
-        console.log(el.canvas, el.canvas.width, el.canvas.height);
-        console.log(el.diffCanvas, el.diffCanvas.width, el.diffCanvas.height);
 
         // svg render result
         ctx.clearRect(0, 0, w, h);

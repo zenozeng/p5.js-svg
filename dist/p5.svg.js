@@ -1291,6 +1291,7 @@ Context.prototype.__gc = function() {
 };
 
 Context.prototype.clearRect = function(x, y, w, h) {
+    console.log('clearRect', x, y, w, h, this.width, this.height);
     if (x === 0 && y === 0 && w === this.__width && h === this.__height) {
         // remove all
         this.generations.forEach(function(elems) {
@@ -1339,6 +1340,19 @@ Context.prototype.drawImage = function() {
     image.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", url);
     parent.appendChild(image);
 };
+
+// /**
+//  *  scales the current element
+//  */
+// Context.prototype.scale = function(x, y) {
+//     if(y === undefined) {
+//         y = x;
+//     }
+//     console.log('scale', x, y);
+//     // this.__addTransform(["scale(", x, ",", y, ")"].join(''));
+// };
+
+
 
 module.exports = Context;
 
@@ -1747,11 +1761,24 @@ module.exports = function(p5) {
             // note that at first this.width and this.height is undefined
             // so, also check that
             if (this.width && this.height) {
+                console.log('2', this.width, this.height);
                 this.drawingContext.clearRect(0, 0, this.width, this.height);
             }
         }
-        p5.Renderer2D.prototype.resize.call(this, w, h);
+        // Note that renderer2d will scale based on pixelDensity,
+        // which should not do in SVG
+        p5.Renderer.prototype.resize.call(this, w, h);
+        console.log('resize', w, h, this.width, this.height);
+        // For scale, crop
+        // see also: http://sarasoueidan.com/blog/svg-coordinate-systems/
         this.svg.setAttribute("viewBox", [0, 0, w, h].join(' '));
+    };
+
+    RendererSVG.prototype.background = function() {
+        var pixelDensity = this._pInst.pixelDensity;
+        this._pInst.pixelDensity = 1; // 1 is OK for SVG
+        p5.Renderer2D.prototype.background.apply(this, arguments);
+        this._pInst.pixelDensity = pixelDensity;
     };
 
     p5.RendererSVG = RendererSVG;
