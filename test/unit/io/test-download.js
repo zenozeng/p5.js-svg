@@ -4,7 +4,7 @@ var p5 = require('../../lib/p5');
 var testDownload = function(filename, ext, fn, done, useCanvas) {
     new p5(function(p) {
         p.setup = function() {
-            useCanvas ? p.createCanvas(100, 100) : p.createSVG(100, 100);
+            p.createCanvas(100, 100, useCanvas ? p.P2D : p.SVG);
             p.background(255);
             p.stroke(0, 0, 0);
             p.strokeWeight(3);

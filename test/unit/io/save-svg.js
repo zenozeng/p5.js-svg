@@ -46,7 +46,7 @@ describe('IO/saveSVG', function() {
     it('should throw if given unsupported type', function() {
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 p.background(255);
                 p.stroke(0, 0, 0);
                 p.line(0, 0, 100, 100);

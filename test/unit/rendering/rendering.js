@@ -7,7 +7,7 @@ describe('Rendering', function() {
         it('should remove the <svg> created by createCanvas', function() {
             new p5(function(p) {
                 p.setup = function() {
-                    p.createSVG(100, 100);
+                    p.createCanvas(100, 100, p.SVG);
                     var svg = p._graphics.svg;
                     assert.strictEqual(true, document.body.contains(svg));
                     p.line(0, 0, 100, 100);

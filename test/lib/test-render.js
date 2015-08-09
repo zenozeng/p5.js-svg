@@ -6,7 +6,7 @@ var _ = window._; // lodash
 var canvasGraphics, svgGraphics, p5svg, p5canvas;
 p5svg = new p5(function(p) {
     p.setup = function() {
-        svgGraphics = p.createSVG(100, 100);
+        svgGraphics = p.createCanvas(100, 100, p.SVG);
         p.noLoop();
         p.isSVG = true;
     };

@@ -28,7 +28,7 @@ describe('IO/saveFrames', function() {
     it('should capture svg frames', function(done) {
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 p.strokeWeight(3);
                 p.saveFrames('hello', 'svg', 0.5, 10, function(frames) {
                     try {
@@ -52,7 +52,7 @@ describe('IO/saveFrames', function() {
         this.timeout(0);
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 p.strokeWeight(3);
                 p.saveFrames('hello', 'svg', null, null, function(frames) {
                     try {
@@ -75,7 +75,7 @@ describe('IO/saveFrames', function() {
     it('should download svg frames', function(done) {
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 var _downloadFile = p.downloadFile;
                 var count = 0;
                 var _done;
@@ -101,7 +101,7 @@ describe('IO/saveFrames', function() {
     it('should wait all pending jobs done', function(done) {
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 var _downloadFile = p.downloadFile;
                 var pending = 0;
                 var _makeSVGFrame = p._makeSVGFrame;

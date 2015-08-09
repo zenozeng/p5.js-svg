@@ -11,7 +11,7 @@ var _ = window._; // lodash
 var canvasGraphics, svgGraphics, p5svg, p5canvas;
 p5svg = new p5(function(p) {
     p.setup = function() {
-        svgGraphics = p.createSVG(100, 100);
+        svgGraphics = p.createCanvas(100, 100, p.SVG);
         p.noLoop();
         p.isSVG = true;
     };
@@ -312,7 +312,7 @@ describe('IO/saveFrames', function() {
     it('should capture svg frames', function(done) {
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 p.strokeWeight(3);
                 p.saveFrames('hello', 'svg', 0.5, 10, function(frames) {
                     try {
@@ -336,7 +336,7 @@ describe('IO/saveFrames', function() {
         this.timeout(0);
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 p.strokeWeight(3);
                 p.saveFrames('hello', 'svg', null, null, function(frames) {
                     try {
@@ -359,7 +359,7 @@ describe('IO/saveFrames', function() {
     it('should download svg frames', function(done) {
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 var _downloadFile = p.downloadFile;
                 var count = 0;
                 var _done;
@@ -385,7 +385,7 @@ describe('IO/saveFrames', function() {
     it('should wait all pending jobs done', function(done) {
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 var _downloadFile = p.downloadFile;
                 var pending = 0;
                 var _makeSVGFrame = p._makeSVGFrame;
@@ -462,7 +462,7 @@ describe('IO/saveSVG', function() {
     it('should throw if given unsupported type', function() {
         new p5(function(p) {
             p.setup = function() {
-                p.createSVG(100, 100);
+                p.createCanvas(100, 100, p.SVG);
                 p.background(255);
                 p.stroke(0, 0, 0);
                 p.line(0, 0, 100, 100);
@@ -513,7 +513,7 @@ var p5 = require('../../lib/p5');
 var testDownload = function(filename, ext, fn, done, useCanvas) {
     new p5(function(p) {
         p.setup = function() {
-            useCanvas ? p.createCanvas(100, 100) : p.createSVG(100, 100);
+            p.createCanvas(100, 100, useCanvas ? p.P2D : p.SVG);
             p.background(255);
             p.stroke(0, 0, 0);
             p.strokeWeight(3);
@@ -549,7 +549,7 @@ describe('Rendering', function() {
         it('should remove the <svg> created by createCanvas', function() {
             new p5(function(p) {
                 p.setup = function() {
-                    p.createSVG(100, 100);
+                    p.createCanvas(100, 100, p.SVG);
                     var svg = p._graphics.svg;
                     assert.strictEqual(true, document.body.contains(svg));
                     p.line(0, 0, 100, 100);
