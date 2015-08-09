@@ -50,14 +50,12 @@ module.exports = function(p5) {
             // note that at first this.width and this.height is undefined
             // so, also check that
             if (this.width && this.height) {
-                console.log('2', this.width, this.height);
                 this.drawingContext.clearRect(0, 0, this.width, this.height);
             }
         }
         this._withPixelDensity(function() {
             p5.Renderer2D.prototype.resize.call(this, w, h);
         });
-        console.log('resize', w, h, this.width, this.height);
         // For scale, crop
         // see also: http://sarasoueidan.com/blog/svg-coordinate-systems/
         this.svg.setAttribute("viewBox", [0, 0, w, h].join(' '));

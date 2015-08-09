@@ -120,18 +120,26 @@ var render = function(draw) {
 var prepareDom = function(draw) {
     var $container = $('#test-graph');
 
+    var status = {};
+
     // draw header
     var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div><div></div><div class="function">p5.js</div></div>';
     $container.append(th);
 
     // the svg
     var svg = new Image();
-    svg.src = "data:image/svg+xml;charset=utf-8," + p5svg._curElement.elt.getContext('2d').getSerializedSvg();
+    svg.onload = function() {
+        status.svg = true;
+    };
+    svg.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(p5svg._curElement.elt.getContext('2d').getSerializedSvg());
     svg.className = 'svg';
     $container.append(svg);
 
     // draw canvas
     var canvas = new Image();
+    canvas.onload = function() {
+        status.canvas = true;
+    };
     canvas.src = p5canvas._curElement.elt.toDataURL('image/png');
     $container.append(canvas);
 
@@ -171,7 +179,10 @@ var prepareDom = function(draw) {
         canvas: canvas,
         diffCanvas: diffCanvas,
         diffCanvas2: diffCanvas2,
-        $match: $match
+        $match: $match,
+        isReady: function() {
+            return status.svg && status.canvas;
+        }
     };
 };
 
@@ -182,7 +193,8 @@ var testRender = function(draw, callback) {
     var diff = function(el) {
 
         // wait until ready
-        if (!el.svg.complete || !el.canvas.complete) {
+        // if (!el.svg.complete || !el.canvas.complete) {
+        if (!el.isReady()) {
             // 100 is workround for NS_ERROR_NOT_AVAILABLE in karma
             setTimeout(function() {
                 diff(el);
