@@ -54,20 +54,33 @@ module.exports = function(p5) {
                 this.drawingContext.clearRect(0, 0, this.width, this.height);
             }
         }
-        // Note that renderer2d will scale based on pixelDensity,
-        // which should not do in SVG
-        p5.Renderer.prototype.resize.call(this, w, h);
+        this._withPixelDensity(function() {
+            p5.Renderer2D.prototype.resize.call(this, w, h);
+        });
         console.log('resize', w, h, this.width, this.height);
         // For scale, crop
         // see also: http://sarasoueidan.com/blog/svg-coordinate-systems/
         this.svg.setAttribute("viewBox", [0, 0, w, h].join(' '));
     };
 
-    RendererSVG.prototype.background = function() {
+    RendererSVG.prototype._withPixelDensity = function(fn) {
         var pixelDensity = this._pInst.pixelDensity;
         this._pInst.pixelDensity = 1; // 1 is OK for SVG
-        p5.Renderer2D.prototype.background.apply(this, arguments);
+        fn.apply(this);
         this._pInst.pixelDensity = pixelDensity;
+    };
+
+    RendererSVG.prototype.background = function() {
+        var args = arguments;
+        this._withPixelDensity(function() {
+            p5.Renderer2D.prototype.background.apply(this, args);
+        });
+    };
+
+    RendererSVG.prototype.resetMatrix = function() {
+        this._withPixelDensity(function() {
+            p5.Renderer2D.prototype.resetMatrix.apply(this);
+        });
     };
 
     p5.RendererSVG = RendererSVG;
