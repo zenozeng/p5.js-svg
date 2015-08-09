@@ -199,14 +199,18 @@ var testRender = function(draw, callback) {
         var w = 100;
         var h = 100;
 
+        console.log(el.svg, el.svg.width, el.svg.height);
+        console.log(el.canvas, el.canvas.width, el.canvas.height);
+        console.log(el.diffCanvas, el.diffCanvas.width, el.diffCanvas.height);
+
         // svg render result
         ctx.clearRect(0, 0, w, h);
-        ctx.drawImage(el.svg, 0, 0);
+        ctx.drawImage(el.svg, 0, 0, w, h);
         var imgData1 = ctx.getImageData(0, 0, w, h);
 
         // canvas render result
         ctx.clearRect(0, 0, w, h);
-        ctx.drawImage(el.canvas, 0, 0);
+        ctx.drawImage(el.canvas, 0, 0, w, h);
         var imgData2 = ctx.getImageData(0, 0, w, h);
 
         // get diff
@@ -269,11 +273,11 @@ testRender.wait = function(ms) {
 
 module.exports = testRender;
 
-},{"./p5":1,"assert":13}],3:[function(require,module,exports){
+},{"./p5":1,"assert":9}],3:[function(require,module,exports){
 mocha.setup('bdd');
-require('./io/save-frames');
-require('./io/save');
-require('./io/save-svg');
+// require('./io/save-frames');
+// require('./io/save');
+// require('./io/save-svg');
 require('./rendering/rendering');
 require('./shape/2d_primitives');
 require('./shape/attributes');
@@ -281,265 +285,7 @@ require('./shape/curves');
 require('./shape/vertex');
 mocha.run();
 
-},{"./io/save":6,"./io/save-frames":4,"./io/save-svg":5,"./rendering/rendering":8,"./shape/2d_primitives":9,"./shape/attributes":10,"./shape/curves":11,"./shape/vertex":12}],4:[function(require,module,exports){
-var assert = require('assert');
-var p5 = require('../../lib/p5');
-
-describe('IO/saveFrames', function() {
-    it('should capture canvas frames', function(done) {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100);
-                p.strokeWeight(3);
-                p.saveFrames('hello', 'png', 0.5, 10, function(frames) {
-                    try {
-                        assert.ok(frames.length > 1);
-                        p.noCanvas();
-                        done();
-                    } catch (e) {
-                        p.noCanvas();
-                        done(e);
-                    }
-                });
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-
-    it('should capture svg frames', function(done) {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                p.strokeWeight(3);
-                p.saveFrames('hello', 'svg', 0.5, 10, function(frames) {
-                    try {
-                        assert.ok(frames.length > 1);
-                        p.noCanvas();
-                        done();
-                    } catch (e) {
-                        p.noCanvas();
-                        done(e);
-                    }
-                });
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-
-    it('should capture svg frames even omitting duration and fps', function(done) {
-        this.timeout(0);
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                p.strokeWeight(3);
-                p.saveFrames('hello', 'svg', null, null, function(frames) {
-                    try {
-                        assert.ok(frames.length > 1);
-                        p.noCanvas();
-                        done();
-                    } catch (e) {
-                        p.noCanvas();
-                        done(e);
-                    }
-                });
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-
-    it('should download svg frames', function(done) {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                var _downloadFile = p.downloadFile;
-                var count = 0;
-                var _done;
-                p.downloadFile = function() {
-                    count++;
-                    if (count > 1) {
-                        if (!_done) {
-                            p.noCanvas();
-                            done();
-                            _done = true;
-                        }
-                    }
-                };
-                p.saveFrames('hello', 'svg', 0.5, 10);
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-
-    it('should wait all pending jobs done', function(done) {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                var _downloadFile = p.downloadFile;
-                var pending = 0;
-                var _makeSVGFrame = p._makeSVGFrame;
-                p._makeSVGFrame = function(options) {
-                    // slow version
-                    pending++;
-                    setTimeout(function() {
-                        _makeSVGFrame.call(p, options);
-                    }, 500);
-                };
-                p.downloadFile = function() {
-                    pending--;
-                    if (pending === 0) {
-                        p.noCanvas();
-                        done();
-                    }
-                };
-                p.saveFrames('hello', 'svg', 0.5, 10);
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-});
-
-},{"../../lib/p5":1,"assert":13}],5:[function(require,module,exports){
-var assert = require('assert');
-var testDownload = require('./test-download.js');
-var p5 = require('../../lib/p5');
-
-describe('IO/saveSVG', function() {
-
-    it('should save untitled.svg', function(done) {
-        testDownload('untitled', 'svg', function(p) {
-            p.saveSVG();
-        }, done);
-    });
-    it('should save hello.svg', function(done) {
-        testDownload('hello', 'svg', function(p) {
-            p.saveSVG('hello.svg');
-        }, done);
-    });
-    it('should save hello.jpg', function(done) {
-        testDownload('hello', 'jpg', function(p) {
-            p.saveSVG('hello', 'jpg');
-        }, done);
-    });
-    it('should save hello.jpeg', function(done) {
-        testDownload('hello', 'jpeg', function(p) {
-            p.saveSVG('hello.jpeg');
-        }, done);
-    });
-    it('should save hello.png', function(done) {
-        testDownload('hello', 'png', function(p) {
-            p.saveSVG('hello.png');
-        }, done);
-    });
-    it('source is Graphics', function(done) {
-        testDownload('source-graphics', 'png', function(p) {
-            var pg = p.createGraphics(100, 100, p.SVG);
-            pg.background(100);
-            p.saveSVG(pg, 'source-graphics.png');
-        }, done);
-    });
-    it('source is <svg>', function(done) {
-        testDownload('source-svg', 'png', function(p) {
-            var pg = p.createGraphics(100, 100, p.SVG);
-            pg.background(100);
-            p.saveSVG(pg._graphics.svg, 'source-svg.png');
-        }, done);
-    });
-    it('should throw if given unsupported type', function() {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                p.background(255);
-                p.stroke(0, 0, 0);
-                p.line(0, 0, 100, 100);
-                assert.throws(function() {
-                    p.saveSVG('hello.txt');
-                });
-                p.noCanvas();
-            };
-        });
-    });
-});
-
-},{"../../lib/p5":1,"./test-download.js":7,"assert":13}],6:[function(require,module,exports){
-var assert = require('assert');
-var p5 = require('../../lib/p5');
-var testDownload = require('./test-download.js');
-
-describe('IO/save', function() {
-    it('save()', function(done) {
-        testDownload('untitled', 'svg', function(p) {
-            p.save();
-        }, done);
-    });
-
-    it('save(Graphics)', function(done) {
-        testDownload('untitled', 'svg', function(p) {
-            p.save(p._defaultGraphics);
-        }, done);
-    });
-
-    it('save(<svg>)', function(done) {
-        testDownload('untitled', 'svg', function(p) {
-            p.save(p.svg);
-        }, done);
-    });
-
-    it('canvas\'s save should still work', function(done) {
-        testDownload('canvas-save.png', 'png', function(p) {
-            p.save('canvas-save.png');
-        }, done, true);
-    });
-});
-
-},{"../../lib/p5":1,"./test-download.js":7,"assert":13}],7:[function(require,module,exports){
-var assert = require('assert');
-var p5 = require('../../lib/p5');
-
-var testDownload = function(filename, ext, fn, done, useCanvas) {
-    new p5(function(p) {
-        p.setup = function() {
-            p.createCanvas(100, 100, useCanvas ? p.P2D : p.SVG);
-            p.background(255);
-            p.stroke(0, 0, 0);
-            p.strokeWeight(3);
-            p.line(0, 0, 100, 100);
-
-            var _downloadFile = p5.prototype.downloadFile;
-            p5.prototype.downloadFile = function(dataURL, _filename, _ext) {
-                try {
-                    assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
-                    assert.equal(_filename, filename);
-                    assert.equal(_ext, ext);
-                    p.noCanvas();
-                    done();
-                } catch(e) {
-                    p.noCanvas();
-                    done(e);
-                }
-            };
-            fn(p);
-        };
-    });
-};
-
-module.exports = testDownload;
-
-},{"../../lib/p5":1,"assert":13}],8:[function(require,module,exports){
+},{"./rendering/rendering":4,"./shape/2d_primitives":5,"./shape/attributes":6,"./shape/curves":7,"./shape/vertex":8}],4:[function(require,module,exports){
 var p5 = require('../../lib/p5');
 var testRender = require('../../lib/test-render');
 var assert = require('assert');
@@ -584,6 +330,7 @@ describe('Rendering', function() {
             testRender.describe('resizeCanvas: scaled');
             testRender(function() {
                 resizeCanvas(200, 200);
+                strokeWeight(10);
                 ellipse(width/2, height/2, 50, 50);
             }, done);
         });
@@ -599,7 +346,7 @@ describe('Rendering', function() {
     });
 });
 
-},{"../../lib/p5":1,"../../lib/test-render":2,"assert":13}],9:[function(require,module,exports){
+},{"../../lib/p5":1,"../../lib/test-render":2,"assert":9}],5:[function(require,module,exports){
 var testRender = require('../../lib/test-render');
 
 describe('Shape/2d_primitives', function() {
@@ -653,7 +400,7 @@ describe('Shape/2d_primitives', function() {
     });
 });
 
-},{"../../lib/test-render":2}],10:[function(require,module,exports){
+},{"../../lib/test-render":2}],6:[function(require,module,exports){
 var testRender = require('../../lib/test-render');
 
 describe('Shape/Attributes', function() {
@@ -772,7 +519,7 @@ describe('Shape/Attributes', function() {
     });
 });
 
-},{"../../lib/test-render":2}],11:[function(require,module,exports){
+},{"../../lib/test-render":2}],7:[function(require,module,exports){
 var testRender = require('../../lib/test-render');
 
 describe('Shape/Curves', function() {
@@ -884,7 +631,7 @@ describe('Shape/Curves', function() {
 
 });
 
-},{"../../lib/test-render":2}],12:[function(require,module,exports){
+},{"../../lib/test-render":2}],8:[function(require,module,exports){
 var testRender = require('../../lib/test-render');
 
 describe('Shape/Vertex', function() {
@@ -946,7 +693,7 @@ describe('Shape/Vertex', function() {
     });
 });
 
-},{"../../lib/test-render":2}],13:[function(require,module,exports){
+},{"../../lib/test-render":2}],9:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -1307,7 +1054,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":17}],14:[function(require,module,exports){
+},{"util/":13}],10:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -1332,7 +1079,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],15:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1391,14 +1138,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],16:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],17:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1988,4 +1735,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":16,"_process":15,"inherits":14}]},{},[3]);
+},{"./support/isBuffer":12,"_process":11,"inherits":10}]},{},[3]);

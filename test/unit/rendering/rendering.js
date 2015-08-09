@@ -42,6 +42,7 @@ describe('Rendering', function() {
             testRender.describe('resizeCanvas: scaled');
             testRender(function() {
                 resizeCanvas(200, 200);
+                strokeWeight(10);
                 ellipse(width/2, height/2, 50, 50);
             }, done);
         });

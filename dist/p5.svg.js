@@ -1751,6 +1751,7 @@ module.exports = function(p5) {
             }
         }
         p5.Renderer2D.prototype.resize.call(this, w, h);
+        this.svg.setAttribute("viewBox", [0, 0, w, h].join(' '));
     };
 
     p5.RendererSVG = RendererSVG;

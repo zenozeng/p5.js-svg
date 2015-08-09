@@ -194,14 +194,18 @@ var testRender = function(draw, callback) {
         var w = 100;
         var h = 100;
 
+        console.log(el.svg, el.svg.width, el.svg.height);
+        console.log(el.canvas, el.canvas.width, el.canvas.height);
+        console.log(el.diffCanvas, el.diffCanvas.width, el.diffCanvas.height);
+
         // svg render result
         ctx.clearRect(0, 0, w, h);
-        ctx.drawImage(el.svg, 0, 0);
+        ctx.drawImage(el.svg, 0, 0, w, h);
         var imgData1 = ctx.getImageData(0, 0, w, h);
 
         // canvas render result
         ctx.clearRect(0, 0, w, h);
-        ctx.drawImage(el.canvas, 0, 0);
+        ctx.drawImage(el.canvas, 0, 0, w, h);
         var imgData2 = ctx.getImageData(0, 0, w, h);
 
         // get diff
