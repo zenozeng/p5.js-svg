@@ -1291,7 +1291,6 @@ Context.prototype.__gc = function() {
 };
 
 Context.prototype.clearRect = function(x, y, w, h) {
-    console.log('clearRect', x, y, w, h, this.width, this.height);
     if (x === 0 && y === 0 && w === this.__width && h === this.__height) {
         // remove all
         this.generations.forEach(function(elems) {
