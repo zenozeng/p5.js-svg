@@ -34,6 +34,11 @@ module.exports = function(p5) {
 
     RendererSVG.prototype = Object.create(p5.Renderer2D.prototype);
 
+    RendererSVG.prototype._applyDefaults = function() {
+        p5.Renderer2D.prototype._applyDefaults.call(this);
+        this.drawingContext.lineWidth = 1;
+    };
+
     RendererSVG.prototype.resize = function(w, h) {
         if (!w || !h) {
             // ignore invalid values for width and height
