@@ -230,6 +230,7 @@ var testRender = function(draw, callback) {
         ctx = el.diffCanvas2.getContext('2d');
         ctx.putImageData(diffImgData, 0, 0);
         removeThinLines(el.diffCanvas2);
+        removeThinLines(el.diffCanvas2); // twice
         var diffImgData2 = ctx.getImageData(0, 0, w, h);
 
         // match?
@@ -606,6 +607,7 @@ describe('Rendering', function() {
                 ellipse(width/2, height/2, 50, 50);
                 resizeCanvas(200, 200);
                 resizeCanvas(100, 100);
+                strokeWeight(10);
                 ellipse(0, 0, 100, 100);
             }, done);
         });

@@ -52,6 +52,7 @@ describe('Rendering', function() {
                 ellipse(width/2, height/2, 50, 50);
                 resizeCanvas(200, 200);
                 resizeCanvas(100, 100);
+                strokeWeight(10);
                 ellipse(0, 0, 100, 100);
             }, done);
         });
