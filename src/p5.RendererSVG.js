@@ -35,9 +35,19 @@ module.exports = function(p5) {
     RendererSVG.prototype = Object.create(p5.Renderer2D.prototype);
 
     RendererSVG.prototype.resize = function(w, h) {
-        // Canvas should be cleared when resize called
-        // http://p5js.org/reference/#p5/resizeCanvas
-        this.clear();
+        if (!w || !h) {
+            // ignore invalid values for width and height
+            return;
+        }
+        if (this.width !== w || this.height !== h) {
+            // canvas will be cleared if its size changed
+            // so, we do same thing for SVG
+            // note that at first this.width and this.height is undefined
+            // so, also check that
+            if (this.width && this.height) {
+                this.drawingContext.clearRect(0, 0, this.width, this.height);
+            }
+        }
         p5.Renderer2D.prototype.resize.call(this, w, h);
     };
 

@@ -6,7 +6,7 @@
     "build": "npm run build-dist & npm run build-test",
     "build-dist": "./build/build.sh",
     "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
-    "test": "karma start"
+    "test": "npm run build & karma start"
   },
   "devDependencies": {
     "amdclean": "^2.7.0",

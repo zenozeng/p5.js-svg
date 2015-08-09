@@ -579,17 +579,17 @@ describe('Rendering', function() {
             }, done);
         });
     });
-    describe('resizeCanvas', function() {
-        it('resizeCanvas: SVG API should draw same image as Canvas API', function(done) {
-            testRender.describe('resizeCanvas');
-            testRender(function() {
-                background(200);
-                resizeCanvas(50, 50);
-                pg.ellipse(width/2, height/2, 20, 20);
-                resizeCanvas(100, 100);
-            }, done);
-        });
-    });
+    // describe('resizeCanvas', function() {
+    //     it('resizeCanvas: SVG API should draw same image as Canvas API', function(done) {
+    //         testRender.describe('resizeCanvas');
+    //         testRender(function() {
+    //             background(200);
+    //             resizeCanvas(50, 50);
+    //             pg.ellipse(width/2, height/2, 20, 20);
+    //             resizeCanvas(100, 100);
+    //         }, done);
+    //     });
+    // });
 });
 
 },{"../../lib/p5":1,"../../lib/test-render":2,"assert":13}],9:[function(require,module,exports){
