@@ -22,7 +22,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 require('../src/index.js')(p5);
 
-},{"../src/index.js":6}],2:[function(require,module,exports){
+},{"../src/index.js":7}],2:[function(require,module,exports){
 /*!!
  *  Canvas 2 Svg v1.0.9
  *  A low level canvas to SVG converter. Uses a mock canvas context to build an SVG document.
@@ -1465,10 +1465,63 @@ module.exports = constants;
 
 },{}],6:[function(require,module,exports){
 module.exports = function(p5) {
+    p5.prototype.querySVG = function(selector) {
+        var svg = this._graphics && this._graphics.svg;
+        if (!svg) {
+            return null;
+        }
+        var elements = svg.querySelectorAll(selector);
+        return elements.map(function(elt) {
+            return new p5.SVGElement(elt);
+        });
+    };
+
+    function SVGElement(element, pInst) {
+        if (!element) {
+            return null;
+        }
+        return p5.Element.apply(this, arguments);
+    };
+
+    SVGElement.prototype = Object.create(p5.Element.prototype);
+
+    SVGElement.prototype.query = function(selector) {
+        var elements = this.elt.querySelectorAll(selector);
+        return elements.map(function(elt) {
+            return new SVGElement(elt);
+        });
+    };
+
+    SVGElement.prototype.append = function(element) {
+        var elt = element.elt || element;
+        this.elt.appendChild(elt);
+        return this;
+    };
+
+    SVGElement.prototype.attribute = function() {
+        var args = arguments;
+        if (args.length === 3) {
+            this.elt.setAttributeNS.apply(this.elt, args);
+            return this;
+        }
+        if (args.length === 2) {
+            this.elt.setAttribute.apply(this.elt, args);
+        }
+        if (args.length === 1) {
+            this.elt.getAttribute.apply(this.elt, args);
+        }
+        return this;
+    };
+
+    p5.SVGElement = SVGElement;
+};
+
+},{}],7:[function(require,module,exports){
+module.exports = function(p5) {
     require('./p5.RendererSVG')(p5);
     require('./rendering')(p5);
     require('./io')(p5);
-    require('./svg')(p5);
+    require('./element')(p5);
 
     // attach constants to p5 instance
     var constants = require('./constants');
@@ -1477,7 +1530,7 @@ module.exports = function(p5) {
     });
 };
 
-},{"./constants":5,"./io":7,"./p5.RendererSVG":8,"./rendering":9,"./svg":10}],7:[function(require,module,exports){
+},{"./constants":5,"./element":6,"./io":8,"./p5.RendererSVG":9,"./rendering":10}],8:[function(require,module,exports){
 module.exports = function(p5) {
     /**
      * Convert SVG Element to jpeg / png data url
@@ -1696,9 +1749,31 @@ module.exports = function(p5) {
             return _save.apply(this, arguments);
         }
     };
+
+    p5.prototype.loadSVG = function(path, successCallback, failureCallback) {
+        var div = document.createElement('div');
+        var element = new p5.SVGElement(div);
+        this.httpGet(path, function(svg) {
+            div.innerHTML = svg;
+            svg = div.querySelector('svg');
+            if (!svg) {
+                if (failureCallback) {
+                    failureCallback(new Error('Fail to create <svg>.'));
+                }
+                return;
+            }
+            element.elt = svg;
+            if (successCallback) {
+                successCallback(element);
+            }
+        });
+        return element;
+    };
+    // cause preload to wait
+    p5.prototype._preloadMethods.loadSVG = 'p5';
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var SVGCanvas = require('svgcanvas');
 
 module.exports = function(p5) {
@@ -1813,7 +1888,7 @@ module.exports = function(p5) {
     p5.RendererSVG = RendererSVG;
 };
 
-},{"svgcanvas":4}],9:[function(require,module,exports){
+},{"svgcanvas":4}],10:[function(require,module,exports){
 var constants = require('./constants');
 var SVGCanvas = require('svgcanvas');
 
@@ -1910,37 +1985,5 @@ module.exports = function(p5) {
     };
 };
 
-},{"./constants":5,"svgcanvas":4}],10:[function(require,module,exports){
-module.exports = function(p5) {
-    p5.prototype.querySVG = function(selector) {
-        var svg = this._graphics && this._graphics.svg;
-        if (!svg) {
-            return null;
-        }
-        var elements = svg.querySelectorAll(selector);
-        return elements.map(function(elt) {
-            return new p5.SVGElement(elt);
-        });
-    };
-
-    function SVGElement(element, pInst) {
-        if (!element) {
-            return null;
-        }
-        return p5.Element.apply(this, arguments);
-    };
-
-    SVGElement.prototype = Object.create(p5.Element.prototype);
-
-    SVGElement.prototype.query = function(selector) {
-        var elements = svg.querySelectorAll(selector);
-        return elements.map(function(elt) {
-            return new SVGElement(elt);
-        });
-    };
-
-    p5.SVGElement = SVGElement;
-};
-
-},{}]},{},[1]);
+},{"./constants":5,"svgcanvas":4}]},{},[1]);
 });

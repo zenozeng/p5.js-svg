@@ -2402,7 +2402,7 @@ describe('Shape/Vertex', function() {
 var p5 = require('../../lib/p5');
 var assert = require('assert');
 
-describe('SVG Only API', function() {
+describe('SVG Element API', function() {
     describe('querySVG', function() {
         new p5(function(p) {
             p.setup = function() {

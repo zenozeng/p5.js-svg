@@ -216,4 +216,30 @@ module.exports = function(p5) {
             return _save.apply(this, arguments);
         }
     };
+
+    /**
+     * loadSVG (like loadImage, but will return SVGElement)
+     * @returns {p5.SVGElement}
+     */
+    p5.prototype.loadSVG = function(path, successCallback, failureCallback) {
+        var div = document.createElement('div');
+        var element = new p5.SVGElement(div);
+        this.httpGet(path, function(svg) {
+            div.innerHTML = svg;
+            svg = div.querySelector('svg');
+            if (!svg) {
+                if (failureCallback) {
+                    failureCallback(new Error('Fail to create <svg>.'));
+                }
+                return;
+            }
+            element.elt = svg;
+            if (successCallback) {
+                successCallback(element);
+            }
+        });
+        return element;
+    };
+    // cause preload to wait
+    p5.prototype._preloadMethods.loadSVG = 'p5';
 };
