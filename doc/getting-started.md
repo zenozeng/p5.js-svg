@@ -23,3 +23,8 @@ There are 3 ways:
     var p5 = require('p5');
     require('./p5.svg.js')(p5);
     ```
+
+## Manipulating SVG
+
+We provide p5.SVGElement (which extends p5.Element) for you.
+You can include p5.dom to have more methods.
