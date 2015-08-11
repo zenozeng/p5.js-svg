@@ -20,7 +20,7 @@ module.exports = function(p5) {
     SVGElement.prototype = Object.create(p5.Element.prototype);
 
     SVGElement.prototype.query = function(selector) {
-        var elements = svg.querySelectorAll(selector);
+        var elements = this.elt.querySelectorAll(selector);
         return elements.map(function(elt) {
             return new SVGElement(elt);
         });
