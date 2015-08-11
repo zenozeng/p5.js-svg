@@ -32,7 +32,13 @@ module.exports = function(p5) {
             this.elt.setAttributeNS.apply(this.elt, args);
             return this;
         }
-        p5.Element.prototype.attribute.apply(this, args);
+        if (args.length === 2) {
+            this.elt.setAttribute.apply(this.elt, args);
+        }
+        if (args.length === 1) {
+            this.elt.getAttribute.apply(this.elt, args);
+        }
+        return this;
     };
 
     p5.SVGElement = SVGElement;
