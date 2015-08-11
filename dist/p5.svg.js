@@ -1340,18 +1340,7 @@ Context.prototype.drawImage = function() {
     parent.appendChild(image);
 };
 
-// /**
-//  *  scales the current element
-//  */
-// Context.prototype.scale = function(x, y) {
-//     if(y === undefined) {
-//         y = x;
-//     }
-//     console.log('scale', x, y);
-//     // this.__addTransform(["scale(", x, ",", y, ")"].join(''));
-// };
-
-
+Context.prototype.getSerializedSvg = null;
 
 module.exports = Context;
 
@@ -1429,13 +1418,14 @@ SVGCanvas.prototype.getContext = function(type) {
 
 // you should always use URL.revokeObjectURL after your work done
 SVGCanvas.prototype.toObjectURL = function() {
-    var data = this.getContext('2d').getSerializedSvg();
+    var data = new XMLSerializer().serializeToString(this.svg);
     var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
     return URL.createObjectURL(svg);
 };
 
 SVGCanvas.prototype.toDataURL = function(type, options) {
-    var SVGDataURL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(this.getContext('2d').getSerializedSvg());
+    var xml = new XMLSerializer().serializeToString(this.svg);
+    var SVGDataURL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(xml);
     if (type === "image/svg+xml" || !type) {
         return SVGDataURL;
     }

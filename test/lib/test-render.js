@@ -1,6 +1,7 @@
 var p5 = require('./p5');
 var assert = require('assert');
 var _ = window._; // lodash
+var SVGCanvas = require('svgcanvas');
 
 // init p5 canvas instance and p5-svg instance
 var canvasGraphics, svgGraphics, p5svg, p5canvas;
@@ -131,7 +132,8 @@ var prepareDom = function(draw) {
     svg.onload = function() {
         status.svg = true;
     };
-    svg.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(p5svg._curElement.elt.getContext('2d').getSerializedSvg());
+    svg.src = SVGCanvas.prototype.toDataURL.call({svg: p5svg._graphics.svg},
+                                                 "image/svg+xml");
     svg.className = 'svg';
     $container.append(svg);
 
