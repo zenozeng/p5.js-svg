@@ -1813,8 +1813,6 @@ module.exports = function(p5) {
     p5.RendererSVG = RendererSVG;
 };
 
-
-
 },{"svgcanvas":4}],9:[function(require,module,exports){
 var constants = require('./constants');
 var SVGCanvas = require('svgcanvas');
@@ -1921,9 +1919,8 @@ module.exports = function(p5) {
         if (!svg) {
             return null;
         }
-        // p5.SVGShape should provide setAttribute
         var elem = svg.querySelector(selector);
-        return p5.SVGShape(elem);
+        return elem;
     };
 };
 
