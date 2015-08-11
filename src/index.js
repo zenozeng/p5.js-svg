@@ -2,7 +2,7 @@ module.exports = function(p5) {
     require('./p5.RendererSVG')(p5);
     require('./rendering')(p5);
     require('./io')(p5);
-    require('./svg')(p5);
+    require('./element')(p5);
 
     // attach constants to p5 instance
     var constants = require('./constants');

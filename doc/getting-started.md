@@ -27,4 +27,8 @@ There are 3 ways:
 ## Manipulating SVG
 
 We provide p5.SVGElement (which extends p5.Element) for you.
+It provides 2 handy functions, query and attribute.
+
 You can include p5.dom to have more methods.
+
+See also: http://p5js.org/reference/#/p5.Element

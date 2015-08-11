@@ -26,6 +26,12 @@ module.exports = function(p5) {
         });
     };
 
+    SVGElement.prototype.append = function(element) {
+        var elt = element.elt || element;
+        this.elt.appendChild(elt);
+        return this;
+    };
+
     SVGElement.prototype.attribute = function() {
         var args = arguments;
         if (args.length === 3) {
