@@ -26,5 +26,14 @@ module.exports = function(p5) {
         });
     };
 
+    SVGElement.prototype.attribute = function() {
+        var args = arguments;
+        if (args.length === 3) {
+            this.elt.setAttributeNS.apply(this.elt, args);
+            return this;
+        }
+        p5.Element.prototype.attribute.apply(this, args);
+    };
+
     p5.SVGElement = SVGElement;
 };
