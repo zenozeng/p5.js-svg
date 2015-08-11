@@ -1718,9 +1718,10 @@ testRender.wait = function(ms) {
 
 module.exports = testRender;
 
-},{"./p5":4,"assert":17,"svgcanvas":3}],6:[function(require,module,exports){
+},{"./p5":4,"assert":18,"svgcanvas":3}],6:[function(require,module,exports){
 mocha.setup('bdd');
 require('./svg/element');
+require('./svg/manipulate');
 require('./rendering/rendering');
 require('./io/save-frames');
 require('./io/save');
@@ -1731,7 +1732,7 @@ require('./shape/curves');
 require('./shape/vertex');
 mocha.run();
 
-},{"./io/save":9,"./io/save-frames":7,"./io/save-svg":8,"./rendering/rendering":11,"./shape/2d_primitives":12,"./shape/attributes":13,"./shape/curves":14,"./shape/vertex":15,"./svg/element":16}],7:[function(require,module,exports){
+},{"./io/save":9,"./io/save-frames":7,"./io/save-svg":8,"./rendering/rendering":11,"./shape/2d_primitives":12,"./shape/attributes":13,"./shape/curves":14,"./shape/vertex":15,"./svg/element":16,"./svg/manipulate":17}],7:[function(require,module,exports){
 var assert = require('assert');
 var p5 = require('../../lib/p5');
 
@@ -1863,7 +1864,7 @@ describe('IO/saveFrames', function() {
     });
 });
 
-},{"../../lib/p5":4,"assert":17}],8:[function(require,module,exports){
+},{"../../lib/p5":4,"assert":18}],8:[function(require,module,exports){
 var assert = require('assert');
 var testDownload = require('./test-download.js');
 var p5 = require('../../lib/p5');
@@ -1925,7 +1926,7 @@ describe('IO/saveSVG', function() {
     });
 });
 
-},{"../../lib/p5":4,"./test-download.js":10,"assert":17}],9:[function(require,module,exports){
+},{"../../lib/p5":4,"./test-download.js":10,"assert":18}],9:[function(require,module,exports){
 var assert = require('assert');
 var p5 = require('../../lib/p5');
 var testDownload = require('./test-download.js');
@@ -1956,7 +1957,7 @@ describe('IO/save', function() {
     });
 });
 
-},{"../../lib/p5":4,"./test-download.js":10,"assert":17}],10:[function(require,module,exports){
+},{"../../lib/p5":4,"./test-download.js":10,"assert":18}],10:[function(require,module,exports){
 var assert = require('assert');
 var p5 = require('../../lib/p5');
 
@@ -1989,7 +1990,7 @@ var testDownload = function(filename, ext, fn, done, useCanvas) {
 
 module.exports = testDownload;
 
-},{"../../lib/p5":4,"assert":17}],11:[function(require,module,exports){
+},{"../../lib/p5":4,"assert":18}],11:[function(require,module,exports){
 var p5 = require('../../lib/p5');
 var testRender = require('../../lib/test-render');
 var assert = require('assert');
@@ -2051,7 +2052,7 @@ describe('Rendering', function() {
     });
 });
 
-},{"../../lib/p5":4,"../../lib/test-render":5,"assert":17}],12:[function(require,module,exports){
+},{"../../lib/p5":4,"../../lib/test-render":5,"assert":18}],12:[function(require,module,exports){
 var testRender = require('../../lib/test-render');
 
 describe('Shape/2d_primitives', function() {
@@ -2403,22 +2404,43 @@ var p5 = require('../../lib/p5');
 var assert = require('assert');
 
 describe('SVG Element API', function() {
-    describe('querySVG', function() {
+    it('querySVG', function() {
         new p5(function(p) {
             p.setup = function() {
                 p.createCanvas(100, 100, p.SVG);
                 p.ellipse(50, 50, 50, 50);
-                assert.equal(p.querySVG('path').nodeName.toLowerCase(), 'path');
+                assert.equal(p.querySVG('path')[0].elt.nodeName.toLowerCase(), 'path');
 
                 var pg = p.createGraphics(100, 100, p.SVG);
                 pg.ellipse(60, 60, 50, 50);
-                assert.equal(pg.querySVG('path').nodeName.toLowerCase(), 'path');
+                assert.equal(pg.querySVG('path')[0].elt.nodeName.toLowerCase(), 'path');
             };
         });
     });
 });
 
-},{"../../lib/p5":4,"assert":17}],17:[function(require,module,exports){
+},{"../../lib/p5":4,"assert":18}],17:[function(require,module,exports){
+var p5 = require('../../lib/p5');
+var assert = require('assert');
+
+describe('SVG Manipulating API', function() {
+    it('Manipulate SVG', function() {
+        new p5(function(p) {
+            var svg;
+            var url;
+            p.preload = function() {
+                svg = p.loadSVG(url);
+            };
+            p.setup = function() {
+                var pg = p.createCanvas(400, 400, p.SVG);
+                pg.image(svg, 0, 0, 400, 400);
+                var paths = pg.querySVG('path');
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":4,"assert":18}],18:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -2779,7 +2801,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":21}],18:[function(require,module,exports){
+},{"util/":22}],19:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2804,7 +2826,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2863,14 +2885,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3460,4 +3482,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":20,"_process":19,"inherits":18}]},{},[6]);
+},{"./support/isBuffer":21,"_process":20,"inherits":19}]},{},[6]);

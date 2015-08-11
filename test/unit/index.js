@@ -1,5 +1,6 @@
 mocha.setup('bdd');
 require('./svg/element');
+require('./svg/manipulate');
 require('./rendering/rendering');
 require('./io/save-frames');
 require('./io/save');

@@ -1470,10 +1470,7 @@ module.exports = function(p5) {
         if (!svg) {
             return null;
         }
-        var elements = svg.querySelectorAll(selector);
-        return elements.map(function(elt) {
-            return new p5.SVGElement(elt);
-        });
+        return p5.SVGElement.prototype.query.call({elt: svg}, selector);
     };
 
     function SVGElement(element, pInst) {
@@ -1487,9 +1484,11 @@ module.exports = function(p5) {
 
     SVGElement.prototype.query = function(selector) {
         var elements = this.elt.querySelectorAll(selector);
-        return elements.map(function(elt) {
-            return new SVGElement(elt);
-        });
+        var objects = [];
+        for (var i = 0; i < elements.length; i++) {
+            objects[i] = new SVGElement(elements[i]);
+        }
+        return objects;
     };
 
     SVGElement.prototype.append = function(element) {
@@ -1750,6 +1749,10 @@ module.exports = function(p5) {
         }
     };
 
+    /**
+     * loadSVG (like loadImage, but will return SVGElement)
+     * @returns {p5.SVGElement}
+     */
     p5.prototype.loadSVG = function(path, successCallback, failureCallback) {
         var div = document.createElement('div');
         var element = new p5.SVGElement(div);
