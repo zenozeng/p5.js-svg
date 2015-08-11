@@ -81,6 +81,34 @@ module.exports = function(p5) {
         });
     };
 
+    // set gc flag for svgcanvas
+    RendererSVG.prototype._setGCFlag = function(element) {
+        var that = this.drawingContext;
+        var currentGeneration = that.generations[that.generations.length - 1];
+        currentGeneration.push(element);
+    };
+
+    RendererSVG.prototype.appendChild = function(element) {
+        this._setGCFlag(element);
+        this.drawingContext.__closestGroupOrSvg().appendChild(element);
+    };
+
+    RendererSVG.prototype.image = function(img, x, y, w, h) {
+        var elt = img._graphics && img._graphics.svg;
+        elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == "svg") && img);
+        if (elt) {
+            // it's <svg> element, let's handle it
+            elt = elt.cloneNode(true);
+            elt.setAttribute("width", w);
+            elt.setAttribute("height", h);
+            elt.setAttribute("x", x);
+            elt.setAttribute("y", y);
+            this.appendChild(elt);
+        } else {
+            p5.Renderer2D.prototype.image.apply(this, arguments);
+        }
+    };
+
     p5.RendererSVG = RendererSVG;
 };
 

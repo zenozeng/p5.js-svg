@@ -1435,7 +1435,7 @@ SVGCanvas.prototype.toObjectURL = function() {
 };
 
 SVGCanvas.prototype.toDataURL = function(type, options) {
-    var SVGDataURL = "data:image/svg+xml;charset=utf-8," + encodeURI(this.getContext('2d').getSerializedSvg());
+    var SVGDataURL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(this.getContext('2d').getSerializedSvg());
     if (type === "image/svg+xml" || !type) {
         return SVGDataURL;
     }
@@ -1478,6 +1478,7 @@ module.exports = function(p5) {
     require('./p5.RendererSVG')(p5);
     require('./rendering')(p5);
     require('./io')(p5);
+    require('./svg')(p5);
 
     // attach constants to p5 instance
     var constants = require('./constants');
@@ -1486,7 +1487,7 @@ module.exports = function(p5) {
     });
 };
 
-},{"./constants":5,"./io":7,"./p5.RendererSVG":8,"./rendering":9}],7:[function(require,module,exports){
+},{"./constants":5,"./io":7,"./p5.RendererSVG":8,"./rendering":9,"./svg":10}],7:[function(require,module,exports){
 module.exports = function(p5) {
     /**
      * Convert SVG Element to jpeg / png data url
@@ -1791,6 +1792,34 @@ module.exports = function(p5) {
         });
     };
 
+    // set gc flag for svgcanvas
+    RendererSVG.prototype._setGCFlag = function(element) {
+        var that = this.drawingContext;
+        var currentGeneration = that.generations[that.generations.length - 1];
+        currentGeneration.push(element);
+    };
+
+    RendererSVG.prototype.appendChild = function(element) {
+        this._setGCFlag(element);
+        this.drawingContext.__closestGroupOrSvg().appendChild(element);
+    };
+
+    RendererSVG.prototype.image = function(img, x, y, w, h) {
+        var elt = img._graphics && img._graphics.svg;
+        elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == "svg") && img);
+        if (elt) {
+            // it's <svg> element, let's handle it
+            elt = elt.cloneNode(true);
+            elt.setAttribute("width", w);
+            elt.setAttribute("height", h);
+            elt.setAttribute("x", x);
+            elt.setAttribute("y", y);
+            this.appendChild(elt);
+        } else {
+            p5.Renderer2D.prototype.image.apply(this, arguments);
+        }
+    };
+
     p5.RendererSVG = RendererSVG;
 };
 
@@ -1798,6 +1827,7 @@ module.exports = function(p5) {
 
 },{"svgcanvas":4}],9:[function(require,module,exports){
 var constants = require('./constants');
+var SVGCanvas = require('svgcanvas');
 
 module.exports = function(p5) {
     // patch p5.Graphics for SVG
@@ -1852,14 +1882,13 @@ module.exports = function(p5) {
     p5.prototype.loadGraphics = function(graphics, successCallback, failureCallback) {
         if (graphics._graphics.svg) {
             var svg = graphics._graphics.svg;
-            svg = (new XMLSerializer()).serializeToString(svg);
-            svg = new Blob([svg], {type: 'image/svg+xml;charset=utf-8'});
-            var url = URL.createObjectURL(svg);
+            var url = SVGCanvas.prototype.toDataURL.call(graphics._graphics.elt, 'image/svg+xml');
             var img = new Image();
             var pg = this.createGraphics(graphics.width, graphics.height);
+            // also copy SVG, so we can keep vector SVG when image(pg) in SVG runtime
+            pg._graphics.svg = svg.cloneNode(true);
             pg.loadImage(url, function(img) {
                 pg.image(img);
-                URL.revokeObjectURL(url);
                 successCallback(pg);
             });
         } else {
@@ -1893,5 +1922,20 @@ module.exports = function(p5) {
     };
 };
 
-},{"./constants":5}]},{},[1]);
+},{"./constants":5,"svgcanvas":4}],10:[function(require,module,exports){
+// some SVG only API
+
+module.exports = function(p5) {
+    p5.prototype.querySVG = function(selector) {
+        var svg = this._graphics && this._graphics.svg;
+        if (!svg) {
+            return null;
+        }
+        // p5.SVGShape should provide setAttribute
+        var elem = svg.querySelector(selector);
+        return p5.SVGShape(elem);
+    };
+};
+
+},{}]},{},[1]);
 });

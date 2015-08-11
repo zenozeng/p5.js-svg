@@ -1,4 +1,5 @@
 var constants = require('./constants');
+var SVGCanvas = require('svgcanvas');
 
 module.exports = function(p5) {
     // patch p5.Graphics for SVG
@@ -53,14 +54,13 @@ module.exports = function(p5) {
     p5.prototype.loadGraphics = function(graphics, successCallback, failureCallback) {
         if (graphics._graphics.svg) {
             var svg = graphics._graphics.svg;
-            svg = (new XMLSerializer()).serializeToString(svg);
-            svg = new Blob([svg], {type: 'image/svg+xml;charset=utf-8'});
-            var url = URL.createObjectURL(svg);
+            var url = SVGCanvas.prototype.toDataURL.call(graphics._graphics.elt, 'image/svg+xml');
             var img = new Image();
             var pg = this.createGraphics(graphics.width, graphics.height);
+            // also copy SVG, so we can keep vector SVG when image(pg) in SVG runtime
+            pg._graphics.svg = svg.cloneNode(true);
             pg.loadImage(url, function(img) {
                 pg.image(img);
-                URL.revokeObjectURL(url);
                 successCallback(pg);
             });
         } else {

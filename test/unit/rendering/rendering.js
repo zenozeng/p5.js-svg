@@ -21,7 +21,7 @@ describe('Rendering', function() {
         it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
             testRender.describe('createGraphics');
             testRender(function() {
-                pg = createGraphics(400, 400, SVG);
+                pg = createGraphics(400, 400, isSVG ? SVG : P2D);
                 background(200);
                 pg.background(100);
                 pg.noStroke();
