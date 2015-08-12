@@ -228,11 +228,15 @@ module.exports = function(p5) {
                 return;
             }
             var svg = path.split(',').pop();
-            if (path.indexOf(';base64,') > -1) {
-                successCallback(atob(svg));
-            } else {
-                successCallback(decodeURIComponent(svg));
-            }
+            // force request to dataurl to be async
+            // so that it won't make preload mess
+            setTimeout(function() {
+                if (path.indexOf(';base64,') > -1) {
+                    successCallback(atob(svg));
+                } else {
+                    successCallback(decodeURIComponent(svg));
+                }
+            }, 1);
         } else {
             this.httpGet(path, successCallback);
         }

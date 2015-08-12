@@ -94,8 +94,12 @@ module.exports = function(p5) {
     };
 
     RendererSVG.prototype.image = function(img, x, y, w, h) {
-        var elt = img._graphics && img._graphics.svg;
-        elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == "svg") && img);
+        if (!img) {
+            throw new Error('Invalid image: ' + img);
+        }
+        var elt = img._graphics && img._graphics.svg; // handle SVG Graphics
+        elt = elt || (img.elt && img.elt.nodeName && (img.elt.nodeName.toLowerCase() === "svg") && img.elt); // SVGElement
+        elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == "svg") && img); // <svg>
         if (elt) {
             // it's <svg> element, let's handle it
             elt = elt.cloneNode(true);
