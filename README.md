@@ -9,7 +9,7 @@ The SVG based canvas API wrapper is powered by [gliffy's canvas2svg](https://git
 
 p5.SVG Version | p5.js Version
 -------------------|----------------------
-v0.4.0 | v0.4.7+
+v0.4.0 | v0.4.7 with [pull#850](https://github.com/processing/p5.js/pull/850)
 v0.3.0 | v0.4.7
 v0.2.0 | v0.4.5
 
