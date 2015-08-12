@@ -3,6 +3,7 @@ module.exports = function(p5) {
     require('./rendering')(p5);
     require('./io')(p5);
     require('./element')(p5);
+    require('./filters')(p5);
 
     // attach constants to p5 instance
     var constants = require('./constants');

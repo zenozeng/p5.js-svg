@@ -54,9 +54,7 @@ module.exports = function(p5) {
     // the filter: f1 f2 and svg param is not supported by many browsers
     // so we can just modify the filter def to do so
     SVGElement.prototype.filter = function(filter, arg) {
-        var filters = this.attribute('filter');
-        filters += ' ' + this._buildFilterString(filter, arg);
-        this.attribute('filter', filters);
+        p5.SVGFilters.apply(this, filter, arg);
         return this;
     };
 
@@ -88,20 +86,38 @@ module.exports = function(p5) {
         return matches[i] ? true : false;
     };
 
-    SVGElement.prototype.parent = function(selector) {
+    /**
+     * Get defs element, or create one if not exists
+     *
+     * @private
+     */
+    SVGElement.prototype._getDefs = function() {
+        var svg = this.parentNode('svg');
+        var defs = svg.query('defs');
+        if (defs[0]) {
+            defs = defs[0];
+        } else {
+            defs = SVGElement.create('defs');
+            svg.append(defs);
+        }
+        return defs;
+    };
+
+    SVGElement.prototype.parentNode = function(selector) {
         if (!selector) {
             return new SVGElement(this.elt.parentNode);
         }
         var elt = this;
         while (true) {
-            elt = this.parent();
+            elt = this.parentNode();
             if (elt.matches(selector)) {
                 return elt;
             }
             if (!elt) { // already top layer
-                return null;
+                break;
             }
         }
+        return null;
     };
 
     p5.SVGElement = SVGElement;

@@ -22,7 +22,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 require('../src/index.js')(p5);
 
-},{"../src/index.js":7}],2:[function(require,module,exports){
+},{"../src/index.js":8}],2:[function(require,module,exports){
 /*!!
  *  Canvas 2 Svg v1.0.9
  *  A low level canvas to SVG converter. Uses a mock canvas context to build an SVG document.
@@ -1511,15 +1511,107 @@ module.exports = function(p5) {
         return this;
     };
 
+    SVGElement.prototype._buildFilterString = function(filter, arg) {
+        var prefix = "p5-svg-";
+        return prefix + filter + "(" + arg + ")";
+    };
+
+    // We have to build a filter for each element
+    // the filter: f1 f2 and svg param is not supported by many browsers
+    // so we can just modify the filter def to do so
+    SVGElement.prototype.filter = function(filter, arg) {
+        p5.SVGFilters.apply(this, filter, arg);
+        return this;
+    };
+
+    SVGElement.prototype.unfilter = function(filter, arg) {
+        var filters = this.attribute('filter');
+        console.log('todo: unfilter');
+        console.log(filters);
+        return this;
+    };
+
+    SVGElement.create = function(nodeName, attributes) {
+        attributes = attributes || {};
+        var elt = document.createElementNS("http://www.w3.org/2000/svg", nodeName);
+        Object.keys(attributes).forEach(function(k) {
+            elt.setAttribute(k, attributes[k]);
+        });
+        return new SVGElement(elt);
+    };
+
+    // matches polyfill from MDN
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+    SVGElement.prototype.matches = function(selector) {
+        var element = this.elt;
+        var matches = (element.document || element.ownerDocument).querySelectorAll(selector);
+        var i = 0;
+        while (matches[i] && matches[i] !== element) {
+            i++;
+        }
+        return matches[i] ? true : false;
+    };
+
+    /**
+     * Get defs element, or create one if not exists
+     *
+     * @private
+     */
+    SVGElement.prototype._getDefs = function() {
+        var svg = this.parentNode('svg');
+        var defs = svg.query('defs');
+        if (defs[0]) {
+            defs = defs[0];
+        } else {
+            defs = SVGElement.create('defs');
+            svg.append(defs);
+        }
+        return defs;
+    };
+
+    SVGElement.prototype.parentNode = function(selector) {
+        if (!selector) {
+            return new SVGElement(this.elt.parentNode);
+        }
+        var elt = this;
+        while (true) {
+            elt = this.parentNode();
+            if (elt.matches(selector)) {
+                return elt;
+            }
+            if (!elt) { // already top layer
+                break;
+            }
+        }
+        return null;
+    };
+
     p5.SVGElement = SVGElement;
 };
 
 },{}],7:[function(require,module,exports){
+// SVG Filter
+
+module.exports = function(p5) {
+    var SVGFilters = require('./p5.SVGFilters')(p5);
+
+    var _filter = p5.prototype.filter;
+    p5.prototype.filter = function(opreation, value) {
+        if (this._graphics.svg) {
+            // TODO
+        } else {
+            _filter.apply(this, arguments);
+        }
+    };
+};
+
+},{"./p5.SVGFilters":11}],8:[function(require,module,exports){
 module.exports = function(p5) {
     require('./p5.RendererSVG')(p5);
     require('./rendering')(p5);
     require('./io')(p5);
     require('./element')(p5);
+    require('./filters')(p5);
 
     // attach constants to p5 instance
     var constants = require('./constants');
@@ -1528,7 +1620,7 @@ module.exports = function(p5) {
     });
 };
 
-},{"./constants":5,"./element":6,"./io":8,"./p5.RendererSVG":9,"./rendering":10}],8:[function(require,module,exports){
+},{"./constants":5,"./element":6,"./filters":7,"./io":9,"./p5.RendererSVG":10,"./rendering":12}],9:[function(require,module,exports){
 module.exports = function(p5) {
     /**
      * Convert SVG Element to jpeg / png data url
@@ -1800,7 +1892,7 @@ module.exports = function(p5) {
     p5.prototype._preloadMethods.loadSVG = 'p5';
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var SVGCanvas = require('svgcanvas');
 
 module.exports = function(p5) {
@@ -1919,7 +2011,73 @@ module.exports = function(p5) {
     p5.RendererSVG = RendererSVG;
 };
 
-},{"svgcanvas":4}],10:[function(require,module,exports){
+},{"svgcanvas":4}],11:[function(require,module,exports){
+module.exports = function(p5) {
+    var SVGFilters = function() {
+    };
+
+    var SVGElement = p5.SVGElement;
+
+    var generateID = function() {
+        return Date.now().toString() + Math.random().toString().replace(/0\./, '');
+    };
+
+    SVGFilters.apply = function(svgElement, func, arg) {
+        // get filters
+        var filters = svgElement.attribute('data-p5-svg-filters') || '[]';
+        filters = JSON.parse(filters);
+        if (func) {
+            filters.push([func, arg]);
+        }
+        svgElement.attribute('data-p5-svg-filters', JSON.stringify(filters));
+
+        // generate filters chain
+        filters = filters.map(function(filter, index) {
+            var inGraphics = index === 0 ? 'SourceGraphic' : ('result-' + (index - 1));
+            var resultGraphics = 'result-' + index;
+            return SVGFilters[filter[0]].call(null, inGraphics, resultGraphics, filter[1]);
+        });
+
+        // get filter id for this element or create one
+        var filterid = svgElement.attribute('data-p5-svg-filter-id');
+        if (!filterid) {
+            filterid = 'p5-svg-' + generateID();
+            svgElement.attribute('data-p5-svg-filter-id', filterid);
+            svgElement.attribute('filter', 'url(#' + filterid + ')');
+        }
+
+        // create <filter>
+        var filter = SVGElement.create('filter', {id: filterid});
+        filters.forEach(function(elt) {
+            filter.append(elt);
+        });
+
+        // get defs
+        var defs = svgElement._getDefs();
+        var oldfilter = defs.query('#' + filterid)[0];
+        if (!oldfilter) {
+            defs.append(filter);
+        } else {
+            oldfilter.parentNode.replaceNode(filter, oldfilter);
+        }
+    };
+
+    SVGFilters.blur = function(inGraphics, resultGraphics, val) {
+        return SVGElement.create('feGaussianBlur', {
+            stdDeviation: val,
+            "in": inGraphics,
+            result: resultGraphics
+        });
+    };
+
+    p5.SVGFilters = SVGFilters;
+
+    return SVGFilters;
+};
+
+
+
+},{}],12:[function(require,module,exports){
 var constants = require('./constants');
 var SVGCanvas = require('svgcanvas');
 
