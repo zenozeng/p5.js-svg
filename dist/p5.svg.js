@@ -1511,23 +1511,25 @@ module.exports = function(p5) {
         return this;
     };
 
-    SVGElement.prototype._buildFilterString = function(filter, arg) {
-        var prefix = "p5-svg-";
-        return prefix + filter + "(" + arg + ")";
-    };
-
-    // We have to build a filter for each element
-    // the filter: f1 f2 and svg param is not supported by many browsers
-    // so we can just modify the filter def to do so
     SVGElement.prototype.filter = function(filter, arg) {
         p5.SVGFilters.apply(this, filter, arg);
         return this;
     };
 
-    SVGElement.prototype.unfilter = function(filter, arg) {
-        var filters = this.attribute('filter');
-        console.log('todo: unfilter');
-        console.log(filters);
+    SVGElement.prototype.unfilter = function(filterName, arg) {
+        var filters = this.attribute('data-p5-svg-filters') || '[]';
+        filters = JSON.parse(filters);
+        var found = false;
+        filters = filters.reverse().filter(function(filter) {
+            console.log(filter);
+            if ((filter[0] === filterName) && (filter[1] === arg) && !found) {
+                found = true;
+                return false;
+            }
+            return true;
+        }).reverse();
+        this.attribute('data-p5-svg-filters', JSON.stringify(filters));
+        p5.SVGFilters.apply(this, null);
         return this;
     };
 
@@ -1598,7 +1600,10 @@ module.exports = function(p5) {
     var _filter = p5.prototype.filter;
     p5.prototype.filter = function(opreation, value) {
         if (this._graphics.svg) {
-            // TODO
+            // move nodes to a new <g>
+            var nodes = this._graphics.svg.children;
+            for (var i = 0; i < nodes.length; i++) {
+            }
         } else {
             _filter.apply(this, arguments);
         }
@@ -2022,6 +2027,9 @@ module.exports = function(p5) {
         return Date.now().toString() + Math.random().toString().replace(/0\./, '');
     };
 
+    // We have to build a filter for each element
+    // the `filter: f1 f2` and svg param is not supported by many browsers
+    // so we can just modify the filter def to do so
     SVGFilters.apply = function(svgElement, func, arg) {
         // get filters
         var filters = svgElement.attribute('data-p5-svg-filters') || '[]';
@@ -2030,6 +2038,11 @@ module.exports = function(p5) {
             filters.push([func, arg]);
         }
         svgElement.attribute('data-p5-svg-filters', JSON.stringify(filters));
+
+        if (filters.length === 0) {
+            svgElement.attribute('filter', null);
+            return;
+        }
 
         // generate filters chain
         filters = filters.map(function(filter, index) {

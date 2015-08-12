@@ -8,6 +8,9 @@ module.exports = function(p5) {
         return Date.now().toString() + Math.random().toString().replace(/0\./, '');
     };
 
+    // We have to build a filter for each element
+    // the `filter: f1 f2` and svg param is not supported by many browsers
+    // so we can just modify the filter def to do so
     SVGFilters.apply = function(svgElement, func, arg) {
         // get filters
         var filters = svgElement.attribute('data-p5-svg-filters') || '[]';
@@ -16,6 +19,11 @@ module.exports = function(p5) {
             filters.push([func, arg]);
         }
         svgElement.attribute('data-p5-svg-filters', JSON.stringify(filters));
+
+        if (filters.length === 0) {
+            svgElement.attribute('filter', null);
+            return;
+        }
 
         // generate filters chain
         filters = filters.map(function(filter, index) {

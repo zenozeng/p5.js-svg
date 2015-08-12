@@ -6,7 +6,10 @@ module.exports = function(p5) {
     var _filter = p5.prototype.filter;
     p5.prototype.filter = function(opreation, value) {
         if (this._graphics.svg) {
-            // TODO
+            // move nodes to a new <g>
+            var nodes = this._graphics.svg.children;
+            for (var i = 0; i < nodes.length; i++) {
+            }
         } else {
             _filter.apply(this, arguments);
         }
