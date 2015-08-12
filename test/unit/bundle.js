@@ -2438,6 +2438,8 @@ describe('SVG Manipulating API', function() {
                 var paths = pg.querySVG('path');
                 try {
                     assert.equal(paths.length, 2);
+                    paths[0].attribute("stroke-width", 1);
+                    assert.equal(paths[0].attribute("stroke-width"), 1);
                     done();
                 } catch(e) {
                     done(e);

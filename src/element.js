@@ -35,13 +35,12 @@ module.exports = function(p5) {
         var args = arguments;
         if (args.length === 3) {
             this.elt.setAttributeNS.apply(this.elt, args);
-            return this;
         }
         if (args.length === 2) {
             this.elt.setAttribute.apply(this.elt, args);
         }
         if (args.length === 1) {
-            this.elt.getAttribute.apply(this.elt, args);
+            return this.elt.getAttribute.apply(this.elt, args);
         }
         return this;
     };
