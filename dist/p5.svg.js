@@ -1750,13 +1750,34 @@ module.exports = function(p5) {
     };
 
     /**
+     * Custom get in p5.svg (handles http and dataurl)
+     * @private
+     */
+    p5.prototype._svg_get = function(path, successCallback, failureCallback) {
+        if (path.indexOf('data:') === 0) {
+            if (path.indexOf(',') === -1) {
+                failureCallback(new Error('Fail to parse dataurl: ' + path));
+                return;
+            }
+            var svg = path.split(',').pop();
+            if (path.indexOf(';base64,') > -1) {
+                successCallback(atob(svg));
+            } else {
+                successCallback(decodeURIComponent(svg));
+            }
+        } else {
+            this.httpGet(path, successCallback);
+        }
+    };
+
+    /**
      * loadSVG (like loadImage, but will return SVGElement)
      * @returns {p5.SVGElement}
      */
     p5.prototype.loadSVG = function(path, successCallback, failureCallback) {
         var div = document.createElement('div');
         var element = new p5.SVGElement(div);
-        this.httpGet(path, function(svg) {
+        this._svg_get(path, function(svg) {
             div.innerHTML = svg;
             svg = div.querySelector('svg');
             if (!svg) {
@@ -1769,7 +1790,7 @@ module.exports = function(p5) {
             if (successCallback) {
                 successCallback(element);
             }
-        });
+        }, failureCallback);
         return element;
     };
     // cause preload to wait
