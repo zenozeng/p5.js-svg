@@ -45,5 +45,27 @@ module.exports = function(p5) {
         return this;
     };
 
+    SVGElement.prototype._buildFilterString = function(filter, arg) {
+        var prefix = "p5-svg-";
+        return prefix + filter + "(" + arg + ")";
+    };
+
+    // We have to build a filter for each element
+    // the filter: f1 f2 and svg param is not supported by many browsers
+    // so we can just modify the filter def to do so
+    SVGElement.prototype.filter = function(filter, arg) {
+        var filters = this.attribute('filter');
+        filters += ' ' + this._buildFilterString(filter, arg);
+        this.attribute('filter', filters);
+        return this;
+    };
+
+    SVGElement.prototype.unfilter = function(filter, arg) {
+        var filters = this.attribute('filter');
+        console.log('todo: unfilter');
+        console.log(filters);
+        return this;
+    };
+
     p5.SVGElement = SVGElement;
 };
