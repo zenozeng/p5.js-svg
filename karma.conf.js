@@ -9,9 +9,9 @@ module.exports = function(config) {
             // note: lower index will override greater index config
             'test/bower_components/p5.js/p5.js',
             'test/bower_components/jquery/dist/jquery.js',
-            // 'dist/p5.svg.js',
             'build/entry.js',
             {pattern: 'src/**/*.js', included: false},
+            {pattern: 'test/unit/svg/*.svg', included: false},
             'test/unit/bundle.js'
         ],
         preprocessors: {
