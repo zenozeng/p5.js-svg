@@ -67,5 +67,42 @@ module.exports = function(p5) {
         return this;
     };
 
+    SVGElement.create = function(nodeName, attributes) {
+        attributes = attributes || {};
+        var elt = document.createElementNS("http://www.w3.org/2000/svg", nodeName);
+        Object.keys(attributes).forEach(function(k) {
+            elt.setAttribute(k, attributes[k]);
+        });
+        return new SVGElement(elt);
+    };
+
+    // matches polyfill from MDN
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+    SVGElement.prototype.matches = function(selector) {
+        var element = this.elt;
+        var matches = (element.document || element.ownerDocument).querySelectorAll(selector);
+        var i = 0;
+        while (matches[i] && matches[i] !== element) {
+            i++;
+        }
+        return matches[i] ? true : false;
+    };
+
+    SVGElement.prototype.parent = function(selector) {
+        if (!selector) {
+            return new SVGElement(this.elt.parentNode);
+        }
+        var elt = this;
+        while (true) {
+            elt = this.parent();
+            if (elt.matches(selector)) {
+                return elt;
+            }
+            if (!elt) { // already top layer
+                return null;
+            }
+        }
+    };
+
     p5.SVGElement = SVGElement;
 };

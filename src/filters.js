@@ -1,8 +1,7 @@
 // SVG Filter
 
 module.exports = function(p5) {
-    var SVGFilters = require('./SVGFilters');
-    p5.SVGFilters = SVGFilters;
+    var SVGFilters = require('./p5.SVGFilters')(p5);
 
     var _filter = p5.prototype.filter;
     p5.prototype.filter = function(opreation, value) {
