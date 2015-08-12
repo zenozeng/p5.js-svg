@@ -2058,7 +2058,7 @@ module.exports = function(p5) {
         if (!oldfilter) {
             defs.append(filter);
         } else {
-            oldfilter.parentNode.replaceNode(filter, oldfilter);
+            oldfilter.elt.parentNode.replaceChild(filter.elt, oldfilter.elt);
         }
     };
 
