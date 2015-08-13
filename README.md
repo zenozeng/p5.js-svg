@@ -23,7 +23,10 @@ v0.2.0 | v0.4.5
 
 p5.SVG's filters were implemented using SVG Filter.
 So the result of these filter may not be exactly same as canvas's.
-But they are almost same.
+
+For example, in SVG Renderer, I use feGaussianBlur,
+but Canvas Renderer uses a pixels based blur (port of processing's blur),
+so the results may not be exactly same.
 
 ### 3D
 
