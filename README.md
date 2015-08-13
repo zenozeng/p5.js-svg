@@ -19,6 +19,12 @@ v0.2.0 | v0.4.5
 
 - blendMode() is not yet supported
 
+### Filters
+
+p5.SVG's filters were implemented using SVG Filter.
+So the result of these filter may not be exactly same as canvas's.
+But they are almost same.
+
 ### 3D
 
 - [P3D is not supported yet](https://github.com/zenozeng/p5.js-svg/issues/51)

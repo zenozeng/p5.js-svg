@@ -1605,12 +1605,15 @@ module.exports = function(p5) {
             var g = p5.SVGElement.create('g');
             this._graphics._setGCFlag(g.elt);
             this._graphics.svg.appendChild(g.elt);
-            for (var i = 0; i < nodes.length; i++) {
-                var node = nodes[i];
+            // convert nodeList to array and use forEach
+            // instead of using for loop,
+            // which is buggy due to the length changed during append
+            nodes = Array.prototype.slice.call(nodes);
+            nodes.forEach(function(node) {
                 if (node !== g.elt && (node.nodeName.toLowerCase() !== 'defs')) {
-                    g.append(node);
+                    g.elt.appendChild(node);
                 }
-            }
+            });
 
             // apply filter
             g.filter(operation, value);

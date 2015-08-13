@@ -1,10 +1,11 @@
 function setup() {
     createCanvas(100, 100, SVG);
-    ellipse(width/2, height/2, 50, 50);
-    ellipse(width/2, height/2, 50, 50);
-    ellipse(width/2, height/2, 50, 50);
-    frameRate(10);
-    filter(BLUR, 5);
+    background(255);
+    stroke(255, 0, 0);
+    strokeWeight(10);
+    line(0, 0, 100, 100);
+    line(0, 100, 100, 0);
+    filter(BLUR, 10);
     noLoop();
 }
 
