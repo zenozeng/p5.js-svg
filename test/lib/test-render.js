@@ -41,6 +41,7 @@ var countPixels = function(imgData) {
     return count;
 };
 
+var maxPixelDiff = 0;
 var diffPixels = function(imgData1, imgData2, diffImgData) {
     for (var i = 0; i < imgData1.data.length; i += 4) {
         var indexes = [i, i+1, i+2, i+3];
@@ -48,7 +49,7 @@ var diffPixels = function(imgData1, imgData2, diffImgData) {
             diffImgData.data[i] = 0;
         });
         if(indexes.some(function(i) {
-            return imgData1.data[i] != imgData2.data[i];
+            return Math.abs(imgData1.data[i] - imgData2.data[i]) > maxPixelDiff;
         })) {
             diffImgData.data[i+3] = 255; // set black
         }
@@ -235,11 +236,13 @@ var testRender = function(draw, callback) {
         var diffCount = countPixels(diffImgData2);
         var rate = diffCount / count;
         var match = rate <= (testRender.maxDiff || 0.05);
-        testRender.setMaxDiff(0.05); // reset maxDiff
 
         // update $match
         var icon = match ? 'fa-check': 'fa-times';
         el.$match.html('<i class="fa ' + icon + '"></i>');
+
+        testRender.setMaxDiff(0.05); // reset maxDiff
+        testRender.setMaxPixelDiff(0); // reset maxPixelDiff
 
         // callback
         if (match) {
@@ -276,6 +279,10 @@ testRender.describe = function(str) {
 
 testRender.setMaxDiff = function(max) {
     testRender.maxDiff = max;
+};
+
+testRender.setMaxPixelDiff = function(max) {
+    maxPixelDiff = max;
 };
 
 testRender.wait = function(ms) {

@@ -15,16 +15,19 @@ describe('Filters', function() {
             line(0, 0, 100, 100);
             line(0, 100, 100, 0);
             filter(BLUR, 5);
+            testRender.setMaxPixelDiff(2);
             testRender.setMaxDiff(1); // ignore diff, see known issue
         },
         gray: function() {
             background(200, 100, 50);
             filter(GRAY);
+            testRender.setMaxPixelDiff(1);
         },
         invert: function() {
             background(255, 0, 0);
             filter(INVERT);
             ellipse(50, 50, 50, 50);
+            testRender.setMaxPixelDiff(1);
         },
         threshold: function() {
             background(255, 0, 0);

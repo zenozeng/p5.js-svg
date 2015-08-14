@@ -2254,7 +2254,6 @@ module.exports = function(p5) {
                 mode: mode
             }));
         });
-        console.log(elements);
         return elements;
     };
 
