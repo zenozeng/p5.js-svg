@@ -234,7 +234,8 @@ var testRender = function(draw, callback) {
         var count = countPixels(imgData1);
         var diffCount = countPixels(diffImgData2);
         var rate = diffCount / count;
-        var match = rate <= 0.05;
+        var match = rate <= (testRender.maxDiff || 0.05);
+        testRender.setMaxDiff(0.05); // reset maxDiff
 
         // update $match
         var icon = match ? 'fa-check': 'fa-times';
@@ -271,6 +272,10 @@ testRender.describe = function(str) {
         var $container = $('#test-graph');
         $container.append('<h2>' + str + '</h2>');
     });
+};
+
+testRender.setMaxDiff = function(max) {
+    testRender.maxDiff = max;
 };
 
 testRender.wait = function(ms) {

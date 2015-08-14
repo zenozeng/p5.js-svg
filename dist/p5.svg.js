@@ -2101,7 +2101,8 @@ module.exports = function(p5) {
         return SVGElement.create('feGaussianBlur', {
             stdDeviation: val,
             in: inGraphics,
-            result: resultGraphics
+            result: resultGraphics,
+            "color-interpolation-filters": "sRGB"
         });
     };
 
