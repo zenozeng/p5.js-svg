@@ -2096,7 +2096,49 @@ module.exports = function(p5) {
     SVGFilters.blur = function(inGraphics, resultGraphics, val) {
         return SVGElement.create('feGaussianBlur', {
             stdDeviation: val,
-            "in": inGraphics,
+            in: inGraphics,
+            result: resultGraphics
+        });
+    };
+
+    // Here we use CIE luminance for RGB
+    // See also: http://www.w3.org/TR/SVG11/filters.html#feColorMatrixElement
+    // See also: http://stackoverflow.com/questions/21977929/match-colors-in-fecolormatrix-filter
+    SVGFilters.gray = function(inGraphics, resultGraphics, val) {
+        var matrix = [
+            0.2126, 0.7152, 0.0722, 0, 0, // R'
+            0.2126, 0.7152, 0.0722, 0, 0, // G'
+            0.2126, 0.7152, 0.0722, 0, 0, // B'
+            0, 0, 0, 1, 0 // A'
+        ].join(' ');
+        return SVGElement.create('feColorMatrix', {
+            type: "matrix",
+            values: matrix,
+            "color-interpolation-filters": "sRGB",
+            in: inGraphics,
+            result: resultGraphics
+        });
+    };
+
+    SVGFilters.threshold = function(inGraphics, resultGraphics, val) {
+        var elements = [];
+        elements.push(SVGFilters.gray(inGraphics, resultGraphics + "-tmp"));
+        // TODO: use feComponentTransfer
+        return elements[0];
+    };
+
+    SVGFilters.invert = function(inGraphics, resultGraphics) {
+        var matrix = [
+            -1, 0, 0, 0, 1, // R'
+            0, -1, 0, 0, 1, // G'
+            0, 0, -1, 0, 1, // B'
+            0, 0, 0, 1, 0 // A'
+        ].join(' ');
+        return SVGElement.create('feColorMatrix', {
+            type: "matrix",
+            values: matrix,
+            "color-interpolation-filters": "sRGB",
+            in: inGraphics,
             result: resultGraphics
         });
     };
