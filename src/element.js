@@ -55,7 +55,6 @@ module.exports = function(p5) {
         filters = JSON.parse(filters);
         var found = false;
         filters = filters.reverse().filter(function(filter) {
-            console.log(filter);
             if ((filter[0] === filterName) && (filter[1] === arg) && !found) {
                 found = true;
                 return false;

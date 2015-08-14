@@ -1755,6 +1755,7 @@ describe('Filters', function() {
         invert: function() {
             background(255, 0, 0);
             filter(INVERT);
+            ellipse(50, 50, 50, 50);
         },
         threshold: function() {
             background(255, 0, 0);
@@ -1767,11 +1768,27 @@ describe('Filters', function() {
             background(255, 0, 0, 127);
             filter(OPAQUE); // Sets the alpha channel to 255
         },
-        posterize: function(done) {
+        posterize: function() {
             testRender.lock();
             loadImage(TESTIMG, function(img) {
                 image(img, 0, 0);
                 filter(POSTERIZE, 2);
+                testRender.unlock();
+            });
+        },
+        erode: function() {
+            testRender.lock();
+            loadImage(TESTIMG, function(img) {
+                image(img, 0, 0);
+                filter(ERODE);
+                testRender.unlock();
+            });
+        },
+        dilate: function() {
+            testRender.lock();
+            loadImage(TESTIMG, function(img) {
+                image(img, 0, 0);
+                filter(DILATE);
                 testRender.unlock();
             });
         }

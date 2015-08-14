@@ -1521,7 +1521,6 @@ module.exports = function(p5) {
         filters = JSON.parse(filters);
         var found = false;
         filters = filters.reverse().filter(function(filter) {
-            console.log(filter);
             if ((filter[0] === filterName) && (filter[1] === arg) && !found) {
                 found = true;
                 return false;
@@ -2218,9 +2217,56 @@ module.exports = function(p5) {
             componentTransfer.append(func);
         });
 
-        console.log(componentTransfer.elt);
-
         return componentTransfer;
+    };
+
+    SVGFilters._blendOffset = function(inGraphics, resultGraphics, mode) {
+        var elements = [];
+        [
+            ["left", -1, 0],
+            ["right", 1, 0],
+            ["up", 0, -1],
+            ["down", 0, 1]
+        ].forEach(function(neighbor) {
+            elements.push(SVGElement.create('feOffset', {
+                "in": inGraphics,
+                result: resultGraphics + "-" + neighbor[0],
+                dx: neighbor[1],
+                dy: neighbor[2]
+            }));
+        });
+        [
+            [null, inGraphics],
+            [resultGraphics + "-left", resultGraphics + "-tmp-0"],
+            [resultGraphics + "-right", resultGraphics + "-tmp-1"],
+            [resultGraphics + "-up", resultGraphics + "-tmp-2"],
+            [resultGraphics + "-down", resultGraphics + "-tmp-3"]
+        ].forEach(function(layer, i, layers) {
+            if (i === 0) {
+                return;
+            }
+            elements.push(SVGElement.create('feBlend', {
+                "in": layers[i - 1][1],
+                in2: layer[0],
+                result: layer[1],
+                mode: mode
+            }));
+        });
+        console.log(elements);
+        return elements;
+    };
+
+    /**
+     * Increases the bright areas in an image
+     *
+     * Will create 4 offset layer and blend them using darken mode
+     */
+    SVGFilters.erode = function(inGraphics, resultGraphics) {
+        return SVGFilters._blendOffset(inGraphics, resultGraphics, 'darken');
+    };
+
+    SVGFilters.dilate = function(inGraphics, resultGraphics) {
+        return SVGFilters._blendOffset(inGraphics, resultGraphics, 'lighten');
     };
 
     p5.SVGFilters = SVGFilters;
