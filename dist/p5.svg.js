@@ -1621,6 +1621,7 @@ module.exports = function(p5) {
             g = p5.SVGElement.create('g');
             this._graphics._setGCFlag(g.elt);
             this._graphics.svg.appendChild(g.elt);
+            this._graphics.drawingContext.__currentElement = g.elt;
         } else {
             _filter.apply(this, arguments);
         }
