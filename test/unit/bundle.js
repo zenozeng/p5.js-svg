@@ -1716,10 +1716,22 @@ testRender.wait = function(ms) {
     testRender.waitUntil = Date.now() + ms;
 };
 
+// add lock so testRender will wait
+testRender.lock = function() {
+    testRender.wait(1000 * 1000 * 1000);
+};
+
+// remove lock
+testRender.unlock = function() {
+    testRender.wait(0);
+};
+
 module.exports = testRender;
 
 },{"./p5":4,"assert":8,"svgcanvas":3}],6:[function(require,module,exports){
 var testRender = require('../../lib/test-render');
+
+window.TESTIMG = window.__karma__ ? "/base/test/unit/filter/light_by_zenozeng.jpg" : "./unit/filter/light_by_zenozeng.jpg";
 
 describe('Filters', function() {
 
@@ -1754,6 +1766,14 @@ describe('Filters', function() {
         opaque: function() {
             background(255, 0, 0, 127);
             filter(OPAQUE); // Sets the alpha channel to 255
+        },
+        posterize: function(done) {
+            testRender.lock();
+            loadImage(TESTIMG, function(img) {
+                image(img, 0, 0);
+                filter(POSTERIZE, 2);
+                testRender.unlock();
+            });
         }
     };
 

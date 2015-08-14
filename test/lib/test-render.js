@@ -277,4 +277,14 @@ testRender.wait = function(ms) {
     testRender.waitUntil = Date.now() + ms;
 };
 
+// add lock so testRender will wait
+testRender.lock = function() {
+    testRender.wait(1000 * 1000 * 1000);
+};
+
+// remove lock
+testRender.unlock = function() {
+    testRender.wait(0);
+};
+
 module.exports = testRender;

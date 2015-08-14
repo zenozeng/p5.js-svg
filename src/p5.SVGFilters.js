@@ -133,6 +133,45 @@ module.exports = function(p5) {
         return SVGFilters.colorMatrix(inGraphics, resultGraphics, matrix);
     };
 
+    /**
+     * Limits each channel of the image to the number of colors specified as
+     * the parameter. The parameter can be set to values between 2 and 255, but
+     * results are most noticeable in the lower ranges.
+     *
+     * Adapted from p5's Filters.posterize
+     */
+    SVGFilters.posterize = function(inGraphics, resultGraphics, level) {
+        level = parseInt(level, 10);
+        if ((level < 2) || (level > 255)) {
+            throw new Error(
+                'Level must be greater than 2 and less than 255 for posterize'
+            );
+        }
+
+        // We are dividing channel into `level` ranges
+        // so we need `level + 1` points
+        var tableValues = [0];
+        for (var i = 1; i <= level; i++) {
+            tableValues.push(1 / level * i);
+        }
+
+        var componentTransfer = SVGElement.create('feComponentTransfer', {
+            "in": inGraphics,
+            result: resultGraphics
+        });
+        ["R", "G", "B"].forEach(function(channel) {
+            var func = SVGElement.create('feFunc' + channel, {
+                type: "discrete",
+                tableValues: tableValues.join(' ')
+            });
+            componentTransfer.append(func);
+        });
+
+        console.log(componentTransfer.elt);
+
+        return componentTransfer;
+    };
+
     p5.SVGFilters = SVGFilters;
 
     return SVGFilters;

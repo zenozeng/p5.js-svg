@@ -1,5 +1,7 @@
 var testRender = require('../../lib/test-render');
 
+window.TESTIMG = window.__karma__ ? "/base/test/unit/filter/light_by_zenozeng.jpg" : "./unit/filter/light_by_zenozeng.jpg";
+
 describe('Filters', function() {
 
     var tests = {
@@ -33,6 +35,14 @@ describe('Filters', function() {
         opaque: function() {
             background(255, 0, 0, 127);
             filter(OPAQUE); // Sets the alpha channel to 255
+        },
+        posterize: function(done) {
+            testRender.lock();
+            loadImage(TESTIMG, function(img) {
+                image(img, 0, 0);
+                filter(POSTERIZE, 2);
+                testRender.unlock();
+            });
         }
     };
 
