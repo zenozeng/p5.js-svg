@@ -14,9 +14,14 @@ describe('Filters', function() {
         //     line(0, 100, 100, 0);
         //     filter(BLUR, 10);
         // }
+
         gray: function() {
             background(200, 100, 50);
             filter(GRAY);
+        },
+        invert: function() {
+            background(255, 0, 0);
+            filter(INVERT);
         },
         threshold: function() {
             background(255, 0, 0);
@@ -24,10 +29,6 @@ describe('Filters', function() {
             strokeWeight(10);
             line(0, 0, 100, 100);
             filter(THRESHOLD, 0.5);
-        },
-        invert: function() {
-            background(255, 0, 0);
-            filter(INVERT);
         }
     };
 

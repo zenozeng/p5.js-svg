@@ -43,7 +43,12 @@ module.exports = function(p5) {
         // create <filter>
         var filter = SVGElement.create('filter', {id: filterid});
         filters.forEach(function(elt) {
-            filter.append(elt);
+            if (!Array.isArray(elt)) {
+                elt = [elt];
+            }
+            elt.forEach(function(elt) {
+                filter.append(elt);
+            });
         });
 
         // get defs
@@ -86,16 +91,30 @@ module.exports = function(p5) {
     SVGFilters.threshold = function(inGraphics, resultGraphics, val) {
         var elements = [];
         elements.push(SVGFilters.gray(inGraphics, resultGraphics + "-tmp"));
-        // TODO: use feComponentTransfer
-        return elements[0];
+        var componentTransfer = SVGElement.create('feComponentTransfer', {
+            "in": resultGraphics + "-tmp",
+            result: resultGraphics
+        });
+        var thresh = Math.floor(val * 255);
+        ["R", "G", "B"].forEach(function(channel) {
+            // Note that original value is from 0 to 1
+            var func = SVGElement.create('feFunc' + channel, {
+                type: "linear",
+                slope: 255, // all non-zero * 255
+                intercept: (thresh - 1) * -1
+            });
+            componentTransfer.append(func);
+        });
+        elements.push(componentTransfer);
+        return elements;
     };
 
     SVGFilters.invert = function(inGraphics, resultGraphics) {
         var matrix = [
-            -1, 0, 0, 0, 1, // R'
-            0, -1, 0, 0, 1, // G'
-            0, 0, -1, 0, 1, // B'
-            0, 0, 0, 1, 0 // A'
+            -1, 0, 0, 0, 1,
+            0, -1, 0, 0, 1,
+            0, 0, -1, 0, 1,
+            0, 0, 0, 1, 0
         ].join(' ');
         return SVGElement.create('feColorMatrix', {
             type: "matrix",
@@ -110,5 +129,3 @@ module.exports = function(p5) {
 
     return SVGFilters;
 };
-
-
