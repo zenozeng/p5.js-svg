@@ -69,23 +69,27 @@ module.exports = function(p5) {
         });
     };
 
-    // Here we use CIE luminance for RGB
     // See also: http://www.w3.org/TR/SVG11/filters.html#feColorMatrixElement
     // See also: http://stackoverflow.com/questions/21977929/match-colors-in-fecolormatrix-filter
+    SVGFilters.colorMatrix = function(inGraphics, resultGraphics, matrix) {
+        return SVGElement.create('feColorMatrix', {
+            type: "matrix",
+            values: matrix.join(' '),
+            "color-interpolation-filters": "sRGB",
+            in: inGraphics,
+            result: resultGraphics
+        });
+    };
+
+    // Here we use CIE luminance for RGB
     SVGFilters.gray = function(inGraphics, resultGraphics, val) {
         var matrix = [
             0.2126, 0.7152, 0.0722, 0, 0, // R'
             0.2126, 0.7152, 0.0722, 0, 0, // G'
             0.2126, 0.7152, 0.0722, 0, 0, // B'
             0, 0, 0, 1, 0 // A'
-        ].join(' ');
-        return SVGElement.create('feColorMatrix', {
-            type: "matrix",
-            values: matrix,
-            "color-interpolation-filters": "sRGB",
-            in: inGraphics,
-            result: resultGraphics
-        });
+        ];
+        return SVGFilters.colorMatrix(inGraphics, resultGraphics, matrix);
     };
 
     SVGFilters.threshold = function(inGraphics, resultGraphics, val) {
@@ -115,14 +119,18 @@ module.exports = function(p5) {
             0, -1, 0, 0, 1,
             0, 0, -1, 0, 1,
             0, 0, 0, 1, 0
-        ].join(' ');
-        return SVGElement.create('feColorMatrix', {
-            type: "matrix",
-            values: matrix,
-            "color-interpolation-filters": "sRGB",
-            in: inGraphics,
-            result: resultGraphics
-        });
+        ];
+        return SVGFilters.colorMatrix(inGraphics, resultGraphics, matrix);
+    };
+
+    SVGFilters.opaque = function(inGraphics, resultGraphics) {
+        var matrix = [
+            1, 0, 0, 0, 0, // original R
+            0, 1, 0, 0, 0, // original G
+            0, 0, 1, 0, 0, // original B
+            0, 0, 0, 0, 1 // set A to 1
+        ];
+        return SVGFilters.colorMatrix(inGraphics, resultGraphics, matrix);
     };
 
     p5.SVGFilters = SVGFilters;

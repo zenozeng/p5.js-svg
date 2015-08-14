@@ -1750,6 +1750,10 @@ describe('Filters', function() {
             strokeWeight(10);
             line(0, 0, 100, 100);
             filter(THRESHOLD, 0.5);
+        },
+        opaque: function() {
+            background(255, 0, 0, 127);
+            filter(OPAQUE); // Sets the alpha channel to 255
         }
     };
 
