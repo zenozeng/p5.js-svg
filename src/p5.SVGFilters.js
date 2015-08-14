@@ -134,6 +134,22 @@ module.exports = function(p5) {
     };
 
     /**
+     * Generate discrete table values based on the given color map function
+     *
+     * @private
+     * @param {Function} fn - Function to map channel values (val ∈ [0, 255])
+     * @see http://www.w3.org/TR/SVG/filters.html#feComponentTransferElement
+     */
+    SVGFilters._discreteTableValues = function(fn) {
+        var table = [];
+        for (var val = 0; val < 256; val++) {
+            var newval = fn(val);
+            table.push(newval / 255); // map to ∈ [0, 1]
+        }
+        return table;
+    };
+
+    /**
      * Limits each channel of the image to the number of colors specified as
      * the parameter. The parameter can be set to values between 2 and 255, but
      * results are most noticeable in the lower ranges.
@@ -148,16 +164,14 @@ module.exports = function(p5) {
             );
         }
 
-        // We are dividing channel into `level` ranges
-        // so we need `level + 1` points
-        var tableValues = [0];
-        for (var i = 1; i <= level; i++) {
-            tableValues.push(1 / level * i);
-        }
+        var tableValues = SVGFilters._discreteTableValues(function(val) {
+            return (((val * level) >> 8) * 255) / (level - 1);
+        });
 
         var componentTransfer = SVGElement.create('feComponentTransfer', {
             "in": inGraphics,
-            result: resultGraphics
+            result: resultGraphics,
+            "color-interpolation-filters": "sRGB"
         });
         ["R", "G", "B"].forEach(function(channel) {
             var func = SVGElement.create('feFunc' + channel, {
