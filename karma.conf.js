@@ -11,7 +11,8 @@ module.exports = function(config) {
             'test/bower_components/jquery/dist/jquery.js',
             'build/entry.js',
             {pattern: 'src/**/*.js', included: false},
-            {pattern: 'test/unit/svg/*.svg', included: false},
+            {pattern: 'test/unit/**/*.svg', included: false},
+            {pattern: 'test/unit/**/*.jpg', included: false},
             'test/unit/bundle.js'
         ],
         preprocessors: {
