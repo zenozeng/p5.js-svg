@@ -1585,8 +1585,6 @@ var prepareDom = function(draw) {
 
     // the svg result
     var svg = new Image();
-    svg.width = 100;
-    svg.height = 100;
     svg.onload = function() {
         status.svg = true;
     };
@@ -1607,14 +1605,14 @@ var prepareDom = function(draw) {
 
     // diff canvas
     var diffCanvas = document.createElement('canvas');
-    diffCanvas.width = 100;
-    diffCanvas.height = 100;
+    diffCanvas.width = 100 * window.devicePixelRatio;
+    diffCanvas.height = 100 * window.devicePixelRatio;;
     $container.append(diffCanvas);
 
     // diff canvas2 for removing thin lines
     var diffCanvas2 = document.createElement('canvas');
-    diffCanvas2.width = 100;
-    diffCanvas2.height = 100;
+    diffCanvas2.width = 100 * window.devicePixelRatio;;
+    diffCanvas2.height = 100 * window.devicePixelRatio;;
     $container.append(diffCanvas2);
 
     // match?
@@ -1665,8 +1663,8 @@ var testRender = function(draw, callback) {
         }
 
         var ctx = el.diffCanvas.getContext('2d');
-        var w = 100;
-        var h = 100;
+        var w = 100 * window.devicePixelRatio;
+        var h = 100 * window.devicePixelRatio;
 
         // svg render result
         ctx.clearRect(0, 0, w, h);
