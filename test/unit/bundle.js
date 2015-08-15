@@ -2103,6 +2103,8 @@ var testRender = require('../../lib/test-render');
 var assert = require('assert');
 
 describe('Rendering', function() {
+    this.timeout(0);
+
     describe('noCanvas', function() {
         it('should remove the <svg> created by createCanvas', function() {
             new p5(function(p) {
