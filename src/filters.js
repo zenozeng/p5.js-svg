@@ -5,12 +5,13 @@ module.exports = function(p5) {
 
     var _filter = p5.prototype.filter;
     p5.prototype.filter = function(operation, value) {
-        if (this._graphics.svg) {
+        var svg = this._graphics.svg;
+        if (svg) {
             // move nodes to a new <g>
-            var nodes = this._graphics.svg.children;
+            var nodes = svg.children || svg.childNodes; // childNodes is for IE
             var g = p5.SVGElement.create('g');
             this._graphics._setGCFlag(g.elt);
-            this._graphics.svg.appendChild(g.elt);
+            svg.appendChild(g.elt);
             // convert nodeList to array and use forEach
             // instead of using for loop,
             // which is buggy due to the length changed during append

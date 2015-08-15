@@ -1267,8 +1267,9 @@ Context.prototype.__gc = function() {
                 lastCount = count;
                 elements = elements.filter(function(elem) {
                     // in case children may from live generation, gc from bottom to top
-                    if (elem.children.length === 0) {
-                        elem.remove();
+                    var children = elem.children || elem.childNodes; // childNodes for IE
+                    if (children.length === 0) {
+                        elem.parentNode.removeChild(elem);
                         return false;
                     } else {
                         return true;
@@ -1296,7 +1297,7 @@ Context.prototype.clearRect = function(x, y, w, h) {
         this.generations.forEach(function(elems) {
             elems.forEach(function(elem) {
                 if (elem) {
-                    elem.remove();
+                    elem.parentNode.removeChild(elem);
                 }
             });
         });
@@ -1425,6 +1426,21 @@ SVGCanvas.prototype.toObjectURL = function() {
 
 SVGCanvas.prototype.toDataURL = function(type, options) {
     var xml = new XMLSerializer().serializeToString(this.svg);
+
+    // documentMode is an IE-only property
+    // http://msdn.microsoft.com/en-us/library/ie/cc196988(v=vs.85).aspx
+    // http://stackoverflow.com/questions/10964966/detect-ie-version-prior-to-v9-in-javascript
+    var isIE = document.documentMode;
+
+    if (isIE) {
+        // This is patch from canvas2svg
+        // IE search for a duplicate xmnls because they didn't implement setAttributeNS correctly
+        var xmlns = /xmlns="http:\/\/www\.w3\.org\/2000\/svg".+xmlns="http:\/\/www\.w3\.org\/2000\/svg/gi;
+        if(xmlns.test(xml)) {
+            xml = xml.replace('xmlns="http://www.w3.org/2000/svg','xmlns:xlink="http://www.w3.org/1999/xlink');
+        }
+    }
+
     var SVGDataURL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(xml);
     if (type === "image/svg+xml" || !type) {
         return SVGDataURL;
@@ -1598,12 +1614,13 @@ module.exports = function(p5) {
 
     var _filter = p5.prototype.filter;
     p5.prototype.filter = function(operation, value) {
-        if (this._graphics.svg) {
+        var svg = this._graphics.svg;
+        if (svg) {
             // move nodes to a new <g>
-            var nodes = this._graphics.svg.children;
+            var nodes = svg.children || svg.childNodes; // childNodes is for IE
             var g = p5.SVGElement.create('g');
             this._graphics._setGCFlag(g.elt);
-            this._graphics.svg.appendChild(g.elt);
+            svg.appendChild(g.elt);
             // convert nodeList to array and use forEach
             // instead of using for loop,
             // which is buggy due to the length changed during append

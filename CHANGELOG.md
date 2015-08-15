@@ -1,6 +1,12 @@
 ## v0.4.1
 
-- Update doc
+- Update documentation
+
+### svgcanvas
+
+- Use parentNode.removeChild instead of childNode.remove for IE, fixes https://github.com/zenozeng/p5.js-svg/issues/120
+
+- Patch for IE's bug: search for a duplicate xmnls, fixes https://github.com/zenozeng/p5.js-svg/issues/121
 
 ## v0.4.0
 
