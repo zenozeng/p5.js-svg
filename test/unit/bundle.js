@@ -1752,7 +1752,6 @@ describe('Filters', function() {
         // but Canvas Renderer uses a pixels based blur (port of processing's blur),
         // so the results may not be exactly same.
         blur: function() {
-            this.timeout(0);
             background(255);
             stroke(255, 0, 0);
             strokeWeight(10);
@@ -1816,6 +1815,7 @@ describe('Filters', function() {
     Object.keys(tests).forEach(function(key) {
         describe("Filters/" + key, function() {
             it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                this.timeout(0);
                 testRender.describe("Filters/" + key);
                 testRender(tests[key], done);
             });
