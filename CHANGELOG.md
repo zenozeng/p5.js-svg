@@ -8,6 +8,10 @@ p5.svg@0.4.1 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/p
 
 - Use Node.childNodes for IE
 
+- Update test/io/save/canvas's-save, fixes https://github.com/zenozeng/p5.js-svg/issues/123
+
+- Use \<svg\> to display tests, ignore diff, workround for https://github.com/zenozeng/p5.js-svg/issues/124
+
 ### svgcanvas
 
 - Use parentNode.removeChild instead of childNode.remove for IE, fixes https://github.com/zenozeng/p5.js-svg/issues/120

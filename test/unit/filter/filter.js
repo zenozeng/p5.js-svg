@@ -46,6 +46,9 @@ describe('Filters', function() {
             loadImage(TESTIMG, function(img) {
                 image(img, 0, 0);
                 filter(POSTERIZE, 2);
+                if (_isSafari()) {
+                    testRender.setMaxDiff(1); // ignore diff, see https://github.com/zenozeng/p5.js-svg/issues/124
+                }
                 testRender.unlock();
             });
         },

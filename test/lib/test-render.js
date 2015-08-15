@@ -128,17 +128,21 @@ var prepareDom = function(draw) {
     var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div><div></div><div class="function">p5.js</div></div>';
     $container.append(th);
 
-    // the svg
+    // the svg result
     var svg = new Image();
+    svg.width = 100;
+    svg.height = 100;
     svg.onload = function() {
         status.svg = true;
     };
     svg.src = SVGCanvas.prototype.toDataURL.call({svg: p5svg._graphics.svg},
                                                  "image/svg+xml");
-    svg.className = 'svg';
-    $container.append(svg);
+    var _svg = p5svg._graphics.svg.cloneNode(true);
+    _svg.id = null;
+    _svg.className = 'svg';
+    $container.append(_svg);
 
-    // draw canvas
+    // the canvas result
     var canvas = new Image();
     canvas.onload = function() {
         status.canvas = true;
@@ -232,7 +236,7 @@ var testRender = function(draw, callback) {
         var diffImgData2 = ctx.getImageData(0, 0, w, h);
 
         // match?
-        var count = countPixels(imgData1);
+        var count = Math.max(countPixels(imgData1), countPixels(imgData2));
         var diffCount = countPixels(diffImgData2);
         var rate = diffCount / count;
         var match = rate <= (testRender.maxDiff || 0.05);
