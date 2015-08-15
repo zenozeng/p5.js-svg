@@ -99,10 +99,10 @@ describe('IO/saveFrames', function() {
     });
 
     it('should wait all pending jobs done', function(done) {
+        this.timeout(0);
         new p5(function(p) {
             p.setup = function() {
                 p.createCanvas(100, 100, p.SVG);
-                var _downloadFile = p.downloadFile;
                 var pending = 0;
                 var _makeSVGFrame = p._makeSVGFrame;
                 p._makeSVGFrame = function(options) {

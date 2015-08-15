@@ -1957,10 +1957,10 @@ describe('IO/saveFrames', function() {
     });
 
     it('should wait all pending jobs done', function(done) {
+        this.timeout(0);
         new p5(function(p) {
             p.setup = function() {
                 p.createCanvas(100, 100, p.SVG);
-                var _downloadFile = p.downloadFile;
                 var pending = 0;
                 var _makeSVGFrame = p._makeSVGFrame;
                 p._makeSVGFrame = function(options) {
@@ -2055,6 +2055,8 @@ var p5 = require('../../lib/p5');
 var testDownload = require('./test-download.js');
 
 describe('IO/save', function() {
+    this.timeout(1000 * 5);
+
     it('save()', function(done) {
         testDownload('untitled', 'svg', function(p) {
             p.save();
@@ -2069,14 +2071,21 @@ describe('IO/save', function() {
 
     it('save(<svg>)', function(done) {
         testDownload('untitled', 'svg', function(p) {
-            p.save(p.svg);
+            p.save(p._graphics.svg);
         }, done);
     });
 
     it('canvas\'s save should still work', function(done) {
-        testDownload('canvas-save.png', 'png', function(p) {
-            p.save('canvas-save.png');
-        }, done, true);
+        new p5(function(p) {
+            p.setup = function() {
+                var _saveCanvas = p5.prototype.saveCanvas;
+                p5.prototype.saveCanvas = function() {
+                    p5.prototype.saveCanvas = _saveCanvas;
+                    done();
+                };
+                p.save('canvas-save.png');
+            };
+        });
     });
 });
 
@@ -2093,8 +2102,7 @@ var testDownload = function(filename, ext, fn, done, useCanvas) {
             p.strokeWeight(3);
             p.line(0, 0, 100, 100);
 
-            var _downloadFile = p5.prototype.downloadFile;
-            p5.prototype.downloadFile = function(dataURL, _filename, _ext) {
+            p.downloadFile = function(dataURL, _filename, _ext) {
                 try {
                     assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
                     assert.equal(_filename, filename);

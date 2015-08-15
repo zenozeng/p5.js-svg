@@ -10,8 +10,7 @@ var testDownload = function(filename, ext, fn, done, useCanvas) {
             p.strokeWeight(3);
             p.line(0, 0, 100, 100);
 
-            var _downloadFile = p5.prototype.downloadFile;
-            p5.prototype.downloadFile = function(dataURL, _filename, _ext) {
+            p.downloadFile = function(dataURL, _filename, _ext) {
                 try {
                     assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
                     assert.equal(_filename, filename);
