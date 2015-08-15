@@ -12,6 +12,8 @@ p5.svg@0.4.1 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/p
 
 - Use \<svg\> to display tests, ignore diff, workround for https://github.com/zenozeng/p5.js-svg/issues/124
 
+- use devicePixelRatio for diffCanvas in tests, fixes https://github.com/zenozeng/p5.js-svg/issues/125
+
 ### svgcanvas
 
 - Use parentNode.removeChild instead of childNode.remove for IE, fixes https://github.com/zenozeng/p5.js-svg/issues/120
