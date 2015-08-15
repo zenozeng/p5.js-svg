@@ -18,13 +18,15 @@ Custom SVG Filter using `registerSVGFilter` might be added in next release of p5
 
 ## Browser Compatibility
 
-p5.SVG@0.4.0 was tested on:
+p5.SVG@0.4.1 was tested on:
 
 - Firefox 40.0 on Linux
 
 - Google Chrome 44 on Linux
 
 - Google Chrome 43 on Android 4.4.4
+
+p5.SVG@0.4.1 may not work on IE10. There are still some issues.
 
 ## [TODO] How it works
 

@@ -1,12 +1,20 @@
 ## v0.4.1
 
+p5.svg@0.4.1 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/processing/p5.js/pull/850))
+
+### p5.SVG
+
 - Update documentation
+
+- Use Node.childNodes for IE
 
 ### svgcanvas
 
 - Use parentNode.removeChild instead of childNode.remove for IE, fixes https://github.com/zenozeng/p5.js-svg/issues/120
 
 - Patch for IE's bug: search for a duplicate xmnls, fixes https://github.com/zenozeng/p5.js-svg/issues/121
+
+- Use Node.childNodes for IE
 
 ## v0.4.0
 

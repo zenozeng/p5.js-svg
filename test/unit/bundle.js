@@ -1756,7 +1756,7 @@ testRender.unlock = function() {
 
 module.exports = testRender;
 
-},{"./p5":4,"assert":8,"svgcanvas":3}],6:[function(require,module,exports){
+},{"./p5":4,"assert":19,"svgcanvas":3}],6:[function(require,module,exports){
 var testRender = require('../../lib/test-render');
 
 window.TESTIMG = window.__karma__ ? "/base/test/unit/filter/light_by_zenozeng.jpg" : "./unit/filter/light_by_zenozeng.jpg";
@@ -1843,19 +1843,746 @@ describe('Filters', function() {
 },{"../../lib/test-render":5}],7:[function(require,module,exports){
 mocha.setup('bdd');
 require('./filter/filter');
-// require('./svg/element');
-// require('./svg/manipulate');
-// require('./rendering/rendering');
-// require('./io/save-frames');
-// require('./io/save');
-// require('./io/save-svg');
-// require('./shape/2d_primitives');
-// require('./shape/attributes');
-// require('./shape/curves');
-// require('./shape/vertex');
+require('./svg/element');
+require('./svg/manipulate');
+require('./rendering/rendering');
+require('./io/save-frames');
+require('./io/save');
+require('./io/save-svg');
+require('./shape/2d_primitives');
+require('./shape/attributes');
+require('./shape/curves');
+require('./shape/vertex');
 mocha.run();
 
-},{"./filter/filter":6}],8:[function(require,module,exports){
+},{"./filter/filter":6,"./io/save":10,"./io/save-frames":8,"./io/save-svg":9,"./rendering/rendering":12,"./shape/2d_primitives":13,"./shape/attributes":14,"./shape/curves":15,"./shape/vertex":16,"./svg/element":17,"./svg/manipulate":18}],8:[function(require,module,exports){
+var assert = require('assert');
+var p5 = require('../../lib/p5');
+
+describe('IO/saveFrames', function() {
+    it('should capture canvas frames', function(done) {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100);
+                p.strokeWeight(3);
+                p.saveFrames('hello', 'png', 0.5, 10, function(frames) {
+                    try {
+                        assert.ok(frames.length > 1);
+                        p.noCanvas();
+                        done();
+                    } catch (e) {
+                        p.noCanvas();
+                        done(e);
+                    }
+                });
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+
+    it('should capture svg frames', function(done) {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                p.strokeWeight(3);
+                p.saveFrames('hello', 'svg', 0.5, 10, function(frames) {
+                    try {
+                        assert.ok(frames.length > 1);
+                        p.noCanvas();
+                        done();
+                    } catch (e) {
+                        p.noCanvas();
+                        done(e);
+                    }
+                });
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+
+    it('should capture svg frames even omitting duration and fps', function(done) {
+        this.timeout(0);
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                p.strokeWeight(3);
+                p.saveFrames('hello', 'svg', null, null, function(frames) {
+                    try {
+                        assert.ok(frames.length > 1);
+                        p.noCanvas();
+                        done();
+                    } catch (e) {
+                        p.noCanvas();
+                        done(e);
+                    }
+                });
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+
+    it('should download svg frames', function(done) {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                var _downloadFile = p.downloadFile;
+                var count = 0;
+                var _done;
+                p.downloadFile = function() {
+                    count++;
+                    if (count > 1) {
+                        if (!_done) {
+                            p.noCanvas();
+                            done();
+                            _done = true;
+                        }
+                    }
+                };
+                p.saveFrames('hello', 'svg', 0.5, 10);
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+
+    it('should wait all pending jobs done', function(done) {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                var _downloadFile = p.downloadFile;
+                var pending = 0;
+                var _makeSVGFrame = p._makeSVGFrame;
+                p._makeSVGFrame = function(options) {
+                    // slow version
+                    pending++;
+                    setTimeout(function() {
+                        _makeSVGFrame.call(p, options);
+                    }, 500);
+                };
+                p.downloadFile = function() {
+                    pending--;
+                    if (pending === 0) {
+                        p.noCanvas();
+                        done();
+                    }
+                };
+                p.saveFrames('hello', 'svg', 0.5, 10);
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":4,"assert":19}],9:[function(require,module,exports){
+var assert = require('assert');
+var testDownload = require('./test-download.js');
+var p5 = require('../../lib/p5');
+
+describe('IO/saveSVG', function() {
+
+    it('should save untitled.svg', function(done) {
+        testDownload('untitled', 'svg', function(p) {
+            p.saveSVG();
+        }, done);
+    });
+    it('should save hello.svg', function(done) {
+        testDownload('hello', 'svg', function(p) {
+            p.saveSVG('hello.svg');
+        }, done);
+    });
+    it('should save hello.jpg', function(done) {
+        testDownload('hello', 'jpg', function(p) {
+            p.saveSVG('hello', 'jpg');
+        }, done);
+    });
+    it('should save hello.jpeg', function(done) {
+        testDownload('hello', 'jpeg', function(p) {
+            p.saveSVG('hello.jpeg');
+        }, done);
+    });
+    it('should save hello.png', function(done) {
+        testDownload('hello', 'png', function(p) {
+            p.saveSVG('hello.png');
+        }, done);
+    });
+    it('source is Graphics', function(done) {
+        testDownload('source-graphics', 'png', function(p) {
+            var pg = p.createGraphics(100, 100, p.SVG);
+            pg.background(100);
+            p.saveSVG(pg, 'source-graphics.png');
+        }, done);
+    });
+    it('source is <svg>', function(done) {
+        testDownload('source-svg', 'png', function(p) {
+            var pg = p.createGraphics(100, 100, p.SVG);
+            pg.background(100);
+            p.saveSVG(pg._graphics.svg, 'source-svg.png');
+        }, done);
+    });
+    it('should throw if given unsupported type', function() {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                p.background(255);
+                p.stroke(0, 0, 0);
+                p.line(0, 0, 100, 100);
+                assert.throws(function() {
+                    p.saveSVG('hello.txt');
+                });
+                p.noCanvas();
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":4,"./test-download.js":11,"assert":19}],10:[function(require,module,exports){
+var assert = require('assert');
+var p5 = require('../../lib/p5');
+var testDownload = require('./test-download.js');
+
+describe('IO/save', function() {
+    it('save()', function(done) {
+        testDownload('untitled', 'svg', function(p) {
+            p.save();
+        }, done);
+    });
+
+    it('save(Graphics)', function(done) {
+        testDownload('untitled', 'svg', function(p) {
+            p.save(p._defaultGraphics);
+        }, done);
+    });
+
+    it('save(<svg>)', function(done) {
+        testDownload('untitled', 'svg', function(p) {
+            p.save(p.svg);
+        }, done);
+    });
+
+    it('canvas\'s save should still work', function(done) {
+        testDownload('canvas-save.png', 'png', function(p) {
+            p.save('canvas-save.png');
+        }, done, true);
+    });
+});
+
+},{"../../lib/p5":4,"./test-download.js":11,"assert":19}],11:[function(require,module,exports){
+var assert = require('assert');
+var p5 = require('../../lib/p5');
+
+var testDownload = function(filename, ext, fn, done, useCanvas) {
+    new p5(function(p) {
+        p.setup = function() {
+            p.createCanvas(100, 100, useCanvas ? p.P2D : p.SVG);
+            p.background(255);
+            p.stroke(0, 0, 0);
+            p.strokeWeight(3);
+            p.line(0, 0, 100, 100);
+
+            var _downloadFile = p5.prototype.downloadFile;
+            p5.prototype.downloadFile = function(dataURL, _filename, _ext) {
+                try {
+                    assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
+                    assert.equal(_filename, filename);
+                    assert.equal(_ext, ext);
+                    p.noCanvas();
+                    done();
+                } catch(e) {
+                    p.noCanvas();
+                    done(e);
+                }
+            };
+            fn(p);
+        };
+    });
+};
+
+module.exports = testDownload;
+
+},{"../../lib/p5":4,"assert":19}],12:[function(require,module,exports){
+var p5 = require('../../lib/p5');
+var testRender = require('../../lib/test-render');
+var assert = require('assert');
+
+describe('Rendering', function() {
+    this.timeout(0);
+
+    describe('noCanvas', function() {
+        it('should remove the <svg> created by createCanvas', function() {
+            new p5(function(p) {
+                p.setup = function() {
+                    p.createCanvas(100, 100, p.SVG);
+                    var svg = p._graphics.svg;
+                    assert.strictEqual(true, document.body.contains(svg));
+                    p.line(0, 0, 100, 100);
+                    p.noCanvas();
+                    assert.strictEqual(false, document.body.contains(svg));
+                };
+            });
+        });
+    });
+    describe('createGraphics', function() {
+        it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
+            testRender.describe('createGraphics');
+            testRender(function() {
+                pg = createGraphics(400, 400, isSVG ? SVG : P2D);
+                background(200);
+                pg.background(100);
+                pg.noStroke();
+                pg.ellipse(pg.width/2, pg.height/2, 50, 50);
+                loadGraphics(pg, function(pg) {
+                    image(pg, 50, 50);
+                    image(pg, 0, 0, 50, 50);
+                    ellipse(width/2, height/2, 50, 50);
+                }, function(err) {
+                    console.error(err);
+                });
+                testRender.wait(1000); // wait loadGraphics before run diff
+            }, done);
+        });
+    });
+    describe('resizeCanvas', function() {
+        it('resizeCanvas: should be scaled', function(done) {
+            testRender.describe('resizeCanvas: scaled');
+            testRender(function() {
+                resizeCanvas(200, 200);
+                strokeWeight(10);
+                ellipse(width/2, height/2, 50, 50);
+            }, done);
+        });
+        it('resizeCanvas: all pixels should be cleared after resize', function(done) {
+            testRender.describe('resizeCanvas: all pixels cleared');
+            testRender(function() {
+                ellipse(width/2, height/2, 50, 50);
+                resizeCanvas(200, 200);
+                resizeCanvas(100, 100);
+                strokeWeight(10);
+                ellipse(0, 0, 100, 100);
+            }, done);
+        });
+    });
+});
+
+},{"../../lib/p5":4,"../../lib/test-render":5,"assert":19}],13:[function(require,module,exports){
+var testRender = require('../../lib/test-render');
+
+describe('Shape/2d_primitives', function() {
+    // the tests code are from p5.js's example reference
+    var tests = {
+        arc: function() {
+            arc(50, 55, 50, 50, 0, PI * 0.5);
+            noFill();
+            arc(50, 55, 60, 60, PI * 0.5, PI * 1.5);
+        },
+        circle: function() {
+            ellipse(56, 46, 55, 55);
+        },
+        ellipse: function() {
+            ellipse(56, 46, 55, 35);
+        },
+        line: function() {
+            line(30, 20, 85, 20);
+            stroke(126);
+            line(85, 20, 85, 75);
+            stroke(200);
+            line(85, 75, 30, 75);
+        },
+        point: function() {
+            point(30, 20);
+            point(85, 20);
+            point(85, 75);
+            point(30, 75);
+        },
+        quad: function() {
+            quad(38, 31, 86, 20, 69, 63, 30, 76);
+        },
+        rect: function() {
+            rect(30, 20, 55, 55);
+        },
+        roundRect: function() {
+            rect(30, 20, 55, 55, 20, 15, 10, 5);
+        },
+        triangle: function() {
+            triangle(30, 75, 58, 20, 86, 75);
+        }
+    };
+
+    Object.keys(tests).forEach(function(key) {
+        describe(key, function() {
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                testRender.describe(key);
+                testRender(tests[key], done);
+            });
+        });
+    });
+});
+
+},{"../../lib/test-render":5}],14:[function(require,module,exports){
+var testRender = require('../../lib/test-render');
+
+describe('Shape/Attributes', function() {
+    // the tests code are from p5.js's example reference
+    var tests = {
+        strokeWeight: function() {
+            strokeWeight(10);
+            line(0, 0, 100, 100);
+            strokeWeight(5);
+            line(0, 0, 50, 100);
+        },
+        strokeCap: function() {
+            strokeWeight(12.0);
+            strokeCap(ROUND);
+            line(20, 30, 80, 30);
+            strokeCap(SQUARE);
+            line(20, 50, 80, 50);
+            strokeCap(PROJECT);
+            line(20, 70, 80, 70);
+        },
+        strokeJoinMiter: function() {
+            noFill();
+            strokeWeight(10.0);
+            strokeJoin(MITER);
+            beginShape();
+            vertex(35, 20);
+            vertex(65, 50);
+            vertex(35, 80);
+            endShape();
+        },
+        strokeJoinBevel: function() {
+            noFill();
+            strokeWeight(10.0);
+            strokeJoin(BEVEL);
+            beginShape();
+            vertex(35, 20);
+            vertex(65, 50);
+            vertex(35, 80);
+            endShape();
+        },
+        strokeJoinRound: function() {
+            noFill();
+            strokeWeight(10.0);
+            strokeJoin(ROUND);
+            beginShape();
+            vertex(35, 20);
+            vertex(65, 50);
+            vertex(35, 80);
+            endShape();
+        },
+        ellipseModeRadius: function() {
+            ellipseMode(RADIUS);
+            fill(255);
+            ellipse(50, 50, 30, 30);
+        },
+        ellipseModeCenter: function() {
+            ellipseMode(RADIUS);
+            fill(255);
+            ellipse(50, 50, 30, 30);
+            ellipseMode(CENTER);
+            fill(100);
+            ellipse(50, 50, 30, 30);
+        },
+        ellipseModeCorner: function() {
+            ellipseMode(RADIUS);
+            fill(255);
+            ellipse(50, 50, 30, 30);
+            ellipseMode(CORNER);
+            fill(255);
+            ellipse(25, 25, 50, 50);
+        },
+        ellipseModeCorners: function() {
+            ellipseMode(RADIUS);
+            fill(255);
+            ellipse(50, 50, 30, 30);
+            ellipseMode(CORNERS);
+            fill(100);
+            ellipse(25, 25, 50, 50);
+        },
+        rectModeCornerAndCorners: function() {
+            rectMode(CORNER);
+            fill(255);
+            rect(25, 25, 50, 50);
+
+            rectMode(CORNERS);
+            fill(100);
+            rect(25, 25, 50, 50);
+        },
+        rectModeRadiusAndCenter: function() {
+            rectMode(RADIUS);
+            fill(255);
+            rect(50, 50, 30, 30);
+
+            rectMode(CENTER);
+            fill(100);
+            rect(50, 50, 30, 30);
+        },
+        smooth: function() {
+            background(0);
+            fill(255);
+            noStroke();
+            smooth();
+            ellipse(30, 48, 36, 36);
+            noSmooth();
+            ellipse(70, 48, 36, 36);
+        }
+    };
+
+    Object.keys(tests).forEach(function(key) {
+        describe(key, function() {
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                testRender.describe(key);
+                testRender(tests[key], done);
+            });
+        });
+    });
+});
+
+},{"../../lib/test-render":5}],15:[function(require,module,exports){
+var testRender = require('../../lib/test-render');
+
+describe('Shape/Curves', function() {
+
+    var tests = {
+        bezier: function() {
+            noFill();
+            stroke(255, 102, 0);
+            line(85, 20, 10, 10);
+            line(90, 90, 15, 80);
+            stroke(0, 0, 0);
+            bezier(85, 20, 10, 10, 90, 90, 15, 80);
+        },
+        bezierPoint: function() {
+            noFill();
+            bezier(85, 20, 10, 10, 90, 90, 15, 80);
+            fill(255);
+            stroke(100);
+            steps = 10;
+            for (var i = 0; i <= steps; i++) {
+                var t = i / steps;
+                x = bezierPoint(85, 10, 90, 15, t);
+                y = bezierPoint(20, 10, 90, 80, t);
+                ellipse(x, y, 5, 5);
+            }
+        },
+        bezierTangent: function() {
+            noFill();
+            bezier(85, 20, 10, 10, 90, 90, 15, 80);
+            steps = 6;
+            fill(255);
+            for (i = 0; i <= steps; i++) {
+                t = i / steps;
+                x = bezierPoint(85, 10, 90, 15, t);
+                y = bezierPoint(20, 10, 90, 80, t);
+                tx = bezierTangent(85, 10, 90, 15, t);
+                ty = bezierTangent(20, 10, 90, 80, t);
+                a = atan2(ty, tx);
+                a += PI;
+                stroke(255, 102, 0);
+                line(x, y, cos(a)*30 + x, sin(a)*30 + y);
+                stroke(0);
+                // ellipse(x, y, 5, 5);
+            }
+        },
+        curve: function() {
+            noFill();
+            stroke(255, 102, 0);
+            curve(5, 26, 5, 26, 73, 24, 73, 61);
+            stroke(0);
+            curve(5, 26, 73, 24, 73, 61, 15, 65);
+            stroke(255, 102, 0);
+            curve(73, 24, 73, 61, 15, 65, 15, 65);
+        },
+        curvePoint: function() {
+            noFill();
+            curve(5, 26, 5, 26, 73, 24, 73, 61);
+            curve(5, 26, 73, 24, 73, 61, 15, 65);
+            fill(255);
+            ellipseMode(CENTER);
+            steps = 6;
+            for (i = 0; i <= steps; i++) {
+                t = i / steps;
+                x = curvePoint(5, 5, 73, 73, t);
+                y = curvePoint(26, 26, 24, 61, t);
+                ellipse(x, y, 5, 5);
+                x = curvePoint(5, 73, 73, 15, t);
+                y = curvePoint(26, 24, 61, 65, t);
+                ellipse(x, y, 5, 5);
+            }
+        },
+        curveTangent: function() {
+            noFill();
+            curve(5, 26, 73, 24, 73, 61, 15, 65);
+            steps = 6;
+            for (i = 0; i <= steps; i++) {
+                t = i / steps;
+                x = curvePoint(5, 73, 73, 15, t);
+                y = curvePoint(26, 24, 61, 65, t);
+                //ellipse(x, y, 5, 5);
+                tx = curveTangent(5, 73, 73, 15, t);
+                ty = curveTangent(26, 24, 61, 65, t);
+                a = atan2(ty, tx);
+                a -= PI/2.0;
+                line(x, y, cos(a)*8 + x, sin(a)*8 + y);
+            }
+        },
+        curveTightness: function() {
+            curveTightness(10);
+            beginShape();
+            curveVertex(10, 26);
+            curveVertex(10, 26);
+            curveVertex(83, 24);
+            curveVertex(83, 61);
+            curveVertex(25, 65);
+            curveVertex(25, 65);
+            endShape();
+        }
+    };
+
+    Object.keys(tests).forEach(function(key) {
+        describe(key, function() {
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                testRender.describe(key);
+                testRender(tests[key], done);
+            });
+        });
+    });
+
+});
+
+},{"../../lib/test-render":5}],16:[function(require,module,exports){
+var testRender = require('../../lib/test-render');
+
+describe('Shape/Vertex', function() {
+    var tests = {
+        contour: function() {
+            translate(50, 50);
+            stroke(255, 0, 0);
+            beginShape();
+            vertex(-40, -40);
+            vertex(40, -40);
+            vertex(40, 40);
+            vertex(-40, 40);
+            beginContour();
+            vertex(-20, -20);
+            vertex(-20, 20);
+            vertex(20, 20);
+            vertex(20, -20);
+            endContour();
+            endShape(CLOSE);
+            translate(-50, -50);
+        },
+        bezierVertex: function() {
+            beginShape();
+            vertex(30, 20);
+            bezierVertex(80, 0, 80, 75, 30, 75);
+            bezierVertex(50, 80, 60, 25, 30, 20);
+            endShape();
+        },
+        curveVertex: function() {
+            noFill();
+            beginShape();
+            curveVertex(84,  91);
+            curveVertex(84,  91);
+            curveVertex(68,  19);
+            curveVertex(21,  17);
+            curveVertex(32, 100);
+            curveVertex(32, 100);
+            endShape();
+        },
+        quadraticVertex: function() {
+            noFill();
+            strokeWeight(4);
+            beginShape();
+            vertex(20, 20);
+            quadraticVertex(80, 20, 50, 50);
+            quadraticVertex(20, 80, 80, 80);
+            vertex(80, 60);
+            endShape();
+        }
+    };
+
+    Object.keys(tests).forEach(function(key) {
+        describe(key, function() {
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                testRender.describe(key);
+                testRender(tests[key], done);
+            });
+        });
+    });
+});
+
+},{"../../lib/test-render":5}],17:[function(require,module,exports){
+var p5 = require('../../lib/p5');
+var assert = require('assert');
+
+describe('SVG Element API', function() {
+    it('querySVG', function() {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                p.ellipse(50, 50, 50, 50);
+                assert.equal(p.querySVG('path')[0].elt.nodeName.toLowerCase(), 'path');
+
+                var pg = p.createGraphics(100, 100, p.SVG);
+                pg.ellipse(60, 60, 50, 50);
+                assert.equal(pg.querySVG('path')[0].elt.nodeName.toLowerCase(), 'path');
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":4,"assert":19}],18:[function(require,module,exports){
+var p5 = require('../../lib/p5');
+var assert = require('assert');
+
+var SVGDataURL = 'data:image/svg+xml;charset=utf-8,<svg%20version%3D"1.1"%20xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg"%20xmlns%3Axlink%3D"http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink"%20width%3D"100"%20height%3D"100"%20viewBox%3D"0%200%20100%20100"><defs%2F><g%20transform%3D"scale(1%2C1)"%2F><g><path%20fill%3D"none"%20stroke%3D"rgb(0%2C0%2C0)"%20paint-order%3D"fill%20stroke%20markers"%20d%3D"%20M%200%200%20L%20100%20100"%20stroke-opacity%3D"1"%20stroke-linecap%3D"round"%20stroke-miterlimit%3D"10"%20stroke-width%3D"10"%2F><g%20transform%3D"translate(0.5%2C0.5)"><path%20fill%3D"none"%20stroke%3D"rgb(0%2C0%2C0)"%20paint-order%3D"fill%20stroke%20markers"%20d%3D"%20M%200%200%20L%2050%20100"%20stroke-opacity%3D"1"%20stroke-linecap%3D"round"%20stroke-miterlimit%3D"10"%20stroke-width%3D"5"%2F><g%20transform%3D"translate(-0.5%2C-0.5)"%2F><%2Fg><%2Fg><%2Fsvg>';
+
+var SVGHTTPURL = window.__karma__ ? "/base/test/unit/svg/test.svg" : "./unit/svg/test.svg";
+
+describe('SVG Manipulating API', function() {
+    it('Manipulate SVG', function(done) {
+        new p5(function(p) {
+            var svg;
+            var svg2;
+            p.preload = function() {
+                svg = p.loadSVG(SVGDataURL);
+                svg2 = p.loadSVG(SVGHTTPURL);
+            };
+            p.setup = function() {
+                svg2.query("path")[0].attribute("stroke-width", 100);
+                var pg = p.createGraphics(400, 400, p.SVG);
+                pg.image(svg, 0, 0, 400, 400);
+                var paths = pg.querySVG('path');
+                try {
+                    assert.equal(paths.length, 2);
+                    paths[0].attribute("stroke-width", 1);
+                    assert.equal(paths[0].attribute("stroke-width"), 1);
+                    pg.image(svg2, 0, 0);
+                    assert.equal(pg.querySVG('path')[2].attribute("stroke-width"),
+                                 100);
+                    done();
+                } catch(e) {
+                    done(e);
+                }
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":4,"assert":19}],19:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -2216,7 +2943,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":12}],9:[function(require,module,exports){
+},{"util/":23}],20:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2241,7 +2968,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],10:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2300,14 +3027,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],11:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],12:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2897,4 +3624,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":11,"_process":10,"inherits":9}]},{},[7]);
+},{"./support/isBuffer":22,"_process":21,"inherits":20}]},{},[7]);
