@@ -4,15 +4,6 @@
 
 p5.js-svg is a runtime for p5.js plus some API designed for SVG (still coding).
 
-
-## Compatible p5.js
-
-p5.SVG Version | p5.js Version
--------------------|----------------------
-v0.4.0 | v0.4.7 with [pull#850](https://github.com/processing/p5.js/pull/850)
-v0.3.0 | v0.4.7
-v0.2.0 | v0.4.5
-
 ## Known Issue
 
 ### Rendering
