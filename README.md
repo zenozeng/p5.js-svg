@@ -2,7 +2,9 @@
 
 [![build](https://travis-ci.org/zenozeng/p5.js-svg.svg)](https://travis-ci.org/zenozeng/p5.js-svg)
 
-p5.js-svg is a runtime for p5.js plus some API designed for SVG (still coding).
+SVG runtime for p5.js.
+
+## p5.SVG Overview
 
 ## Known Issue
 
@@ -26,20 +28,6 @@ so the results may not be exactly same.
 ## API
 
 https://github.com/zenozeng/p5.js-svg/blob/master/API.md
-
-## Unit Test
-
-http://zenozeng.github.io/p5.js-svg/test/
-
-### Coverage Report
-
-#### Chrome
-
-http://zenozeng.github.io/p5.js-svg-test-reports/coverage/chrome/
-
-#### Firefox
-
-http://zenozeng.github.io/p5.js-svg-test-reports/coverage/iceweasel/
 
 ## License
 
