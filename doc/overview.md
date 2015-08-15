@@ -8,7 +8,7 @@ and manipulating existing SVG file without rasterization.
 
 ## [TODO] How is SVG Renderer different than Canvas2D Renderer
 
-## [TODO] Hello World
+## [TODO] Getting Started
 
 ## [TODO] SVGElement API
 

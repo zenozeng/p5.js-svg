@@ -9,6 +9,7 @@ describe('Filters', function() {
         // but Canvas Renderer uses a pixels based blur (port of processing's blur),
         // so the results may not be exactly same.
         blur: function() {
+            this.timeout(0);
             background(255);
             stroke(255, 0, 0);
             strokeWeight(10);
@@ -39,6 +40,7 @@ describe('Filters', function() {
         opaque: function() {
             background(255, 0, 0, 127);
             filter(OPAQUE); // Sets the alpha channel to 255
+            testRender.setMaxPixelDiff(1);
         },
         posterize: function() {
             testRender.lock();

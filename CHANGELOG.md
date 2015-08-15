@@ -1,3 +1,7 @@
+## v0.4.1
+
+- Update doc
+
 ## v0.4.0
 
 ### p5.svg
@@ -106,7 +110,7 @@ p5.svg@0.4.0 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/p
 
 ## v0.3.0
 
-p5.svg@0.3.0 (built on top of p5.js@0.4.7) 
+p5.svg@0.3.0 (built on top of p5.js@0.4.7)
 
 ## CHANGELOG
 

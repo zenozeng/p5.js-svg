@@ -1,6 +1,5 @@
 module.exports = function(p5) {
-    var SVGFilters = function() {
-    };
+    var SVGFilters = function() {};
 
     var SVGElement = p5.SVGElement;
 

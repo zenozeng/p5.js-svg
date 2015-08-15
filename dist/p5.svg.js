@@ -1,5 +1,5 @@
 /*!!
- *  p5.svg v0.3.0
+ *  p5.svg v0.4.0
  *  SVG Runtime for p5.js.
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -2036,8 +2036,7 @@ module.exports = function(p5) {
 
 },{"svgcanvas":4}],11:[function(require,module,exports){
 module.exports = function(p5) {
-    var SVGFilters = function() {
-    };
+    var SVGFilters = function() {};
 
     var SVGElement = p5.SVGElement;
 
