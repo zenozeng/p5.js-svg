@@ -1847,6 +1847,7 @@ describe('Filters', function() {
 
 },{"../../lib/test-render":5}],7:[function(require,module,exports){
 mocha.setup('bdd');
+mocha.setup({timeout: 10000, slow: 2000});
 require('./filter/filter');
 require('./svg/element');
 require('./svg/manipulate');

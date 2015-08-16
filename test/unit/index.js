@@ -1,4 +1,5 @@
 mocha.setup('bdd');
+mocha.setup({timeout: 10000, slow: 2000});
 require('./filter/filter');
 require('./svg/element');
 require('./svg/manipulate');

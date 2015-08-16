@@ -18,7 +18,7 @@ Custom SVG Filter using `registerSVGFilter` might be added in next release of p5
 
 ## Browser Compatibility
 
-p5.SVG@0.4.1 was tested on:
+p5.SVG@0.4.2 was tested and should work on:
 
 - Firefox 40.0 on Linux
 
@@ -26,7 +26,9 @@ p5.SVG@0.4.1 was tested on:
 
 - Google Chrome 43 on Android 4.4.4
 
-p5.SVG@0.4.1 may not work on IE10. There are still some issues.
+- Safari 8.0.7 on Mac (Thanks @fnlctrl)
+
+p5.SVG@0.4.2 may not work on IE10. There are still [some issues](https://github.com/zenozeng/p5.js-svg/issues/122):
 
 ## [TODO] How it works
 

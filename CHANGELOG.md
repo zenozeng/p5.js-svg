@@ -1,6 +1,18 @@
+## v0.4.2
+
+### p5.SVG
+
+- add String.prototype.repeat polyfill: fixes https://github.com/zenozeng/p5.js-svg/issues/126 & https://github.com/zenozeng/p5.js-svg/issues/127
+
+- Update Browser Compatibility Info (add Safari on Mac and Safari on iOS)
+
+- mocha.setup({timeout: 10000, slow: 2000})
+
 ## v0.4.1
 
 p5.svg@0.4.1 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/processing/p5.js/pull/850))
+
+Fix some issues in IE 10 and Safari (iOS).
 
 ### p5.SVG
 
