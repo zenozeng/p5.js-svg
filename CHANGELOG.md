@@ -4,7 +4,7 @@
 
 - add String.prototype.repeat polyfill: fixes https://github.com/zenozeng/p5.js-svg/issues/126 & https://github.com/zenozeng/p5.js-svg/issues/127
 
-- Update Browser Compatibility Info (add Safari on Mac and Safari on iOS)
+- Update Browser Compatibility Info (add Safari 8 on Mac and Safari on iOS 8)
 
 - mocha.setup({timeout: 10000, slow: 2000})
 

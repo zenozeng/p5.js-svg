@@ -28,6 +28,8 @@ p5.SVG@0.4.2 was tested and should work on:
 
 - Safari 8.0.7 on Mac (Thanks @fnlctrl)
 
+- Safari on iOS 8 (Thanks @chiyolyn)
+
 p5.SVG@0.4.2 may not work on IE10. There are still [some issues](https://github.com/zenozeng/p5.js-svg/issues/122):
 
 ## [TODO] How it works
