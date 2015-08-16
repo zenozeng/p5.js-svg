@@ -1652,6 +1652,7 @@ module.exports = function(p5) {
     require('./io')(p5);
     require('./element')(p5);
     require('./filters')(p5);
+    require('./polyfill')();
 
     // attach constants to p5 instance
     var constants = require('./constants');
@@ -1660,7 +1661,7 @@ module.exports = function(p5) {
     });
 };
 
-},{"./constants":5,"./element":6,"./filters":7,"./io":9,"./p5.RendererSVG":10,"./rendering":12}],9:[function(require,module,exports){
+},{"./constants":5,"./element":6,"./filters":7,"./io":9,"./p5.RendererSVG":10,"./polyfill":12,"./rendering":13}],9:[function(require,module,exports){
 module.exports = function(p5) {
     /**
      * Convert SVG Element to jpeg / png data url
@@ -2292,6 +2293,51 @@ module.exports = function(p5) {
 };
 
 },{}],12:[function(require,module,exports){
+module.exports = function() {
+    if (!String.prototype.repeat) {
+        String.prototype.repeat = function(count) {
+            'use strict';
+            if (this == null) {
+                throw new TypeError('can\'t convert ' + this + ' to object');
+            }
+            var str = '' + this;
+            count = +count;
+            if (count != count) {
+                count = 0;
+            }
+            if (count < 0) {
+                throw new RangeError('repeat count must be non-negative');
+            }
+            if (count == Infinity) {
+                throw new RangeError('repeat count must be less than infinity');
+            }
+            count = Math.floor(count);
+            if (str.length == 0 || count == 0) {
+                return '';
+            }
+            // Ensuring count is a 31-bit integer allows us to heavily optimize the
+            // main part. But anyway, most current (August 2014) browsers can't handle
+            // strings 1 << 28 chars or longer, so:
+            if (str.length * count >= 1 << 28) {
+                throw new RangeError('repeat count must not overflow maximum string size');
+            }
+            var rpt = '';
+            for (;;) {
+                if ((count & 1) == 1) {
+                    rpt += str;
+                }
+                count >>>= 1;
+                if (count == 0) {
+                    break;
+                }
+                str += str;
+            }
+            return rpt;
+        };
+    }
+};
+
+},{}],13:[function(require,module,exports){
 var constants = require('./constants');
 var SVGCanvas = require('svgcanvas');
 
