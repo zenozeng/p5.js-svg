@@ -14,6 +14,24 @@ and manipulating existing SVG file without rasterization.
 
 - API Doc
 
+## For Contributor
+
+### To build
+
+```bash
+npm run build
+```
+
+Make sure you have bash and browserify installed.
+
+### To run unit test
+
+```bash
+npm test
+```
+
+Make sure you have karma installed.
+
 ## License
 
 Licensed under LGPL.
