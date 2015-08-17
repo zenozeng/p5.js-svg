@@ -6,9 +6,13 @@ The main goal of p5.SVG is to provide a SVG runtime for p5.js,
 so that we can draw using p5's powerful API in \<svg\>, save things to svg file
 and manipulating existing SVG file without rasterization.
 
-## p5.SVG Overview
+## Docs
 
-[p5.SVG Overview](./doc/overview.md)
+- [p5.SVG Overview](./doc/overview.md)
+
+- Getting Started with p5.SVG
+
+- API Doc
 
 ## License
 
