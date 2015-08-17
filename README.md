@@ -2,32 +2,13 @@
 
 [![build](https://travis-ci.org/zenozeng/p5.js-svg.svg)](https://travis-ci.org/zenozeng/p5.js-svg)
 
-SVG runtime for p5.js.
+The main goal of p5.SVG is to provide a SVG runtime for p5.js,
+so that we can draw using p5's powerful API in \<svg\>, save things to svg file
+and manipulating existing SVG file without rasterization.
 
 ## p5.SVG Overview
 
-## Known Issue
-
-### Rendering
-
-- blendMode() is not yet supported
-
-### Filters
-
-p5.SVG's filters were implemented using SVG Filter.
-So the result of these filter may not be exactly same as canvas's.
-
-For example, in SVG Renderer, I use feGaussianBlur,
-but Canvas Renderer uses a pixels based blur (port of processing's blur),
-so the results may not be exactly same.
-
-### 3D
-
-- [P3D is not supported yet](https://github.com/zenozeng/p5.js-svg/issues/51)
-
-## API
-
-https://github.com/zenozeng/p5.js-svg/blob/master/API.md
+[p5.SVG Overview](./doc/overview.md)
 
 ## License
 

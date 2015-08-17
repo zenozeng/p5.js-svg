@@ -38,7 +38,6 @@ As for erode() and dilate(), they were implemnted using feOffset and feBlend. So
 
 You can view all the pixels based diff on the [online tests](http://zenozeng.github.io/p5.js-svg/test/).
 
-
 ## [TODO] Getting Started
 
 See [Getting Started with p5.SVG](./getting-started.md).
@@ -75,6 +74,8 @@ The SVG based canvas API wrapper is powered by [gliffy's canvas2svg](https://git
 ## Known issue
 
 - blendMode is not implemented yet.
+
+- [P3D is not supported yet](https://github.com/zenozeng/p5.js-svg/issues/51)
 
 ## [TODO] Tests and Issues
 
