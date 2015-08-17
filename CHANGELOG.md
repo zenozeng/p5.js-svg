@@ -8,6 +8,8 @@
 
 - mocha.setup({timeout: 10000, slow: 2000})
 
+- Update documentation
+
 ## v0.4.1
 
 p5.svg@0.4.1 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/processing/p5.js/pull/850))
