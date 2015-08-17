@@ -8,7 +8,7 @@
 
 - mocha.setup({timeout: 10000, slow: 2000})
 
-- Update documentation (add Overview)
+- Update documentation
 
 ## v0.4.1
 
