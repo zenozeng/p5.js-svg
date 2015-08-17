@@ -4,9 +4,20 @@ The main goal of p5.SVG is to provide a SVG runtime for p5.js,
 so that we can draw using p5's powerful API in \<svg\>, save things to svg file
 and manipulating existing SVG file without rasterization.
 
-## [TODO] p5.SVG 的组成部分
+p5.SVG consists of 2 parts:
 
-## [TODO] How is SVG Renderer different than Canvas2D Renderer
+- p5.RendererSVG
+
+    Allow drawing p5.js on top of a \<svg\> element.
+
+- SVGElement API
+
+    This is the API designed for manipulating SVG.
+    It's a class extending p5.Element, but provides more API for SVG.
+
+## So, how is SVG Renderer different than Canvas2D Renderer
+
+
 
 ## [TODO] Getting Started
 
@@ -21,7 +32,6 @@ Custom SVG Filter using `registerSVGFilter` might be added in next release of p5
 p5.SVG@0.4.2 was tested and should work on:
 
 - Firefox 40.0 on Linux
-
 - Google Chrome 44 on Linux
 
 - Google Chrome 43 on Android 4.4.4
@@ -30,7 +40,8 @@ p5.SVG@0.4.2 was tested and should work on:
 
 - Safari on iOS 8 (Thanks @chiyolyn)
 
-p5.SVG@0.4.2 may not work on IE10. There are still [some issues](https://github.com/zenozeng/p5.js-svg/issues/122):
+p5.SVG@0.4.2 may not work on IE10. There are still [some issues](https://github.com/zenozeng/p5.js-svg/issues/122).
+As for Microsoft Edge, p5.SVG@0.4.2 basically works, but there are [issues with Filters/posterize and Filters/erode](https://github.com/zenozeng/p5.js-svg/issues/128).
 
 ## [TODO] How it works
 
