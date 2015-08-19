@@ -10,9 +10,9 @@ and manipulating existing SVG file without rasterization.
 
 - [p5.SVG Overview](./doc/overview.md)
 
-- Getting Started with p5.SVG
+- [TODO] Getting Started with p5.SVG
 
-- Examples
+- [TODO] Examples
 
     - [TODO] Basic 2D Shapes in SVG
 
@@ -24,7 +24,9 @@ and manipulating existing SVG file without rasterization.
 
     - [TODO] Exporting SVG
 
-- API Doc
+- [TODO] API Doc
+
+- [CHANGELOG](CHANGELOG.md)
 
 ## For Contributor
 

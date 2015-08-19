@@ -13,8 +13,7 @@ p5.SVG consists of 2 parts:
 
 - SVGElement API
 
-    This is the API designed for manipulating SVG.
-    It's a class extending p5.Element, but provides more API for SVG.
+    It's a class extending p5.Element, but provides more API for manipulating SVG.
 
 ## So, how is SVG Renderer different than Canvas2D Renderer
 
@@ -39,15 +38,44 @@ As for erode() and dilate(), they were implemnted using feOffset and feBlend. So
 
 You can view all the pixels based diff on the [online tests](http://zenozeng.github.io/p5.js-svg/test/).
 
-## [TODO] Getting Started
+## SVGElement API
+
+SVGElement is a class extending p5.Element, but provides more API for manipulating SVG.
+It provides:
+
+- SVGElement.prototype.query (querySelectorAll and map to SVGElement objects)
+
+- SVGElement.prototype.attribute (setAttributeNS, setAttribute and getAttribute)
+
+- SVGElement.prototype.append
+
+- SVGElement.create = function(nodeName, attributes)
+
+- SVGElement.prototype.parentNode()
+
+    Get parent node
+
+- SVGElement.prototype.parentNode(selector)
+
+    Get parent node matching given selector
+
+- SVGElement.prototype.matches = function(selector)
+
+    To tell whether a element matches certain selector
+
+- SVGElement.prototype.filter
+
+    Apply filter (blur, gray, threshold, invert, opaque, posterize, erode, dilate, colorMatrix) on given SVG object.
+    If called multiple times, these filters will be chained together and combine to a bigger SVG filter.
+
+- SVGElement.prototype.unfilter
+
+    Unapply any filter applied on given SVG object.
+    After called, reset filters will be chained together and combine to a new SVG filter.
+
+## Getting Started
 
 See [Getting Started with p5.SVG](./getting-started.md).
-
-## [TODO] SVGElement API
-
-## [TODO] SVGFilter API
-
-Custom SVG Filter using `registerSVGFilter` might be added in next release of p5.svg (v0.5.0).
 
 ## Browser Compatibility
 
