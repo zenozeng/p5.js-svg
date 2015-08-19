@@ -1,0 +1,53 @@
+body {
+    padding: 2em;
+    width: 624px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    color: #ED225D;
+}
+
+a {
+    color: #777;
+}
+
+hr {
+    padding-bottom: 24px;
+    border: none;
+    border-bottom: 3px solid #ED225D;
+    margin-bottom: 24px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+li {
+    list-style: none;
+    padding: 0 .5em;
+    line-height: 30px;
+    margin: 5px 0;
+}
+li a {
+    display: inline-block;
+    border-left: 3px solid #fff;
+    padding-left: 1em;
+    transition: all 1s;
+}
+li a.current, li a:hover {
+    color: #ED225D;
+}
+
+#code {
+    font-size: 12px;
+    padding-left: 24px;
+}
+
+#canvas {
+    margin-left: 22px;
+    border: 1px solid #ED225D;
+    width: 600px;
+    height: 200px;
+}

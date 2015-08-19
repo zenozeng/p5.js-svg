@@ -12,7 +12,7 @@ and manipulating existing SVG file without rasterization.
 
 - [Getting Started with p5.SVG](./doc/getting-started.md)
 
-- [TODO] Examples
+- Examples
 
     - [TODO] Basic 2D Shapes in SVG
 
