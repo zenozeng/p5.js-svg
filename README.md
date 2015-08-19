@@ -12,6 +12,18 @@ and manipulating existing SVG file without rasterization.
 
 - Getting Started with p5.SVG
 
+- Examples
+
+    - [TODO] Basic 2D Shapes in SVG
+
+    - [TODO] Manipulating existing SVG
+
+    - [TODO] Basic Filters in SVG
+
+    - [TODO] SVG Graphics
+
+    - [TODO] Exporting SVG
+
 - API Doc
 
 ## For Contributor
