@@ -42,7 +42,29 @@ var p5 = require('./p5.js');
 require('p5.js-svg')(p5);
 ```
 
-## [TODO] Your First Sketch
+## Your First Sketch
+
+Open your sketch.js and edit it:
+
+```javascript
+function setup() {
+    createCanvas(100, 100, SVG);
+    background(255);
+    fill(150);
+    stroke(150);
+}
+
+function draw() {
+    var r = frameCount % 200 * Math.sqrt(2);
+    background(255);
+    ellipse(0, 0, r, r);
+}
+```
+
+Then you can open your html file, and view the result.
+It's \<svg\>!
+
+![SVG Gettting Started](./svg-getting-started.png)
 
 ## What's Next?
 

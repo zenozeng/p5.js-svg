@@ -10,7 +10,7 @@ and manipulating existing SVG file without rasterization.
 
 - [p5.SVG Overview](./doc/overview.md)
 
-- [TODO] Getting Started with p5.SVG
+- [Getting Started with p5.SVG](./doc/getting-started.md)
 
 - [TODO] Examples
 
