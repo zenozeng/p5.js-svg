@@ -3,6 +3,7 @@
 The main goal of p5.SVG is to provide a SVG runtime for p5.js,
 so that we can draw using p5's powerful API in \<svg\>, save things to svg file
 and manipulating existing SVG file without rasterization.
+I hope we can write once and run on both canvas and SVG.
 
 p5.SVG consists of 2 parts:
 
@@ -65,11 +66,18 @@ p5.SVG@0.4.2 may not work on IE10. There are still [some issues](https://github.
 
 As for Microsoft Edge, p5.SVG@0.4.2 basically works, but there are [issues with Filters/posterize and Filters/erode](https://github.com/zenozeng/p5.js-svg/issues/128).
 
-## [TODO] How it works
+## How it works
 
-The SVG based canvas API wrapper is powered by [gliffy's canvas2svg](https://github.com/gliffy/canvas2svg) with [patches](https://github.com/gliffy/canvas2svg/issues?utf8=%E2%9C%93&q=author%3Azenozeng+). I hope basically we can write once and run on both canvas and svg. So we can use canvas for perfermence and use svg for exporting or oop api. Also, I hope that we could only maintain the 2d shapes in canvas API, and let p5.js-svg automatically render it in SVG.
+p5.RendererSVG is a class which extends p5.Renderer2D.
+I create a mock \<canvas\> element,
+which is JavaScript Object that syncs proprieties to \<svg\>.
+A drawing context is provided,
+it provides most canvas's API but will draw them on \<svg\> element.
 
-这里也讲讲 GC。
+I created [svgcanvas](https://github.com/zenozeng/svgcanvas) for this.
+It is based on [gliffy's canvas2svg](https://github.com/gliffy/canvas2svg) with [patches](https://github.com/gliffy/canvas2svg/issues?utf8=%E2%9C%93&q=author%3Azenozeng+), plus some methods for mocking \<canvas\> element.
+
+Note that due to the performance issue, I also implement a basic GC (with generations mark) when ctx.background and clear called.
 
 ## Known issue
 
@@ -77,16 +85,21 @@ The SVG based canvas API wrapper is powered by [gliffy's canvas2svg](https://git
 
 - [P3D is not supported yet](https://github.com/zenozeng/p5.js-svg/issues/51)
 
-## [TODO] Tests and Issues
+## Tests
 
-I write a lot tests
+p5.SVG was driven by tests.
+We use Karma and mocha.
+Most tests are based on pixel-diff.
+There are still some p5's methods not covered with unit tests.
+But Rendering and Shape API are already covered with tests and should work.
 
+If you found a bug, feel free to open a issue or pull a request.
+
+All tests can be found here:
 https://github.com/zenozeng/p5.js-svg/tree/master/test/unit
 
-## Unit Test
-
+You can also run the online test yourself:
 http://zenozeng.github.io/p5.js-svg/test/
 
-### Coverage Report
-
+And this is our coverage report:
 http://zenozeng.github.io/p5.js-svg-test-reports/coverage/chrome/
