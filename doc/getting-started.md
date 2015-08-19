@@ -1,34 +1,35 @@
 # Getting started with p5.SVG
 
-## Load p5.SVG
+This page will help you setting up a p5.js project with p5.SVG and making your first sketch.
 
-There are 3 ways:
+## [TODO] Download and File setup
 
-- Global
+### AMD and Browserify
 
-    Simply include p5.svg.js and that's all.
+If you are using AMD, then you can:
 
-- AMD
+```javascript
+define(function(require) {
+    require('p5.svg');
+    // your code here
+});
+```
 
-    ```javascript
-    define(function(require) {
-        require('p5.svg');
-        // your code here
-    });
-    ```
+If you are using browserify, then you can:
 
-- CommonJS
+```bash
+npm install p5.js-svg --save
+```
 
-    ```javascript
-    var p5 = require('p5');
-    require('./p5.svg.js')(p5);
-    ```
+```javascript
+var p5 = require('./p5.js');
+require('p5.js-svg')(p5);
+```
 
-## Manipulating SVG
+## [TODO] Your First Sketch
 
-We provide p5.SVGElement (which extends p5.Element) for you.
-It provides 2 handy functions, query and attribute.
+## What's Next?
 
-You can include p5.dom to have more methods.
+- Check out the [examples](./examples)
 
-See also: http://p5js.org/reference/#/p5.Element
+- View the [API Reference](./doc/reference.md) for full documentation.

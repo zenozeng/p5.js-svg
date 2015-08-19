@@ -24,7 +24,7 @@ and manipulating existing SVG file without rasterization.
 
     - [TODO] Exporting SVG
 
-- [TODO] API Doc
+- [TODO] [API Reference](./doc/reference.md)
 
 - [CHANGELOG](CHANGELOG.md)
 
