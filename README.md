@@ -26,7 +26,7 @@ and manipulating existing SVG file without rasterization.
 npm run build
 ```
 
-Make sure you have bash and browserify installed.
+Make sure you have bash, browserify and jsdoc installed.
 
 ### To run unit test
 

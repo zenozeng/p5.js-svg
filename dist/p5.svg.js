@@ -1,5 +1,5 @@
 /*!!
- *  p5.svg v0.4.2
+ *  p5.svg v0.4.3
  *  SVG Runtime for p5.js.
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -1481,6 +1481,14 @@ module.exports = constants;
 
 },{}],6:[function(require,module,exports){
 module.exports = function(p5) {
+    /**
+     * Returns an Array of SVGElements of current SVG Graphics matching given selector
+     *
+     * @function querySVG
+     * @memberof p5.prototype
+     * @param {String} selector CSS selector for query
+     * @returns {SVGElement[]}
+     */
     p5.prototype.querySVG = function(selector) {
         var svg = this._graphics && this._graphics.svg;
         if (!svg) {
@@ -1489,6 +1497,11 @@ module.exports = function(p5) {
         return p5.SVGElement.prototype.query.call({elt: svg}, selector);
     };
 
+    /**
+     * @namespace SVGElement
+     * @constructor
+     * @param {Element} element
+     */
     function SVGElement(element, pInst) {
         if (!element) {
             return null;
@@ -1498,6 +1511,14 @@ module.exports = function(p5) {
 
     SVGElement.prototype = Object.create(p5.Element.prototype);
 
+    /**
+     * Returns an Array of children of current SVG Element matching given selector
+     *
+     * @function query
+     * @memberof SVGElement.prototype
+     * @param {String} selector CSS selector for query
+     * @returns {SVGElement[]}
+     */
     SVGElement.prototype.query = function(selector) {
         var elements = this.elt.querySelectorAll(selector);
         var objects = [];
@@ -1507,12 +1528,30 @@ module.exports = function(p5) {
         return objects;
     };
 
+    /**
+     * Append a new child to current element.
+     *
+     * @function append
+     * @memberof SVGElement.prototype
+     * @param {SVGElement|Element} element
+     */
     SVGElement.prototype.append = function(element) {
         var elt = element.elt || element;
         this.elt.appendChild(elt);
         return this;
     };
 
+    /**
+     * Apply different attribute operation based on arguments.length
+     * <ul>
+     *     <li>setAttribute(name, value)</li>
+     *     <li>setAttributeNS(namespace, name, value)</li>
+     *     <li>getAttribute(name)</li>
+     * </ul>
+     *
+     * @function attribute
+     * @memberof SVGElement.prototype
+     */
     SVGElement.prototype.attribute = function() {
         var args = arguments;
         if (args.length === 3) {
@@ -1527,11 +1566,31 @@ module.exports = function(p5) {
         return this;
     };
 
+    /**
+     * Apply filter on current element.
+     * If called multiple times,
+     * these filters will be chained together and combine to a bigger SVG filter.
+     *
+     * @function filter
+     * @memberof SVGElement.prototype
+     * @param {String} filter BLUR, GRAY, INVERT, THRESHOLD, OPAQUE, ERODE, DILATE (defined in p5's constants)
+     * @param {Any} argument Argument for that filter
+     */
     SVGElement.prototype.filter = function(filter, arg) {
         p5.SVGFilters.apply(this, filter, arg);
         return this;
     };
 
+    /**
+     * Remove applied filter on current element
+     * After called, rest filters will be chained together
+     * and combine to a new SVG filter.
+     *
+     * @function unfilter
+     * @memberof SVGElement.prototype
+     * @param {String} filter BLUR, GRAY, INVERT, THRESHOLD, OPAQUE, ERODE, DILATE (defined in p5's constants)
+     * @param {Any} argument Argument for that filter
+     */
     SVGElement.prototype.unfilter = function(filterName, arg) {
         var filters = this.attribute('data-p5-svg-filters') || '[]';
         filters = JSON.parse(filters);
@@ -1551,6 +1610,15 @@ module.exports = function(p5) {
         return this;
     };
 
+    /**
+     * Create SVGElement
+     *
+     * @function create
+     * @memberof SVGElement
+     * @param {String} nodeName
+     * @param {Object} attributes Attributes for the element (optional)
+     * @return {SVGElement}
+     */
     SVGElement.create = function(nodeName, attributes) {
         attributes = attributes || {};
         var elt = document.createElementNS("http://www.w3.org/2000/svg", nodeName);
@@ -1560,8 +1628,17 @@ module.exports = function(p5) {
         return new SVGElement(elt);
     };
 
-    // matches polyfill from MDN
-    // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+    /**
+     * Tell if current element matching given selector.
+     * This is polyfill from MDN.
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+     *
+     * @function matches
+     * @memberof SVGElement.prototype
+     * @param {String} selector CSS Selector
+     * @return {Bool}
+     */
     SVGElement.prototype.matches = function(selector) {
         var element = this.elt;
         var matches = (element.document || element.ownerDocument).querySelectorAll(selector);
@@ -1589,6 +1666,18 @@ module.exports = function(p5) {
         return defs;
     };
 
+    /**
+     * Get parentNode.
+     * If selector not given, returns parentNode.
+     * Otherwise, will look up all ancestors,
+     * and return closest element matching given selector,
+     * or return null if not found.
+     *
+     * @function parentNode
+     * @memberof SVGElement.prototype
+     * @param {String} selector CSS Selector (optional).
+     * @return {SVGElement}
+     */
     SVGElement.prototype.parentNode = function(selector) {
         if (!selector) {
             return new SVGElement(this.elt.parentNode);
@@ -1650,6 +1739,9 @@ module.exports = function(p5) {
 
 },{"./p5.SVGFilters":11}],8:[function(require,module,exports){
 module.exports = function(p5) {
+    /**
+     * @namespace p5
+     */
     require('./p5.RendererSVG')(p5);
     require('./rendering')(p5);
     require('./io')(p5);
@@ -1911,6 +2003,8 @@ module.exports = function(p5) {
 
     /**
      * loadSVG (like loadImage, but will return SVGElement)
+     *
+     * @memberof p5.prototype
      * @returns {p5.SVGElement}
      */
     p5.prototype.loadSVG = function(path, successCallback, failureCallback) {

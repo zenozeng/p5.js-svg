@@ -71,7 +71,7 @@ It provides:
 - SVGElement.prototype.unfilter
 
     Unapply any filter applied on given SVG object.
-    After called, reset filters will be chained together and combine to a new SVG filter.
+    After called, rest filters will be chained together and combine to a new SVG filter.
 
 ## Getting Started
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,35 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: index.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>module.exports = function(p5) {
+    /**
+     * @namespace p5
+     */
+    require('./p5.RendererSVG')(p5);
+    require('./rendering')(p5);
+    require('./io')(p5);
+    require('./element')(p5);
+    require('./filters')(p5);
+    require('./polyfill')();
 
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+    // attach constants to p5 instance
+    var constants = require('./constants');
+    Object.keys(constants).forEach(function(k) {
+        p5.prototype[k] = constants[k];
+    });
+};
+</code></pre>
+        </article>
+    </section>
 
 
 

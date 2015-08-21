@@ -1,4 +1,7 @@
 module.exports = function(p5) {
+    /**
+     * @namespace p5
+     */
     require('./p5.RendererSVG')(p5);
     require('./rendering')(p5);
     require('./io')(p5);

@@ -244,6 +244,8 @@ module.exports = function(p5) {
 
     /**
      * loadSVG (like loadImage, but will return SVGElement)
+     *
+     * @memberof p5.prototype
      * @returns {p5.SVGElement}
      */
     p5.prototype.loadSVG = function(path, successCallback, failureCallback) {
