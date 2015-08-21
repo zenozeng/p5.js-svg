@@ -2038,6 +2038,13 @@ module.exports = function(p5) {
 var SVGCanvas = require('svgcanvas');
 
 module.exports = function(p5) {
+    /**
+     * @namespace RendererSVG
+     * @constructor
+     * @param {Element} elt canvas element to be replaced
+     * @param {p5} pInst p5 Instance
+     * @param {Bool} isMainCanvas
+     */
     function RendererSVG(elt, pInst, isMainCanvas) {
         var svgCanvas = new SVGCanvas();
         var svg = svgCanvas.svg;
@@ -2098,6 +2105,9 @@ module.exports = function(p5) {
         this.svg.setAttribute("viewBox", [0, 0, w, h].join(' '));
     };
 
+    /**
+     * @private
+     */
     RendererSVG.prototype._withPixelDensity = function(fn) {
         var pixelDensity = this._pInst.pixelDensity;
         this._pInst.pixelDensity = 1; // 1 is OK for SVG
@@ -2118,18 +2128,40 @@ module.exports = function(p5) {
         });
     };
 
-    // set gc flag for svgcanvas
+    /**
+     * set gc flag for svgcanvas
+     *
+     * @private
+     */
     RendererSVG.prototype._setGCFlag = function(element) {
         var that = this.drawingContext;
         var currentGeneration = that.generations[that.generations.length - 1];
         currentGeneration.push(element);
     };
 
+    /**
+     * Append a element to current SVG Graphics
+     *
+     * @function appendChild
+     * @memberof RendererSVG.prototype
+     * @param {Element} element
+     */
     RendererSVG.prototype.appendChild = function(element) {
         this._setGCFlag(element);
         this.drawingContext.__closestGroupOrSvg().appendChild(element);
     };
 
+    /**
+     * Draw an image or SVG to current SVG Graphics
+     *
+     * @function image
+     * @memberof RendererSVG.prototype
+     * @param {p5.Graphics|SVGGraphics|SVGElement|Element} image
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Number} width
+     * @param {Number} height
+     */
     RendererSVG.prototype.image = function(img, x, y, w, h) {
         if (!img) {
             throw new Error('Invalid image: ' + img);
