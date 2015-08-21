@@ -2294,6 +2294,7 @@ module.exports = function(p5) {
 
 },{}],12:[function(require,module,exports){
 module.exports = function() {
+    // for https://github.com/processing/p5.js/issues/858
     if (!String.prototype.repeat) {
         String.prototype.repeat = function(count) {
             'use strict';

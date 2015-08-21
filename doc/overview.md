@@ -82,6 +82,7 @@ See [Getting Started with p5.SVG](./getting-started.md).
 p5.SVG@0.4.2 was tested and should work on:
 
 - Firefox 40.0 on Linux
+
 - Google Chrome 44 on Linux
 
 - Google Chrome 43 on Android 4.4.4

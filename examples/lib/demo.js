@@ -23,7 +23,8 @@ var route = function() {
         });
         var patch = [
             "window.setup = setup;",
-            "window.draw = draw;"
+            "window.draw = draw;",
+            "window.preload = preload;"
         ].join('');
         eval(code + patch);
         new p5(null, document.getElementById("canvas")); // global init p5

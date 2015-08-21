@@ -4,7 +4,7 @@ This page will help you setting up a p5.js project with p5.SVG and making your f
 
 ## Download and File Setup
 
-p5.SVG@0.4. requires p5.js@0.4.7 with [patch#850](https://github.com/processing/p5.js/pull/850).
+p5.SVG@0.4 requires p5.js@0.4.7 with [patch#850](https://github.com/processing/p5.js/pull/850).
 You can download it here:
 
 https://github.com/zenozeng/p5.js-svg/blob/a18ee413ce15ca6df3dbd3758f40a16606853572/test/bower_components/p5.js/p5.js
