@@ -24,8 +24,8 @@ var route = function() {
         var patch = [
             "window.setup = setup;",
             "window.draw = draw;",
-            "window.preload = preload;"
-        ].join('');
+            "(typeof preload !== 'undefined') && (window.preload = preload);"
+        ].join('\n');
         eval(code + patch);
         new p5(null, document.getElementById("canvas")); // global init p5
     };
