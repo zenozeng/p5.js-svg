@@ -29,7 +29,8 @@ module.exports = function(p5) {
      *
      * @see https://github.com/zenozeng/p5.js-svg/issues/78
      *
-     * @method loadGraphics
+     * @function loadGraphics
+     * @memberof p5.prototype
      * @param {p5.Graphics} graphics the p5.Grphaics object
      * @param {Function(p5.Graphics)} [successCallback] Function to be called once
      *                                 the SVG Graphics is loaded. Will be passed the
@@ -37,8 +38,6 @@ module.exports = function(p5) {
      * @param {Function(Event)}    [failureCallback] called with event error.
      *
      * @example
-     * <div>
-     * <code>
      * pg = createGraphics(100, 100, SVG);
      * background(200);
      * pg.background(100);
@@ -47,8 +46,6 @@ module.exports = function(p5) {
      *      image(pgCanvas, 50, 50);
      *      image(pgCanvas, 0, 0, 50, 50);
      * });
-     * </code>
-     * </div>
      *
      */
     p5.prototype.loadGraphics = function(graphics, successCallback, failureCallback) {
@@ -76,6 +73,8 @@ module.exports = function(p5) {
      * Creates a SVG element in the document, and sets its width and
      * height in pixels. This method should be called only once at
      * the start of setup.
+     * @function createCanvas
+     * @memberof p5.prototype
      * @param {Number} width - Width (in px) for SVG Element
      * @param {Number} height - Height (in px) for SVG Element
      * @return {Graphics}

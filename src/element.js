@@ -134,7 +134,7 @@ module.exports = function(p5) {
      * @function create
      * @memberof SVGElement
      * @param {String} nodeName
-     * @param {Object} attributes Attributes for the element (optional)
+     * @param {Object} [attributes] Attributes for the element
      * @return {SVGElement}
      */
     SVGElement.create = function(nodeName, attributes) {
@@ -193,7 +193,7 @@ module.exports = function(p5) {
      *
      * @function parentNode
      * @memberof SVGElement.prototype
-     * @param {String} selector CSS Selector (optional).
+     * @param {String} [selector] CSS Selector
      * @return {SVGElement}
      */
     SVGElement.prototype.parentNode = function(selector) {

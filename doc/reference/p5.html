@@ -108,6 +108,415 @@
 
     
 
+    <h4 class="name" id="createCanvas"><span class="type-signature"></span>createCanvas<span class="signature">(width, height)</span><span class="type-signature"> &rarr; {Graphics}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Patched version of createCanvas
+
+use createCanvas(100, 100, SVG) to create SVG canvas.
+
+Creates a SVG element in the document, and sets its width and
+height in pixels. This method should be called only once at
+the start of setup.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Width (in px) for SVG Element</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Height (in px) for SVG Element</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rendering.js.html">rendering.js</a>, <a href="rendering.js.html#line68">line 68</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Graphics</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="loadGraphics"><span class="type-signature"></span>loadGraphics<span class="signature">(graphics, successCallback<span class="signature-attributes">opt</span>, failureCallback<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Due to a known issue (image is not surely ready before onload fires),
+we have no way to draw SVG element synchronously.
+So, this method will load a SVG Graphics
+and then convert it to Canvas Graphics asynchronously
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>graphics</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">p5.Graphics</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the p5.Grphaics object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>successCallback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Function to be called once
+                                the SVG Graphics is loaded. Will be passed the
+                                p5.Graphics.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>failureCallback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">called with event error.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rendering.js.html">rendering.js</a>, <a href="rendering.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://github.com/zenozeng/p5.js-svg/issues/78">https://github.com/zenozeng/p5.js-svg/issues/78</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>pg = createGraphics(100, 100, SVG);
+background(200);
+pg.background(100);
+pg.ellipse(pg.width/2, pg.height/2, 50, 50);
+loadGraphics(pg, function(pgCanvas) {
+     image(pgCanvas, 50, 50);
+     image(pgCanvas, 0, 0, 50, 50);
+});</code></pre>
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="loadSVG"><span class="type-signature"></span>loadSVG<span class="signature">()</span><span class="type-signature"> &rarr; {p5.SVGElement}</span></h4>
 
     
@@ -357,7 +766,7 @@
 
     
 
-    <h4 class="name" id="save"><span class="type-signature"></span>save<span class="signature">(source, filename)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="save"><span class="type-signature"></span>save<span class="signature">(source<span class="signature-attributes">opt</span>, filename<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -388,6 +797,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -416,10 +827,20 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Source to save (optional)</td>
+            <td class="description last">Source to save</td>
         </tr>
 
     
@@ -438,6 +859,16 @@
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -737,7 +1168,7 @@
 
     
 
-    <h4 class="name" id="saveSVG"><span class="type-signature"></span>saveSVG<span class="signature">(svg, filename, extension)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="saveSVG"><span class="type-signature"></span>saveSVG<span class="signature">(svg<span class="signature-attributes">opt</span>, filename<span class="signature-attributes">opt</span>, extension<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -771,6 +1202,8 @@ file immediately, or prompt the user with a dialogue window.
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -799,10 +1232,20 @@ file immediately, or prompt the user with a dialogue window.
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Source to save (optional)</td>
+            <td class="description last">Source to save</td>
         </tr>
 
     
@@ -821,6 +1264,16 @@ file immediately, or prompt the user with a dialogue window.
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -845,10 +1298,20 @@ file immediately, or prompt the user with a dialogue window.
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Extension: 'svg' or 'jpg' or 'jpeg' or 'png' (optional)</td>
+            <td class="description last">Extension: 'svg' or 'jpg' or 'jpeg' or 'png'</td>
         </tr>
 
     
@@ -931,13 +1394,13 @@ file immediately, or prompt the user with a dialogue window.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="RendererSVG.html">RendererSVG</a></li><li><a href="SVGElement.html">SVGElement</a></li></ul><h3>Namespaces</h3><ul><li><a href="p5.html">p5</a></li></ul><h3>Global</h3><ul><li><a href="global.html#loadGraphics">loadGraphics</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="RendererSVG.html">RendererSVG</a></li><li><a href="SVGElement.html">SVGElement</a></li></ul><h3>Namespaces</h3><ul><li><a href="p5.html">p5</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Fri Aug 21 2015 20:13:13 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Fri Aug 21 2015 20:23:36 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

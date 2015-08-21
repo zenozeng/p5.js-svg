@@ -76,9 +76,9 @@ module.exports = function(p5) {
      *
      * @function saveSVG
      * @memberof p5.prototype
-     * @param {Graphics|Element} svg Source to save (optional)
-     * @param {String} filename
-     * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png' (optional)
+     * @param {Graphics|Element} [svg] Source to save
+     * @param {String} [filename]
+     * @param {String} [extension] Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
      */
     p5.prototype.saveSVG = function() {
         // don't use slice on arguments because it prevents optimizations
@@ -184,8 +184,8 @@ module.exports = function(p5) {
      *
      * @function save
      * @memberof p5.prototype
-     * @param {Graphics|Element} source Source to save (optional)
-     * @param {String} filename filename
+     * @param {Graphics|Element} [source] Source to save
+     * @param {String} [filename] filename
      */
     var _save = p5.prototype.save;
     p5.prototype.save = function() {

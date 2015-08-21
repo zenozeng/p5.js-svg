@@ -1,3 +1,4 @@
 examples/* linguist-vendored
 test/* linguist-vendored
 dist/* linguist-vendored
+doc/* linguist-vendored
