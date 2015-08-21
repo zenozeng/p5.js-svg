@@ -1784,7 +1784,7 @@ module.exports = function(p5) {
      * @param {String} filename filename
      * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
      * @param {Number} duration duration
-     * @param {Number]} fps fps
+     * @param {Number} fps fps
      * @param {Function} callback callback
      */
     var _saveFrames = p5.prototype.saveFrames;

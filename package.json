@@ -1,11 +1,12 @@
 {
   "name": "p5.js-svg",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "main": "./src/index.js",
   "scripts": {
-    "build": "npm run build-dist & npm run build-test",
+    "build": "npm run build-dist & npm run build-test & npm run build-doc",
     "build-dist": "./build/build.sh",
     "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
+    "build-doc": "jsdoc src -d doc/reference/",
     "test": "npm run build & karma start"
   },
   "devDependencies": {
