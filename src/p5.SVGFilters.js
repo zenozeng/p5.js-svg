@@ -36,8 +36,10 @@ module.exports = function(p5) {
         if (!filterid) {
             filterid = 'p5-svg-' + generateID();
             svgElement.attribute('data-p5-svg-filter-id', filterid);
-            svgElement.attribute('filter', 'url(#' + filterid + ')');
         }
+        // Note that when filters is [], we will remove filter attr
+        // So, here, we write this attr every time
+        svgElement.attribute('filter', 'url(#' + filterid + ')');
 
         // create <filter>
         var filter = SVGElement.create('filter', {id: filterid});
