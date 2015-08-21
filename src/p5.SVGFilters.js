@@ -7,6 +7,7 @@ module.exports = function(p5) {
         return Date.now().toString() + Math.random().toString().replace(/0\./, '');
     };
 
+    // @private
     // We have to build a filter for each element
     // the `filter: f1 f2` and svg param is not supported by many browsers
     // so we can just modify the filter def to do so

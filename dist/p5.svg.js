@@ -1833,8 +1833,9 @@ module.exports = function(p5) {
      * filename on save-as. Other browsers will either save the
      * file immediately, or prompt the user with a dialogue window.
      *
-     * @method saveSVG
-     * @param {Graphics|SVGElement} svg Source to save (optional)
+     * @function saveSVG
+     * @memberof p5.prototype
+     * @param {Graphics|Element} svg Source to save (optional)
      * @param {String} filename
      * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png' (optional)
      */
@@ -1872,7 +1873,8 @@ module.exports = function(p5) {
     /**
      * Extends p5's saveFrames with SVG support
      *
-     * @method saveFrames
+     * @function saveFrames
+     * @memberof p5.prototype
      * @param {String} filename filename
      * @param {String} extension Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
      * @param {Number} duration duration
@@ -1939,8 +1941,9 @@ module.exports = function(p5) {
     /**
      * Extends p5's save method with SVG support
      *
-     * @method save
-     * @param {Graphics|SVGElement} source Source to save (optional)
+     * @function save
+     * @memberof p5.prototype
+     * @param {Graphics|Element} source Source to save (optional)
      * @param {String} filename filename
      */
     var _save = p5.prototype.save;
@@ -2004,6 +2007,7 @@ module.exports = function(p5) {
     /**
      * loadSVG (like loadImage, but will return SVGElement)
      *
+     * @function loadSVG
      * @memberof p5.prototype
      * @returns {p5.SVGElement}
      */
@@ -2159,6 +2163,7 @@ module.exports = function(p5) {
         return Date.now().toString() + Math.random().toString().replace(/0\./, '');
     };
 
+    // @private
     // We have to build a filter for each element
     // the `filter: f1 f2` and svg param is not supported by many browsers
     // so we can just modify the filter def to do so
