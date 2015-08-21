@@ -15,8 +15,8 @@ function draw() {
     // apply filter to parent group
     var g = path.parentNode();
     if (frameCount % 200 == 0) {
-        g.unfilter(GRAY);
+        g.unfilter(GRAY); // cancel last filter applied
     } else if (frameCount % 100 == 0) {
-        g.filter(GRAY);
+        g.filter(GRAY); // apply gray filter
     }
 }
