@@ -2,6 +2,10 @@
 
 p5.svg@0.4.3 (requires p5.js@0.4.7 with [patch#850](https://github.com/processing/p5.js/pull/850))
 
+- Write filter attribute every time filter applied, fixes https://github.com/zenozeng/p5.js-svg/issues/137
+
+- Fix SVGElement.unfilter not work when arg not defined
+
 - Update documentation
 
 ## v0.4.2

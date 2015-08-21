@@ -53,6 +53,9 @@ module.exports = function(p5) {
     SVGElement.prototype.unfilter = function(filterName, arg) {
         var filters = this.attribute('data-p5-svg-filters') || '[]';
         filters = JSON.parse(filters);
+        if (arg === undefined) {
+            arg = null;
+        }
         var found = false;
         filters = filters.reverse().filter(function(filter) {
             if ((filter[0] === filterName) && (filter[1] === arg) && !found) {
