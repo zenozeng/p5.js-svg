@@ -70,4 +70,4 @@ It's \<svg\>!
 
 - Check out the [examples](http://zenozeng.github.io/p5.js-svg/examples/).
 
-- View the [API Reference](./reference.md) for full documentation.
+- View the [API Reference](http://zenozeng.github.io/p5.js-svg/doc/reference/index.html) for full documentation.
