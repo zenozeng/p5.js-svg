@@ -1,5 +1,5 @@
 function setup() {
-    createCanvas(600, 200, SVG);
+    createCanvas(600, 200, SVG); // Create SVG Canvas
     fill('#ED225D');
     noStroke();
 }

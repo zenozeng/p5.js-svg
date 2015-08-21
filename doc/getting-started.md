@@ -68,6 +68,6 @@ It's \<svg\>!
 
 ## What's Next?
 
-- Check out the [examples](../examples).
+- Check out the [examples](http://zenozeng.github.io/p5.js-svg/examples/).
 
 - View the [API Reference](./reference.md) for full documentation.
