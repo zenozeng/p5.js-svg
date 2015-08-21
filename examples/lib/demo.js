@@ -1,7 +1,7 @@
 var route = function() {
     var section = window.location.hash;
     section = section.replace(/#/g, "");
-    if (["basic", "next", "custom", "vector", "pause", "pages"].indexOf(section) === -1) {
+    if (["basic", "manipulating", "filters", "graphics", "exporting"].indexOf(section) === -1) {
         window.location.hash = "basic";
         return;
     }
