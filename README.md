@@ -14,7 +14,7 @@ and manipulating existing SVG file without rasterization.
 
 - [Examples](http://zenozeng.github.io/p5.js-svg/examples/)
 
-- [API Reference](http://zenozeng.github.io/p5.js-svg/doc/reference/)
+- [API Reference](http://zenozeng.github.io/p5.js-svg/doc/reference/index.html)
 
 - [CHANGELOG](CHANGELOG.md)
 
