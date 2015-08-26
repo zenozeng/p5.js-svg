@@ -2031,7 +2031,7 @@ module.exports = function(p5) {
         return element;
     };
     // cause preload to wait
-    p5.prototype._preloadMethods.loadSVG = 'p5';
+    p5.prototype._preloadMethods.loadSVG = p5.prototype;
 };
 
 },{}],10:[function(require,module,exports){
@@ -2144,9 +2144,12 @@ module.exports = function(p5) {
      *
      * @function appendChild
      * @memberof RendererSVG.prototype
-     * @param {Element} element
+     * @param {SVGElement|Element} element
      */
     RendererSVG.prototype.appendChild = function(element) {
+        if (element && element.elt) {
+            element = element.elt;
+        }
         this._setGCFlag(element);
         this.drawingContext.__closestGroupOrSvg().appendChild(element);
     };

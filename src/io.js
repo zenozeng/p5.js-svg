@@ -272,5 +272,5 @@ module.exports = function(p5) {
         return element;
     };
     // cause preload to wait
-    p5.prototype._preloadMethods.loadSVG = 'p5';
+    p5.prototype._preloadMethods.loadSVG = p5.prototype;
 };

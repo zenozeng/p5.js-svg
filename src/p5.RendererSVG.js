@@ -107,9 +107,12 @@ module.exports = function(p5) {
      *
      * @function appendChild
      * @memberof RendererSVG.prototype
-     * @param {Element} element
+     * @param {SVGElement|Element} element
      */
     RendererSVG.prototype.appendChild = function(element) {
+        if (element && element.elt) {
+            element = element.elt;
+        }
         this._setGCFlag(element);
         this.drawingContext.__closestGroupOrSvg().appendChild(element);
     };
