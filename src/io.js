@@ -9,7 +9,7 @@ module.exports = function(p5) {
      */
     var svg2img = function(svg, mine, callback) {
         svg = (new XMLSerializer()).serializeToString(svg);
-        svg = "data:image/svg+xml;charset=utf-8," + encodeURI(svg);
+        svg = 'data:image/svg+xml;charset=utf-8,' + encodeURI(svg);
         if (mine == 'image/svg+xml') {
             callback(null, svg);
             return;
@@ -92,7 +92,7 @@ module.exports = function(p5) {
             args.shift();
         }
 
-        if (typeof args[0] == "object") {
+        if (typeof args[0] == 'object') {
             svg = args[0];
             args.shift();
         }
@@ -200,7 +200,7 @@ module.exports = function(p5) {
             args.shift();
         }
 
-        if (typeof args[0] == "object") {
+        if (typeof args[0] == 'object') {
             svg = args[0];
             args.shift();
         }
