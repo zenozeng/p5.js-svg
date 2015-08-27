@@ -2,6 +2,9 @@
 
 module.exports = function(p5) {
     var _filter = p5.prototype.filter;
+
+    require('./p5.SVGFilters')(p5);
+
     p5.prototype.filter = function(operation, value) {
         var svg = this._graphics.svg;
         if (svg) {
