@@ -76,7 +76,7 @@ module.exports = function(p5) {
      *
      * @function saveSVG
      * @memberof p5.prototype
-     * @param {Graphics|Element} [svg] Source to save
+     * @param {Graphics|Element|SVGElement} [svg] Source to save
      * @param {String} [filename]
      * @param {String} [extension] Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
      */
@@ -89,6 +89,11 @@ module.exports = function(p5) {
 
         if (args[0] instanceof p5.Graphics) {
             svg = args[0]._graphics.svg;
+            args.shift();
+        }
+
+        if (args[0] && args[0].elt) {
+            svg = args[0].elt;
             args.shift();
         }
 
@@ -184,7 +189,7 @@ module.exports = function(p5) {
      *
      * @function save
      * @memberof p5.prototype
-     * @param {Graphics|Element} [source] Source to save
+     * @param {Graphics|Element|SVGElement} [source] Source to save
      * @param {String} [filename] filename
      */
     var _save = p5.prototype.save;
@@ -197,6 +202,11 @@ module.exports = function(p5) {
         if (args[0] instanceof p5.Graphics) {
             var svgcanvas = args[0].elt;
             svg = svgcanvas.svg;
+            args.shift();
+        }
+
+        if (args[0] && args[0].elt) {
+            svg = args[0].elt;
             args.shift();
         }
 

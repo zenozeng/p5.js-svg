@@ -6,7 +6,9 @@ p5.svg@0.5.0 (requires p5.js@0.4.8)
 
 - RendererSVG.prototype.appendChild(SVGElement)
 
-- ESLint
+- Configure ESLint and make it happy
+
+- Allow save SVGElement in save() and saveSVG()
 
 ## v0.4.3
 
