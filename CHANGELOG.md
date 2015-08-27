@@ -10,6 +10,8 @@ p5.svg@0.5.0 (requires p5.js@0.4.8)
 
 - Allow save SVGElement in save() and saveSVG()
 
+- add p5.prototype.registerSVGFilter
+
 ## v0.4.3
 
 p5.svg@0.4.3 (requires p5.js@0.4.7 with [patch#850](https://github.com/processing/p5.js/pull/850))

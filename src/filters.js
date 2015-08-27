@@ -3,7 +3,30 @@
 module.exports = function(p5) {
     var _filter = p5.prototype.filter;
 
-    require('./p5.SVGFilters')(p5);
+    var SVGFilters = require('./p5.SVGFilters')(p5);
+
+    /**
+     * Register a custom SVG Filter
+     *
+     * @function registerSVGFilter
+     * @memberof p5.prototype
+     * @param {String} name Name for Custom SVG filter
+     * @param {Function} filterFunction filterFunction(inGraphicsName, resultGraphicsName, value)
+     *                                  should return SVGElement or Array of SVGElement.
+     * @example
+     * registerSVGFilter('myblur', function(inGraphicsName, resultGraphicsName, value) {
+     *     return SVGElement.create('feGaussianBlur', {
+     *         stdDeviation: val,
+     *         in: inGraphics,
+     *         result: resultGraphics,
+     *         'color-interpolation-filters': 'sRGB'
+     *     });
+     * });
+     * filter('myblur', 5);
+     */
+    p5.prototype.registerSVGFilter = function(name, fn) {
+        SVGFilters[name] = fn;
+    };
 
     p5.prototype.filter = function(operation, value) {
         var svg = this._graphics.svg;
