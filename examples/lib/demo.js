@@ -1,7 +1,7 @@
 var route = function() {
     var section = window.location.hash;
     section = section.replace(/#/g, "");
-    if (["basic", "element", "manipulating", "filters", "graphics", "exporting"].indexOf(section) === -1) {
+    if (["basic", "element", "manipulating", "filters", "graphics", "exporting", "click"].indexOf(section) === -1) {
         window.location.hash = "basic";
         return;
     }
@@ -24,6 +24,7 @@ var route = function() {
         var patch = [
             "window.setup = setup;",
             "window.draw = draw;",
+            "(typeof mouseClicked !== 'undefined') && (window.mouseClicked = mouseClicked);",
             "(typeof preload !== 'undefined') && (window.preload = preload);"
         ].join('\n');
         eval(code + patch);

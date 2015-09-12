@@ -1830,6 +1830,16 @@ describe('Filters', function() {
                 testRender.setMaxDiff(1); // ignore diff, see known issue
                 testRender.unlock();
             });
+        },
+        custom: function() {
+            background(200, 100, 50);
+            registerSVGFilter('mygray', p5.SVGFilters.gray);
+            if (isSVG) {
+                filter('mygray');
+            } else {
+                filter(GRAY);
+            }
+            testRender.setMaxPixelDiff(1);
         }
     };
 
