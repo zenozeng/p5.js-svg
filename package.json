@@ -4,7 +4,7 @@
   "main": "./src/index.js",
   "scripts": {
     "lint": "eslint src/",
-    "build": "npm run lint && npm run build-dist & npm run build-test & npm run build-doc",
+    "build": "npm run build-dist & npm run build-test & npm run build-doc & npm run lint",
     "build-dist": "./build/build.sh",
     "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
     "build-doc": "jsdoc src doc/reference.md -d doc/reference/",

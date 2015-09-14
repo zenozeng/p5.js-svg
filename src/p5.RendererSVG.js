@@ -114,7 +114,10 @@ module.exports = function(p5) {
             element = element.elt;
         }
         this._setGCFlag(element);
-        this.drawingContext.__closestGroupOrSvg().appendChild(element);
+        var g = this.drawingContext.__closestGroupOrSvg();
+        console.log(g, element);
+        g.appendChild(element);
+        console.log(g);
     };
 
     /**

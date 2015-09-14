@@ -16,6 +16,11 @@ function draw() {
 }
 
 function mouseClicked() {
-    var dataURL = graphics.elt.toDataURL('image/svg+xml');
-    alert(dataURL);
+    var dataURL = getSerializedSVG('image/svg+xml');
+    // draw the dataurl
+    var svg = loadSVG(dataURL, function(svg) {
+        console.log(svg);
+        noLoop();
+        image(svg, 50, 50, 600, 200);
+    });
 }

@@ -2063,6 +2063,10 @@ module.exports = function(p5) {
     };
     // cause preload to wait
     p5.prototype._preloadMethods.loadSVG = p5.prototype;
+
+    p5.prototype.getSerializedSVG = function() {
+        return this._graphics.elt.toDataURL('image/svg+xml');
+    };
 };
 
 },{}],10:[function(require,module,exports){
@@ -2182,7 +2186,10 @@ module.exports = function(p5) {
             element = element.elt;
         }
         this._setGCFlag(element);
-        this.drawingContext.__closestGroupOrSvg().appendChild(element);
+        var g = this.drawingContext.__closestGroupOrSvg();
+        console.log(g, element);
+        g.appendChild(element);
+        console.log(g);
     };
 
     /**

@@ -283,4 +283,8 @@ module.exports = function(p5) {
     };
     // cause preload to wait
     p5.prototype._preloadMethods.loadSVG = p5.prototype;
+
+    p5.prototype.getSerializedSVG = function() {
+        return this._graphics.elt.toDataURL('image/svg+xml');
+    };
 };

@@ -38,6 +38,6 @@ route();
 
 window.onhashchange = function() {
     route();
-    window.noLoop();
+    window.noLoop && window.noLoop();
 };
 
