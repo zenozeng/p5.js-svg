@@ -12,7 +12,7 @@ p5.svg@0.5.0 (requires p5.js@0.4.8)
 
 - add p5.prototype.registerSVGFilter
 
-- add p5.prototype.getSerializedSVG
+- add p5.prototype.getDataURL
 
 ## v0.4.3
 

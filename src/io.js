@@ -245,13 +245,16 @@ module.exports = function(p5) {
             // so that it won't make preload mess
             setTimeout(function() {
                 if (path.indexOf(';base64,') > -1) {
-                    successCallback(atob(svg));
+                    svg = atob(svg);
                 } else {
-                    successCallback(decodeURIComponent(svg));
+                    svg = decodeURIComponent(svg);
                 }
+                successCallback(svg);
             }, 1);
+            return svg;
         } else {
             this.httpGet(path, successCallback);
+            return null;
         }
     };
 
@@ -284,7 +287,7 @@ module.exports = function(p5) {
     // cause preload to wait
     p5.prototype._preloadMethods.loadSVG = p5.prototype;
 
-    p5.prototype.getSerializedSVG = function() {
+    p5.prototype.getDataURL = function() {
         return this._graphics.elt.toDataURL('image/svg+xml');
     };
 };

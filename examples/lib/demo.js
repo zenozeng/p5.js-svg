@@ -1,7 +1,7 @@
 var route = function() {
     var section = window.location.hash;
     section = section.replace(/#/g, "");
-    if (["basic", "element", "manipulating", "filters", "graphics", "exporting", "click"].indexOf(section) === -1) {
+    if (["basic", "element", "manipulating", "filters", "graphics", "exporting", "dataurl"].indexOf(section) === -1) {
         window.location.hash = "basic";
         return;
     }
@@ -37,7 +37,6 @@ var route = function() {
 route();
 
 window.onhashchange = function() {
-    route();
-    window.noLoop && window.noLoop();
+    window.location.reload();
 };
 
