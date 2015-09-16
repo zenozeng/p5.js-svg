@@ -7,7 +7,7 @@
     "build": "npm run build-dist & npm run build-test & npm run build-doc & npm run lint",
     "build-dist": "./build/build.sh",
     "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
-    "build-doc": "jsdoc src doc/reference.md -d doc/reference/",
+    "build-doc": "jsdoc src doc/reference.md -c jsdoc.json -d doc/reference/",
     "test": "npm run build & karma start"
   },
   "devDependencies": {

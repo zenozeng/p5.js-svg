@@ -2191,8 +2191,6 @@ module.exports = function(p5) {
         this._setGCFlag(element);
         var g = this.drawingContext.__closestGroupOrSvg();
         g.appendChild(element);
-        // window.g = g;
-        // window.x = element;
     };
 
     /**
