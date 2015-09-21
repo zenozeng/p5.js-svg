@@ -243,20 +243,22 @@ var testRender = function(draw, callback) {
         var icon = match ? 'fa-check': 'fa-times';
         el.$match.html('<i class="fa ' + icon + '"></i>');
 
+        var err = null;
+        if (!match) {
+            err = new Error(JSON.stringify({
+                maxPixelDiff: testRender.maxPixelDiff,
+                maxDiffRate: testRender.maxDiff,
+                pixels: count,
+                diffPixels: diffCount,
+                rate: rate
+            }));
+        }
+
         testRender.setMaxDiff(0.05); // reset maxDiff
         testRender.setMaxPixelDiff(0); // reset maxPixelDiff
 
         // callback
-        if (match) {
-            callback();
-        } else {
-            var err = JSON.stringify({
-                pixels: count,
-                diffPixels: diffCount,
-                rate: rate
-            });
-            callback(new Error(err));
-        }
+        callback(err);
     };
 
     var next = function() {

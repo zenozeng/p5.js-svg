@@ -1,3 +1,9 @@
+## v0.5.1
+
+p5.svg@0.5.1 (requires p5.js@0.4.8)
+
+- [Working] Fix issues with Travis CI
+
 ## v0.5.0
 
 p5.svg@0.5.0 (requires p5.js@0.4.8)
