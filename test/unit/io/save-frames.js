@@ -7,7 +7,7 @@ describe('IO/saveFrames', function() {
             p.setup = function() {
                 p.createCanvas(100, 100);
                 p.strokeWeight(3);
-                p.saveFrames('hello', 'png', 0.5, 10, function(frames) {
+                p.saveFrames('hello', 'png', 3, 10, function(frames) {
                     try {
                         assert.ok(frames.length > 1);
                         p.noCanvas();
