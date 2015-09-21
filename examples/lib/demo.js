@@ -1,14 +1,18 @@
 var route = function() {
     var section = window.location.hash;
     section = section.replace(/#/g, "");
-    if (["basic", "element", "manipulating", "filters", "graphics", "exporting"].indexOf(section) === -1) {
+    if (section.length < 1) {
         window.location.hash = "basic";
         return;
     }
+
     // highlight current section
     document.querySelector('.current') &&
         (document.querySelector('.current').className = '');
-    document.querySelector('[href="#'+section+'"]').className = 'current';
+    var current = document.querySelector('[href="#'+section+'"]');
+    if (current) {
+        current.className = 'current';
+    }
 
     // remove all canvas
     document.getElementById('defaultCanvas') &&
