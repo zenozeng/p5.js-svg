@@ -2,6 +2,12 @@
 
 [![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
 
+[travis-image]: https://travis-ci.org/zenozeng/p5.js-svg.svg?branch=master
+[travis-url]: https://travis-ci.org/zenozeng/p5.js-svg
+
+[coveralls-image]: https://coveralls.io/repos/zenozeng/p5.js-svg/badge.svg?branch=master&service=github
+[coveralls-url]: https://coveralls.io/github/zenozeng/p5.js-svg?branch=master
+
 The main goal of p5.SVG is to provide a SVG runtime for p5.js,
 so that we can draw using p5's powerful API in \<svg\>, save things to svg file
 and manipulating existing SVG file without rasterization.
