@@ -1,5 +1,5 @@
 /*!!
- *  p5.svg v0.4.3
+ *  p5.svg v0.5.0
  *  SVG Runtime for p5.js.
  *
  *  Copyright (C) 2015 Zeno Zeng
@@ -1502,12 +1502,12 @@ module.exports = function(p5) {
      * @constructor
      * @param {Element} element
      */
-    function SVGElement(element, pInst) {
+    function SVGElement(element) {
         if (!element) {
             return null;
         }
         return p5.Element.apply(this, arguments);
-    };
+    }
 
     SVGElement.prototype = Object.create(p5.Element.prototype);
 
@@ -1621,7 +1621,7 @@ module.exports = function(p5) {
      */
     SVGElement.create = function(nodeName, attributes) {
         attributes = attributes || {};
-        var elt = document.createElementNS("http://www.w3.org/2000/svg", nodeName);
+        var elt = document.createElementNS('http://www.w3.org/2000/svg', nodeName);
         Object.keys(attributes).forEach(function(k) {
             elt.setAttribute(k, attributes[k]);
         });
@@ -1683,13 +1683,10 @@ module.exports = function(p5) {
             return new SVGElement(this.elt.parentNode);
         }
         var elt = this;
-        while (true) {
+        while (elt) {
             elt = this.parentNode();
-            if (elt.matches(selector)) {
+            if (elt && elt.matches(selector)) {
                 return elt;
-            }
-            if (!elt) { // already top layer
-                break;
             }
         }
         return null;
@@ -1702,9 +1699,33 @@ module.exports = function(p5) {
 // SVG Filter
 
 module.exports = function(p5) {
+    var _filter = p5.prototype.filter;
+
     var SVGFilters = require('./p5.SVGFilters')(p5);
 
-    var _filter = p5.prototype.filter;
+    /**
+     * Register a custom SVG Filter
+     *
+     * @function registerSVGFilter
+     * @memberof p5.prototype
+     * @param {String} name Name for Custom SVG filter
+     * @param {Function} filterFunction filterFunction(inGraphicsName, resultGraphicsName, value)
+     *                                  should return SVGElement or Array of SVGElement.
+     * @example
+     * registerSVGFilter('myblur', function(inGraphicsName, resultGraphicsName, value) {
+     *     return SVGElement.create('feGaussianBlur', {
+     *         stdDeviation: val,
+     *         in: inGraphics,
+     *         result: resultGraphics,
+     *         'color-interpolation-filters': 'sRGB'
+     *     });
+     * });
+     * filter('myblur', 5);
+     */
+    p5.prototype.registerSVGFilter = function(name, fn) {
+        SVGFilters[name] = fn;
+    };
+
     p5.prototype.filter = function(operation, value) {
         var svg = this._graphics.svg;
         if (svg) {
@@ -1768,7 +1789,7 @@ module.exports = function(p5) {
      */
     var svg2img = function(svg, mine, callback) {
         svg = (new XMLSerializer()).serializeToString(svg);
-        svg = "data:image/svg+xml;charset=utf-8," + encodeURI(svg);
+        svg = 'data:image/svg+xml;charset=utf-8,' + encodeURI(svg);
         if (mine == 'image/svg+xml') {
             callback(null, svg);
             return;
@@ -1835,7 +1856,7 @@ module.exports = function(p5) {
      *
      * @function saveSVG
      * @memberof p5.prototype
-     * @param {Graphics|Element} [svg] Source to save
+     * @param {Graphics|Element|SVGElement} [svg] Source to save
      * @param {String} [filename]
      * @param {String} [extension] Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
      */
@@ -1851,7 +1872,12 @@ module.exports = function(p5) {
             args.shift();
         }
 
-        if (typeof args[0] == "object") {
+        if (args[0] && args[0].elt) {
+            svg = args[0].elt;
+            args.shift();
+        }
+
+        if (typeof args[0] == 'object') {
             svg = args[0];
             args.shift();
         }
@@ -1943,7 +1969,7 @@ module.exports = function(p5) {
      *
      * @function save
      * @memberof p5.prototype
-     * @param {Graphics|Element} [source] Source to save
+     * @param {Graphics|Element|SVGElement} [source] Source to save
      * @param {String} [filename] filename
      */
     var _save = p5.prototype.save;
@@ -1959,7 +1985,12 @@ module.exports = function(p5) {
             args.shift();
         }
 
-        if (typeof args[0] == "object") {
+        if (args[0] && args[0].elt) {
+            svg = args[0].elt;
+            args.shift();
+        }
+
+        if (typeof args[0] == 'object') {
             svg = args[0];
             args.shift();
         }
@@ -1994,13 +2025,16 @@ module.exports = function(p5) {
             // so that it won't make preload mess
             setTimeout(function() {
                 if (path.indexOf(';base64,') > -1) {
-                    successCallback(atob(svg));
+                    svg = atob(svg);
                 } else {
-                    successCallback(decodeURIComponent(svg));
+                    svg = decodeURIComponent(svg);
                 }
+                successCallback(svg);
             }, 1);
+            return svg;
         } else {
             this.httpGet(path, successCallback);
+            return null;
         }
     };
 
@@ -2031,7 +2065,11 @@ module.exports = function(p5) {
         return element;
     };
     // cause preload to wait
-    p5.prototype._preloadMethods.loadSVG = 'p5';
+    p5.prototype._preloadMethods.loadSVG = p5.prototype;
+
+    p5.prototype.getDataURL = function() {
+        return this._graphics.elt.toDataURL('image/svg+xml');
+    };
 };
 
 },{}],10:[function(require,module,exports){
@@ -2102,7 +2140,7 @@ module.exports = function(p5) {
         });
         // For scale, crop
         // see also: http://sarasoueidan.com/blog/svg-coordinate-systems/
-        this.svg.setAttribute("viewBox", [0, 0, w, h].join(' '));
+        this.svg.setAttribute('viewBox', [0, 0, w, h].join(' '));
     };
 
     /**
@@ -2144,11 +2182,15 @@ module.exports = function(p5) {
      *
      * @function appendChild
      * @memberof RendererSVG.prototype
-     * @param {Element} element
+     * @param {SVGElement|Element} element
      */
     RendererSVG.prototype.appendChild = function(element) {
+        if (element && element.elt) {
+            element = element.elt;
+        }
         this._setGCFlag(element);
-        this.drawingContext.__closestGroupOrSvg().appendChild(element);
+        var g = this.drawingContext.__closestGroupOrSvg();
+        g.appendChild(element);
     };
 
     /**
@@ -2167,15 +2209,15 @@ module.exports = function(p5) {
             throw new Error('Invalid image: ' + img);
         }
         var elt = img._graphics && img._graphics.svg; // handle SVG Graphics
-        elt = elt || (img.elt && img.elt.nodeName && (img.elt.nodeName.toLowerCase() === "svg") && img.elt); // SVGElement
-        elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == "svg") && img); // <svg>
+        elt = elt || (img.elt && img.elt.nodeName && (img.elt.nodeName.toLowerCase() === 'svg') && img.elt); // SVGElement
+        elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == 'svg') && img); // <svg>
         if (elt) {
             // it's <svg> element, let's handle it
             elt = elt.cloneNode(true);
-            elt.setAttribute("width", w);
-            elt.setAttribute("height", h);
-            elt.setAttribute("x", x);
-            elt.setAttribute("y", y);
+            elt.setAttribute('width', w);
+            elt.setAttribute('height', h);
+            elt.setAttribute('x', x);
+            elt.setAttribute('y', y);
             this.appendChild(elt);
         } else {
             p5.Renderer2D.prototype.image.apply(this, arguments);
@@ -2256,7 +2298,7 @@ module.exports = function(p5) {
             stdDeviation: val,
             in: inGraphics,
             result: resultGraphics,
-            "color-interpolation-filters": "sRGB"
+            'color-interpolation-filters': 'sRGB'
         });
     };
 
@@ -2264,16 +2306,16 @@ module.exports = function(p5) {
     // See also: http://stackoverflow.com/questions/21977929/match-colors-in-fecolormatrix-filter
     SVGFilters.colorMatrix = function(inGraphics, resultGraphics, matrix) {
         return SVGElement.create('feColorMatrix', {
-            type: "matrix",
+            type: 'matrix',
             values: matrix.join(' '),
-            "color-interpolation-filters": "sRGB",
+            'color-interpolation-filters': 'sRGB',
             in: inGraphics,
             result: resultGraphics
         });
     };
 
     // Here we use CIE luminance for RGB
-    SVGFilters.gray = function(inGraphics, resultGraphics, val) {
+    SVGFilters.gray = function(inGraphics, resultGraphics) {
         var matrix = [
             0.2126, 0.7152, 0.0722, 0, 0, // R'
             0.2126, 0.7152, 0.0722, 0, 0, // G'
@@ -2285,16 +2327,16 @@ module.exports = function(p5) {
 
     SVGFilters.threshold = function(inGraphics, resultGraphics, val) {
         var elements = [];
-        elements.push(SVGFilters.gray(inGraphics, resultGraphics + "-tmp"));
+        elements.push(SVGFilters.gray(inGraphics, resultGraphics + '-tmp'));
         var componentTransfer = SVGElement.create('feComponentTransfer', {
-            "in": resultGraphics + "-tmp",
+            'in': resultGraphics + '-tmp',
             result: resultGraphics
         });
         var thresh = Math.floor(val * 255);
-        ["R", "G", "B"].forEach(function(channel) {
+        ['R', 'G', 'B'].forEach(function(channel) {
             // Note that original value is from 0 to 1
             var func = SVGElement.create('feFunc' + channel, {
-                type: "linear",
+                type: 'linear',
                 slope: 255, // all non-zero * 255
                 intercept: (thresh - 1) * -1
             });
@@ -2360,13 +2402,13 @@ module.exports = function(p5) {
         });
 
         var componentTransfer = SVGElement.create('feComponentTransfer', {
-            "in": inGraphics,
+            'in': inGraphics,
             result: resultGraphics,
-            "color-interpolation-filters": "sRGB"
+            'color-interpolation-filters': 'sRGB'
         });
-        ["R", "G", "B"].forEach(function(channel) {
+        ['R', 'G', 'B'].forEach(function(channel) {
             var func = SVGElement.create('feFunc' + channel, {
-                type: "discrete",
+                type: 'discrete',
                 tableValues: tableValues.join(' ')
             });
             componentTransfer.append(func);
@@ -2378,30 +2420,30 @@ module.exports = function(p5) {
     SVGFilters._blendOffset = function(inGraphics, resultGraphics, mode) {
         var elements = [];
         [
-            ["left", -1, 0],
-            ["right", 1, 0],
-            ["up", 0, -1],
-            ["down", 0, 1]
+            ['left', -1, 0],
+            ['right', 1, 0],
+            ['up', 0, -1],
+            ['down', 0, 1]
         ].forEach(function(neighbor) {
             elements.push(SVGElement.create('feOffset', {
-                "in": inGraphics,
-                result: resultGraphics + "-" + neighbor[0],
+                'in': inGraphics,
+                result: resultGraphics + '-' + neighbor[0],
                 dx: neighbor[1],
                 dy: neighbor[2]
             }));
         });
         [
             [null, inGraphics],
-            [resultGraphics + "-left", resultGraphics + "-tmp-0"],
-            [resultGraphics + "-right", resultGraphics + "-tmp-1"],
-            [resultGraphics + "-up", resultGraphics + "-tmp-2"],
-            [resultGraphics + "-down", resultGraphics + "-tmp-3"]
+            [resultGraphics + '-left', resultGraphics + '-tmp-0'],
+            [resultGraphics + '-right', resultGraphics + '-tmp-1'],
+            [resultGraphics + '-up', resultGraphics + '-tmp-2'],
+            [resultGraphics + '-down', resultGraphics + '-tmp-3']
         ].forEach(function(layer, i, layers) {
             if (i === 0) {
                 return;
             }
             elements.push(SVGElement.create('feBlend', {
-                "in": layers[i - 1][1],
+                'in': layers[i - 1][1],
                 in2: layer[0],
                 result: layer[1],
                 mode: mode
@@ -2529,14 +2571,13 @@ module.exports = function(p5) {
         if (graphics._graphics.svg) {
             var svg = graphics._graphics.svg;
             var url = SVGCanvas.prototype.toDataURL.call(graphics._graphics.elt, 'image/svg+xml');
-            var img = new Image();
             var pg = this.createGraphics(graphics.width, graphics.height);
             // also copy SVG, so we can keep vector SVG when image(pg) in SVG runtime
             pg._graphics.svg = svg.cloneNode(true);
             pg.loadImage(url, function(img) {
                 pg.image(img);
                 successCallback(pg);
-            });
+            }, failureCallback);
         } else {
             successCallback(graphics);
         }

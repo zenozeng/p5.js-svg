@@ -9,7 +9,7 @@ module.exports = function(p5) {
      */
     var svg2img = function(svg, mine, callback) {
         svg = (new XMLSerializer()).serializeToString(svg);
-        svg = "data:image/svg+xml;charset=utf-8," + encodeURI(svg);
+        svg = 'data:image/svg+xml;charset=utf-8,' + encodeURI(svg);
         if (mine == 'image/svg+xml') {
             callback(null, svg);
             return;
@@ -76,7 +76,7 @@ module.exports = function(p5) {
      *
      * @function saveSVG
      * @memberof p5.prototype
-     * @param {Graphics|Element} [svg] Source to save
+     * @param {Graphics|Element|SVGElement} [svg] Source to save
      * @param {String} [filename]
      * @param {String} [extension] Extension: 'svg' or 'jpg' or 'jpeg' or 'png'
      */
@@ -92,7 +92,12 @@ module.exports = function(p5) {
             args.shift();
         }
 
-        if (typeof args[0] == "object") {
+        if (args[0] && args[0].elt) {
+            svg = args[0].elt;
+            args.shift();
+        }
+
+        if (typeof args[0] == 'object') {
             svg = args[0];
             args.shift();
         }
@@ -184,7 +189,7 @@ module.exports = function(p5) {
      *
      * @function save
      * @memberof p5.prototype
-     * @param {Graphics|Element} [source] Source to save
+     * @param {Graphics|Element|SVGElement} [source] Source to save
      * @param {String} [filename] filename
      */
     var _save = p5.prototype.save;
@@ -200,7 +205,12 @@ module.exports = function(p5) {
             args.shift();
         }
 
-        if (typeof args[0] == "object") {
+        if (args[0] && args[0].elt) {
+            svg = args[0].elt;
+            args.shift();
+        }
+
+        if (typeof args[0] == 'object') {
             svg = args[0];
             args.shift();
         }
@@ -235,13 +245,16 @@ module.exports = function(p5) {
             // so that it won't make preload mess
             setTimeout(function() {
                 if (path.indexOf(';base64,') > -1) {
-                    successCallback(atob(svg));
+                    svg = atob(svg);
                 } else {
-                    successCallback(decodeURIComponent(svg));
+                    svg = decodeURIComponent(svg);
                 }
+                successCallback(svg);
             }, 1);
+            return svg;
         } else {
             this.httpGet(path, successCallback);
+            return null;
         }
     };
 
@@ -272,5 +285,9 @@ module.exports = function(p5) {
         return element;
     };
     // cause preload to wait
-    p5.prototype._preloadMethods.loadSVG = 'p5';
+    p5.prototype._preloadMethods.loadSVG = p5.prototype;
+
+    p5.prototype.getDataURL = function() {
+        return this._graphics.elt.toDataURL('image/svg+xml');
+    };
 };

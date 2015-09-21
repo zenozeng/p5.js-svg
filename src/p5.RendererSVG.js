@@ -65,7 +65,7 @@ module.exports = function(p5) {
         });
         // For scale, crop
         // see also: http://sarasoueidan.com/blog/svg-coordinate-systems/
-        this.svg.setAttribute("viewBox", [0, 0, w, h].join(' '));
+        this.svg.setAttribute('viewBox', [0, 0, w, h].join(' '));
     };
 
     /**
@@ -107,11 +107,15 @@ module.exports = function(p5) {
      *
      * @function appendChild
      * @memberof RendererSVG.prototype
-     * @param {Element} element
+     * @param {SVGElement|Element} element
      */
     RendererSVG.prototype.appendChild = function(element) {
+        if (element && element.elt) {
+            element = element.elt;
+        }
         this._setGCFlag(element);
-        this.drawingContext.__closestGroupOrSvg().appendChild(element);
+        var g = this.drawingContext.__closestGroupOrSvg();
+        g.appendChild(element);
     };
 
     /**
@@ -130,15 +134,15 @@ module.exports = function(p5) {
             throw new Error('Invalid image: ' + img);
         }
         var elt = img._graphics && img._graphics.svg; // handle SVG Graphics
-        elt = elt || (img.elt && img.elt.nodeName && (img.elt.nodeName.toLowerCase() === "svg") && img.elt); // SVGElement
-        elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == "svg") && img); // <svg>
+        elt = elt || (img.elt && img.elt.nodeName && (img.elt.nodeName.toLowerCase() === 'svg') && img.elt); // SVGElement
+        elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == 'svg') && img); // <svg>
         if (elt) {
             // it's <svg> element, let's handle it
             elt = elt.cloneNode(true);
-            elt.setAttribute("width", w);
-            elt.setAttribute("height", h);
-            elt.setAttribute("x", x);
-            elt.setAttribute("y", y);
+            elt.setAttribute('width', w);
+            elt.setAttribute('height', h);
+            elt.setAttribute('x', x);
+            elt.setAttribute('y', y);
             this.appendChild(elt);
         } else {
             p5.Renderer2D.prototype.image.apply(this, arguments);

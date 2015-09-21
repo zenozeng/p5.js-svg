@@ -1,24 +1,18 @@
 {
   "name": "p5.js-svg",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "main": "./src/index.js",
   "scripts": {
-    "build": "npm run build-dist & npm run build-test & npm run build-doc",
+    "lint": "eslint src/",
+    "build": "npm run build-dist & npm run build-test & npm run build-doc & npm run lint",
     "build-dist": "./build/build.sh",
     "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
-    "build-doc": "jsdoc src doc/reference.md -d doc/reference/",
+    "build-doc": "jsdoc src doc/reference.md -c jsdoc.json -d doc/reference/",
     "test": "npm run build & karma start"
   },
   "devDependencies": {
     "amdclean": "^2.7.0",
     "browserify-istanbul": "^0.2.1",
-    "chai": "^2.3.0",
-    "grunt": "^0.4.5",
-    "grunt-amd-wrap": "^1.0.1",
-    "grunt-contrib-jshint": "^0.11.2",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-istanbul": "^0.5.0",
     "karma": "^0.12.32",
     "karma-browserify": "^4.3.0",
     "karma-chrome-launcher": "^0.1.12",

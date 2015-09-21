@@ -28,6 +28,7 @@ var route = function() {
         var patch = [
             "window.setup = setup;",
             "window.draw = draw;",
+            "(typeof mouseClicked !== 'undefined') && (window.mouseClicked = mouseClicked);",
             "(typeof preload !== 'undefined') && (window.preload = preload);"
         ].join('\n');
         eval(code + patch);
@@ -40,7 +41,6 @@ var route = function() {
 route();
 
 window.onhashchange = function() {
-    route();
-    window.noLoop();
+    window.location.reload();
 };
 

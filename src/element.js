@@ -20,12 +20,12 @@ module.exports = function(p5) {
      * @constructor
      * @param {Element} element
      */
-    function SVGElement(element, pInst) {
+    function SVGElement(element) {
         if (!element) {
             return null;
         }
         return p5.Element.apply(this, arguments);
-    };
+    }
 
     SVGElement.prototype = Object.create(p5.Element.prototype);
 
@@ -139,7 +139,7 @@ module.exports = function(p5) {
      */
     SVGElement.create = function(nodeName, attributes) {
         attributes = attributes || {};
-        var elt = document.createElementNS("http://www.w3.org/2000/svg", nodeName);
+        var elt = document.createElementNS('http://www.w3.org/2000/svg', nodeName);
         Object.keys(attributes).forEach(function(k) {
             elt.setAttribute(k, attributes[k]);
         });
@@ -201,13 +201,10 @@ module.exports = function(p5) {
             return new SVGElement(this.elt.parentNode);
         }
         var elt = this;
-        while (true) {
+        while (elt) {
             elt = this.parentNode();
-            if (elt.matches(selector)) {
+            if (elt && elt.matches(selector)) {
                 return elt;
-            }
-            if (!elt) { // already top layer
-                break;
             }
         }
         return null;
