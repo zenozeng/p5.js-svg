@@ -82,17 +82,12 @@ describe('Filters', function() {
         }
     };
 
-    console.log(Object.keys(tests));
-
     Object.keys(tests).forEach(function(key) {
         describe("Filters/" + key, function() {
             it(key + ': SVG API should draw same image as Canvas API', function(done) {
                 this.timeout(0);
                 testRender.describe("Filters/" + key);
-
-                console.log('================', Math.random(), key);
-                done();
-                // testRender(tests[key], done);
+                testRender(tests[key], done);
             });
         });
     });

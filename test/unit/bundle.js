@@ -1872,7 +1872,12 @@ var test = function() {
     require('./shape/attributes');
     require('./shape/curves');
     require('./shape/vertex');
-    mocha.run();
+
+    // Note that since recent version of karma, mocha.run will be called automatically
+    // So, we only call mocah.run() if not running inside karma
+    if (!window.__karma__) {
+        mocha.run();
+    }
 };
 
 
