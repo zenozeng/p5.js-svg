@@ -24,11 +24,10 @@ module.exports = function(config) {
         },
         reporters: ['progress', 'coverage', 'mocha'],
         coverageReporter: {
-            type : 'html',
-            dir : 'test/report/coverage/',
-            subdir: function(browser) {
-                return browser.toLowerCase().split(/[ /-]/)[0];
-            }
+            type: 'lcovonly',
+            dir : 'test/coverage/',
+            subdir: '.',
+            file: 'lcov.info'
         },
         port: 9876,
         colors: true,

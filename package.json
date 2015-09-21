@@ -9,10 +9,12 @@
     "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
     "build-doc": "jsdoc src doc/reference.md -c jsdoc.json -d doc/reference/",
     "test": "npm run build & karma start",
+    "coveralls": "cat ./test/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "ci-test": "./node_modules/.bin/karma start --browsers Firefox --single-run"
   },
   "devDependencies": {
     "browserify-istanbul": "^0.2.1",
+    "coveralls": "^2.11.4",
     "karma": "^0.13.10",
     "karma-browserify": "^4.3.0",
     "karma-chrome-launcher": "^0.2.0",
