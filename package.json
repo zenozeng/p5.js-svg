@@ -8,22 +8,20 @@
     "build-dist": "./build/build.sh",
     "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
     "build-doc": "jsdoc src doc/reference.md -c jsdoc.json -d doc/reference/",
-    "test": "npm run build & karma start"
+    "test": "npm run build & karma start",
+    "ci-test": "./node_modules/.bin/karma start --browsers Firefox --single-run"
   },
   "devDependencies": {
-    "amdclean": "^2.7.0",
     "browserify-istanbul": "^0.2.1",
-    "karma": "^0.12.32",
+    "karma": "^0.13.10",
     "karma-browserify": "^4.3.0",
     "karma-chrome-launcher": "^0.1.12",
     "karma-coverage": "^0.3.1",
     "karma-firefox-launcher": "^0.1.6",
-    "karma-mocha": "^0.1.10",
-    "karma-mocha-reporter": "^1.0.2",
+    "karma-mocha": "^0.2.0",
+    "karma-mocha-reporter": "^1.1.1",
     "karma-requirejs": "^0.2.2",
-    "mocha": "^2.2.5",
-    "requirejs": "^2.1.17",
-    "uglifyify": "^3.0.1"
+    "mocha": "^2.3.3"
   },
   "directories": {
     "test": "test"

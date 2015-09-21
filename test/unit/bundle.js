@@ -1692,6 +1692,7 @@ var testRender = function(draw, callback) {
         var count = Math.max(countPixels(imgData1), countPixels(imgData2));
         var diffCount = countPixels(diffImgData2);
         var rate = diffCount / count;
+        console.log('Get Max Diff', testRender.maxDiff);
         var match = rate <= (testRender.maxDiff || 0.05);
 
         // update $match
@@ -1701,7 +1702,7 @@ var testRender = function(draw, callback) {
         var err = null;
         if (!match) {
             err = new Error(JSON.stringify({
-                maxPixelDiff: testRender.maxPixelDiff,
+                maxPixelDiff: maxPixelDiff,
                 maxDiffRate: testRender.maxDiff,
                 pixels: count,
                 diffPixels: diffCount,
@@ -1738,6 +1739,7 @@ testRender.describe = function(str) {
 
 testRender.setMaxDiff = function(max) {
     testRender.maxDiff = max;
+    console.log('Set Max Diff', testRender.maxDiff);
 };
 
 testRender.setMaxPixelDiff = function(max) {
@@ -1772,25 +1774,25 @@ describe('Filters', function() {
         // but Canvas Renderer uses a pixels based blur (port of processing's blur),
         // so the results may not be exactly same.
         blur: function() {
+            testRender.setMaxDiff(1); // ignore diff, see known issue
+            testRender.setMaxPixelDiff(2);
             background(255);
             stroke(255, 0, 0);
             strokeWeight(10);
             line(0, 0, 100, 100);
             line(0, 100, 100, 0);
             filter(BLUR, 5);
-            testRender.setMaxPixelDiff(2);
-            testRender.setMaxDiff(1); // ignore diff, see known issue
         },
         gray: function() {
+            testRender.setMaxPixelDiff(1);
             background(200, 100, 50);
             filter(GRAY);
-            testRender.setMaxPixelDiff(1);
         },
         invert: function() {
+            testRender.setMaxPixelDiff(1);
             background(255, 0, 0);
             filter(INVERT);
             ellipse(50, 50, 50, 50);
-            testRender.setMaxPixelDiff(1);
         },
         threshold: function() {
             background(255, 0, 0);
@@ -1800,40 +1802,41 @@ describe('Filters', function() {
             filter(THRESHOLD, 0.5);
         },
         opaque: function() {
+            testRender.setMaxPixelDiff(1);
             background(255, 0, 0, 127);
             filter(OPAQUE); // Sets the alpha channel to 255
-            testRender.setMaxPixelDiff(1);
         },
         posterize: function() {
             testRender.lock();
+            testRender.setMaxDiff(1); // ignore diff, see https://github.com/zenozeng/p5.js-svg/issues/124
             loadImage(TESTIMG, function(img) {
                 image(img, 0, 0);
                 filter(POSTERIZE, 2);
                 if (_isSafari()) {
-                    testRender.setMaxDiff(1); // ignore diff, see https://github.com/zenozeng/p5.js-svg/issues/124
                 }
                 testRender.unlock();
             });
         },
         erode: function() {
             testRender.lock();
+            testRender.setMaxDiff(1); // ignore diff, see known issue
             loadImage(TESTIMG, function(img) {
                 image(img, 0, 0);
                 filter(ERODE);
-                testRender.setMaxDiff(1); // ignore diff, see known issue
                 testRender.unlock();
             });
         },
         dilate: function() {
             testRender.lock();
+            testRender.setMaxDiff(1); // ignore diff, see known issue
             loadImage(TESTIMG, function(img) {
                 image(img, 0, 0);
                 filter(DILATE);
-                testRender.setMaxDiff(1); // ignore diff, see known issue
                 testRender.unlock();
             });
         },
         custom: function() {
+            testRender.setMaxPixelDiff(1);
             background(200, 100, 50);
             registerSVGFilter('mygray', p5.SVGFilters.gray);
             if (isSVG) {
@@ -1841,7 +1844,6 @@ describe('Filters', function() {
             } else {
                 filter(GRAY);
             }
-            testRender.setMaxPixelDiff(1);
         }
     };
 

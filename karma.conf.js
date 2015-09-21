@@ -37,10 +37,11 @@ module.exports = function(config) {
         port: 9876,
         colors: true,
         // logLevel: config.LOG_DISABLE,
-        // logLevel: config.LOG_DEBUG,
-        logLevel: config.LOG_INFO,
+        logLevel: config.LOG_DEBUG,
+        // logLevel: config.LOG_INFO,
         autoWatch: false,
-        browsers: ['Chrome', 'Firefox'],
+        // browsers: ['Chrome', 'Firefox'],
+        browsers: ['Chrome'],
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
         singleRun: true // output all logs to stdout instead of click debug button
