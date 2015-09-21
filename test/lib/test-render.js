@@ -210,6 +210,8 @@ var testRender = function(draw, callback) {
             return;
         }
 
+        console.log(Math.random(), draw.toString());
+
         var ctx = el.diffCanvas.getContext('2d');
         var w = 100 * window.devicePixelRatio;
         var h = 100 * window.devicePixelRatio;
