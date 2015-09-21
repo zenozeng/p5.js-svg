@@ -246,7 +246,7 @@ var testRender = function(draw, callback) {
         var err = null;
         if (!match) {
             err = new Error(JSON.stringify({
-                maxPixelDiff: testRender.maxPixelDiff,
+                maxPixelDiff: maxPixelDiff,
                 maxDiffRate: testRender.maxDiff,
                 pixels: count,
                 diffPixels: diffCount,
