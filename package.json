@@ -1,6 +1,6 @@
 {
   "name": "p5.js-svg",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "main": "./src/index.js",
   "scripts": {
     "lint": "eslint src/",

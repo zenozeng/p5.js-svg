@@ -2,7 +2,7 @@
 
 p5.svg@0.5.1 (requires p5.js@0.4.8)
 
-- [Working] Fix issues with Travis CI
+- Fix issues with unit tests
 
 ## v0.5.0
 
