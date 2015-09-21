@@ -1,3 +1,11 @@
+## v0.6.0
+
+p5.svg@0.6.0 (tests with p5.js@0.4.13)
+
+- remove String.prototype.repeat polyfill
+
+    Since https://github.com/processing/p5.js/issues/858 already fixed.
+
 ## v0.5.1
 
 p5.svg@0.5.1 (requires p5.js@0.4.8)
