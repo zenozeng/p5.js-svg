@@ -131,4 +131,4 @@ You can also run the online test yourself:
 http://zenozeng.github.io/p5.js-svg/test/
 
 And this is our coverage report:
-http://zenozeng.github.io/p5.js-svg-test-reports/coverage/chrome/
+https://coveralls.io/github/zenozeng/p5.js-svg?branch=master
