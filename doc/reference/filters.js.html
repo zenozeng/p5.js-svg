@@ -57,12 +57,12 @@ module.exports = function(p5) {
     };
 
     p5.prototype.filter = function(operation, value) {
-        var svg = this._graphics.svg;
+        var svg = this._renderer.svg;
         if (svg) {
             // move nodes to a new &lt;g>
             var nodes = svg.children || svg.childNodes; // childNodes is for IE
             var g = p5.SVGElement.create('g');
-            this._graphics._setGCFlag(g.elt);
+            this._renderer._setGCFlag(g.elt);
             svg.appendChild(g.elt);
             // convert nodeList to array and use forEach
             // instead of using for loop,
@@ -79,9 +79,9 @@ module.exports = function(p5) {
 
             // create new &lt;g> so that new element won't be influenced by the filter
             g = p5.SVGElement.create('g');
-            this._graphics._setGCFlag(g.elt);
-            this._graphics.svg.appendChild(g.elt);
-            this._graphics.drawingContext.__currentElement = g.elt;
+            this._renderer._setGCFlag(g.elt);
+            this._renderer.svg.appendChild(g.elt);
+            this._renderer.drawingContext.__currentElement = g.elt;
         } else {
             _filter.apply(this, arguments);
         }

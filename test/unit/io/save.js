@@ -19,7 +19,7 @@ describe('IO/save', function() {
 
     it('save(<svg>)', function(done) {
         testDownload('untitled', 'svg', function(p) {
-            p.save(p._graphics.svg);
+            p.save(p._renderer.svg);
         }, done);
     });
 

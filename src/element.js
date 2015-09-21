@@ -8,7 +8,7 @@ module.exports = function(p5) {
      * @returns {SVGElement[]}
      */
     p5.prototype.querySVG = function(selector) {
-        var svg = this._graphics && this._graphics.svg;
+        var svg = this._renderer && this._renderer.svg;
         if (!svg) {
             return null;
         }

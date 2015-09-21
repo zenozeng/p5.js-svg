@@ -1490,7 +1490,7 @@ module.exports = function(p5) {
      * @returns {SVGElement[]}
      */
     p5.prototype.querySVG = function(selector) {
-        var svg = this._graphics && this._graphics.svg;
+        var svg = this._renderer && this._renderer.svg;
         if (!svg) {
             return null;
         }
@@ -1727,12 +1727,12 @@ module.exports = function(p5) {
     };
 
     p5.prototype.filter = function(operation, value) {
-        var svg = this._graphics.svg;
+        var svg = this._renderer.svg;
         if (svg) {
             // move nodes to a new <g>
             var nodes = svg.children || svg.childNodes; // childNodes is for IE
             var g = p5.SVGElement.create('g');
-            this._graphics._setGCFlag(g.elt);
+            this._renderer._setGCFlag(g.elt);
             svg.appendChild(g.elt);
             // convert nodeList to array and use forEach
             // instead of using for loop,
@@ -1749,9 +1749,9 @@ module.exports = function(p5) {
 
             // create new <g> so that new element won't be influenced by the filter
             g = p5.SVGElement.create('g');
-            this._graphics._setGCFlag(g.elt);
-            this._graphics.svg.appendChild(g.elt);
-            this._graphics.drawingContext.__currentElement = g.elt;
+            this._renderer._setGCFlag(g.elt);
+            this._renderer.svg.appendChild(g.elt);
+            this._renderer.drawingContext.__currentElement = g.elt;
         } else {
             _filter.apply(this, arguments);
         }
@@ -1768,7 +1768,6 @@ module.exports = function(p5) {
     require('./io')(p5);
     require('./element')(p5);
     require('./filters')(p5);
-    require('./polyfill')();
 
     // attach constants to p5 instance
     var constants = require('./constants');
@@ -1777,7 +1776,7 @@ module.exports = function(p5) {
     });
 };
 
-},{"./constants":5,"./element":6,"./filters":7,"./io":9,"./p5.RendererSVG":10,"./polyfill":12,"./rendering":13}],9:[function(require,module,exports){
+},{"./constants":5,"./element":6,"./filters":7,"./io":9,"./p5.RendererSVG":10,"./rendering":12}],9:[function(require,module,exports){
 module.exports = function(p5) {
     /**
      * Convert SVG Element to jpeg / png data url
@@ -1836,7 +1835,7 @@ module.exports = function(p5) {
             throw new Error('Fail to getFrame, invalid extension: ' + ext + ', please use png | jpeg | jpg | svg.');
         }
 
-        var svg = options.svg || this._graphics.svg;
+        var svg = options.svg || this._renderer.svg;
         svg2img(svg, mine, function(err, dataURL) {
             var downloadMime = 'image/octet-stream';
             dataURL = dataURL.replace(mine, downloadMime);
@@ -1868,7 +1867,7 @@ module.exports = function(p5) {
         var svg;
 
         if (args[0] instanceof p5.Graphics) {
-            svg = args[0]._graphics.svg;
+            svg = args[0]._renderer.svg;
             args.shift();
         }
 
@@ -1911,7 +1910,7 @@ module.exports = function(p5) {
     p5.prototype.saveFrames = function(filename, extension, duration, fps, callback) {
         var args = arguments;
 
-        if (!this._graphics.svg) {
+        if (!this._renderer.svg) {
             _saveFrames.apply(this, args);
             return;
         }
@@ -1995,7 +1994,7 @@ module.exports = function(p5) {
             args.shift();
         }
 
-        svg = svg || (this._graphics && this._graphics.svg);
+        svg = svg || (this._renderer && this._renderer.svg);
 
         var filename = args[0];
         var supportedExtensions = ['jpeg', 'png', 'jpg', 'svg', ''];
@@ -2068,7 +2067,7 @@ module.exports = function(p5) {
     p5.prototype._preloadMethods.loadSVG = p5.prototype;
 
     p5.prototype.getDataURL = function() {
-        return this._graphics.elt.toDataURL('image/svg+xml');
+        return this._renderer.elt.toDataURL('image/svg+xml');
     };
 };
 
@@ -2208,7 +2207,7 @@ module.exports = function(p5) {
         if (!img) {
             throw new Error('Invalid image: ' + img);
         }
-        var elt = img._graphics && img._graphics.svg; // handle SVG Graphics
+        var elt = img._renderer && img._renderer.svg; // handle SVG Graphics
         elt = elt || (img.elt && img.elt.nodeName && (img.elt.nodeName.toLowerCase() === 'svg') && img.elt); // SVGElement
         elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == 'svg') && img); // <svg>
         if (elt) {
@@ -2471,52 +2470,6 @@ module.exports = function(p5) {
 };
 
 },{}],12:[function(require,module,exports){
-module.exports = function() {
-    // for https://github.com/processing/p5.js/issues/858
-    if (!String.prototype.repeat) {
-        String.prototype.repeat = function(count) {
-            'use strict';
-            if (this == null) {
-                throw new TypeError('can\'t convert ' + this + ' to object');
-            }
-            var str = '' + this;
-            count = +count;
-            if (count != count) {
-                count = 0;
-            }
-            if (count < 0) {
-                throw new RangeError('repeat count must be non-negative');
-            }
-            if (count == Infinity) {
-                throw new RangeError('repeat count must be less than infinity');
-            }
-            count = Math.floor(count);
-            if (str.length == 0 || count == 0) {
-                return '';
-            }
-            // Ensuring count is a 31-bit integer allows us to heavily optimize the
-            // main part. But anyway, most current (August 2014) browsers can't handle
-            // strings 1 << 28 chars or longer, so:
-            if (str.length * count >= 1 << 28) {
-                throw new RangeError('repeat count must not overflow maximum string size');
-            }
-            var rpt = '';
-            for (;;) {
-                if ((count & 1) == 1) {
-                    rpt += str;
-                }
-                count >>>= 1;
-                if (count == 0) {
-                    break;
-                }
-                str += str;
-            }
-            return rpt;
-        };
-    }
-};
-
-},{}],13:[function(require,module,exports){
 var constants = require('./constants');
 var SVGCanvas = require('svgcanvas');
 
@@ -2528,13 +2481,13 @@ module.exports = function(p5) {
         _graphics.apply(this, args);
         if (renderer === constants.SVG) {
             // replace <canvas> with <svg>
-            var c = this._graphics.elt;
-            this._graphics = new p5.RendererSVG(c, pInst, false); // replace renderer
-            c = this._graphics.elt;
+            var c = this._renderer.elt;
+            this._renderer = new p5.RendererSVG(c, pInst, false); // replace renderer
+            c = this._renderer.elt;
             this.elt = c; // replace this.elt
             // do default again
-            this._graphics.resize(w, h);
-            this._graphics._applyDefaults();
+            this._renderer.resize(w, h);
+            this._renderer._applyDefaults();
         }
         return this;
     };
@@ -2568,12 +2521,12 @@ module.exports = function(p5) {
      *
      */
     p5.prototype.loadGraphics = function(graphics, successCallback, failureCallback) {
-        if (graphics._graphics.svg) {
-            var svg = graphics._graphics.svg;
-            var url = SVGCanvas.prototype.toDataURL.call(graphics._graphics.elt, 'image/svg+xml');
+        if (graphics._renderer.svg) {
+            var svg = graphics._renderer.svg;
+            var url = SVGCanvas.prototype.toDataURL.call(graphics._renderer.elt, 'image/svg+xml');
             var pg = this.createGraphics(graphics.width, graphics.height);
             // also copy SVG, so we can keep vector SVG when image(pg) in SVG runtime
-            pg._graphics.svg = svg.cloneNode(true);
+            pg._renderer.svg = svg.cloneNode(true);
             pg.loadImage(url, function(img) {
                 pg.image(img);
                 successCallback(pg);
@@ -2602,12 +2555,12 @@ module.exports = function(p5) {
         var graphics = _createCanvas.apply(this, arguments);
         if (renderer === constants.SVG) {
             var c = graphics.elt;
-            this._setProperty('_graphics', new p5.RendererSVG(c, this, true));
+            this._setProperty('_renderer', new p5.RendererSVG(c, this, true));
             this._isdefaultGraphics = true;
-            this._graphics.resize(w, h);
-            this._graphics._applyDefaults();
+            this._renderer.resize(w, h);
+            this._renderer._applyDefaults();
         }
-        return this._graphics;
+        return this._renderer;
     };
 };
 

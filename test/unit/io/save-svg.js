@@ -40,7 +40,7 @@ describe('IO/saveSVG', function() {
         testDownload('source-svg', 'png', function(p) {
             var pg = p.createGraphics(100, 100, p.SVG);
             pg.background(100);
-            p.saveSVG(pg._graphics.svg, 'source-svg.png');
+            p.saveSVG(pg._renderer.svg, 'source-svg.png');
         }, done);
     });
     it('should throw if given unsupported type', function() {

@@ -37,13 +37,13 @@ module.exports = function(p5) {
         _graphics.apply(this, args);
         if (renderer === constants.SVG) {
             // replace &lt;canvas> with &lt;svg>
-            var c = this._graphics.elt;
-            this._graphics = new p5.RendererSVG(c, pInst, false); // replace renderer
-            c = this._graphics.elt;
+            var c = this._renderer.elt;
+            this._renderer = new p5.RendererSVG(c, pInst, false); // replace renderer
+            c = this._renderer.elt;
             this.elt = c; // replace this.elt
             // do default again
-            this._graphics.resize(w, h);
-            this._graphics._applyDefaults();
+            this._renderer.resize(w, h);
+            this._renderer._applyDefaults();
         }
         return this;
     };
@@ -77,12 +77,12 @@ module.exports = function(p5) {
      *
      */
     p5.prototype.loadGraphics = function(graphics, successCallback, failureCallback) {
-        if (graphics._graphics.svg) {
-            var svg = graphics._graphics.svg;
-            var url = SVGCanvas.prototype.toDataURL.call(graphics._graphics.elt, 'image/svg+xml');
+        if (graphics._renderer.svg) {
+            var svg = graphics._renderer.svg;
+            var url = SVGCanvas.prototype.toDataURL.call(graphics._renderer.elt, 'image/svg+xml');
             var pg = this.createGraphics(graphics.width, graphics.height);
             // also copy SVG, so we can keep vector SVG when image(pg) in SVG runtime
-            pg._graphics.svg = svg.cloneNode(true);
+            pg._renderer.svg = svg.cloneNode(true);
             pg.loadImage(url, function(img) {
                 pg.image(img);
                 successCallback(pg);
@@ -111,12 +111,12 @@ module.exports = function(p5) {
         var graphics = _createCanvas.apply(this, arguments);
         if (renderer === constants.SVG) {
             var c = graphics.elt;
-            this._setProperty('_graphics', new p5.RendererSVG(c, this, true));
+            this._setProperty('_renderer', new p5.RendererSVG(c, this, true));
             this._isdefaultGraphics = true;
-            this._graphics.resize(w, h);
-            this._graphics._applyDefaults();
+            this._renderer.resize(w, h);
+            this._renderer._applyDefaults();
         }
-        return this._graphics;
+        return this._renderer;
     };
 };
 </code></pre>

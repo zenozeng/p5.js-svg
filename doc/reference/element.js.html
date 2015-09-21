@@ -36,7 +36,7 @@
      * @returns {SVGElement[]}
      */
     p5.prototype.querySVG = function(selector) {
-        var svg = this._graphics &amp;&amp; this._graphics.svg;
+        var svg = this._renderer &amp;&amp; this._renderer.svg;
         if (!svg) {
             return null;
         }

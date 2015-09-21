@@ -133,9 +133,9 @@ var prepareDom = function(draw) {
     svg.onload = function() {
         status.svg = true;
     };
-    svg.src = SVGCanvas.prototype.toDataURL.call({svg: p5svg._graphics.svg},
+    svg.src = SVGCanvas.prototype.toDataURL.call({svg: p5svg._renderer.svg},
                                                  "image/svg+xml");
-    var _svg = p5svg._graphics.svg.cloneNode(true);
+    var _svg = p5svg._renderer.svg.cloneNode(true);
     _svg.id = null;
     _svg.className = 'svg';
     $container.append(_svg);

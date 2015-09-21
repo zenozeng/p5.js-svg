@@ -161,7 +161,7 @@ module.exports = function(p5) {
         if (!img) {
             throw new Error('Invalid image: ' + img);
         }
-        var elt = img._graphics &amp;&amp; img._graphics.svg; // handle SVG Graphics
+        var elt = img._renderer &amp;&amp; img._renderer.svg; // handle SVG Graphics
         elt = elt || (img.elt &amp;&amp; img.elt.nodeName &amp;&amp; (img.elt.nodeName.toLowerCase() === 'svg') &amp;&amp; img.elt); // SVGElement
         elt = elt || (img.nodeName &amp;&amp; (img.nodeName.toLowerCase() == 'svg') &amp;&amp; img); // &lt;svg>
         if (elt) {

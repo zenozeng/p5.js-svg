@@ -1588,9 +1588,9 @@ var prepareDom = function(draw) {
     svg.onload = function() {
         status.svg = true;
     };
-    svg.src = SVGCanvas.prototype.toDataURL.call({svg: p5svg._graphics.svg},
+    svg.src = SVGCanvas.prototype.toDataURL.call({svg: p5svg._renderer.svg},
                                                  "image/svg+xml");
-    var _svg = p5svg._graphics.svg.cloneNode(true);
+    var _svg = p5svg._renderer.svg.cloneNode(true);
     _svg.id = null;
     _svg.className = 'svg';
     $container.append(_svg);
@@ -2058,7 +2058,7 @@ describe('IO/saveSVG', function() {
         testDownload('source-svg', 'png', function(p) {
             var pg = p.createGraphics(100, 100, p.SVG);
             pg.background(100);
-            p.saveSVG(pg._graphics.svg, 'source-svg.png');
+            p.saveSVG(pg._renderer.svg, 'source-svg.png');
         }, done);
     });
     it('should throw if given unsupported type', function() {
@@ -2099,7 +2099,7 @@ describe('IO/save', function() {
 
     it('save(<svg>)', function(done) {
         testDownload('untitled', 'svg', function(p) {
-            p.save(p._graphics.svg);
+            p.save(p._renderer.svg);
         }, done);
     });
 
@@ -2162,7 +2162,7 @@ describe('Rendering', function() {
             new p5(function(p) {
                 p.setup = function() {
                     p.createCanvas(100, 100, p.SVG);
-                    var svg = p._graphics.svg;
+                    var svg = p._renderer.svg;
                     assert.strictEqual(true, document.body.contains(svg));
                     p.line(0, 0, 100, 100);
                     p.noCanvas();

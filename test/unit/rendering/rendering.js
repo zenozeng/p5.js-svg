@@ -10,7 +10,7 @@ describe('Rendering', function() {
             new p5(function(p) {
                 p.setup = function() {
                     p.createCanvas(100, 100, p.SVG);
-                    var svg = p._graphics.svg;
+                    var svg = p._renderer.svg;
                     assert.strictEqual(true, document.body.contains(svg));
                     p.line(0, 0, 100, 100);
                     p.noCanvas();

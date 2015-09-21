@@ -56,7 +56,7 @@ module.exports = function(p5) {
             throw new Error('Fail to getFrame, invalid extension: ' + ext + ', please use png | jpeg | jpg | svg.');
         }
 
-        var svg = options.svg || this._graphics.svg;
+        var svg = options.svg || this._renderer.svg;
         svg2img(svg, mine, function(err, dataURL) {
             var downloadMime = 'image/octet-stream';
             dataURL = dataURL.replace(mine, downloadMime);
@@ -88,7 +88,7 @@ module.exports = function(p5) {
         var svg;
 
         if (args[0] instanceof p5.Graphics) {
-            svg = args[0]._graphics.svg;
+            svg = args[0]._renderer.svg;
             args.shift();
         }
 
@@ -131,7 +131,7 @@ module.exports = function(p5) {
     p5.prototype.saveFrames = function(filename, extension, duration, fps, callback) {
         var args = arguments;
 
-        if (!this._graphics.svg) {
+        if (!this._renderer.svg) {
             _saveFrames.apply(this, args);
             return;
         }
@@ -215,7 +215,7 @@ module.exports = function(p5) {
             args.shift();
         }
 
-        svg = svg || (this._graphics && this._graphics.svg);
+        svg = svg || (this._renderer && this._renderer.svg);
 
         var filename = args[0];
         var supportedExtensions = ['jpeg', 'png', 'jpg', 'svg', ''];
@@ -288,6 +288,6 @@ module.exports = function(p5) {
     p5.prototype._preloadMethods.loadSVG = p5.prototype;
 
     p5.prototype.getDataURL = function() {
-        return this._graphics.elt.toDataURL('image/svg+xml');
+        return this._renderer.elt.toDataURL('image/svg+xml');
     };
 };
