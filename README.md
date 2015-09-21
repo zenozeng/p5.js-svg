@@ -1,6 +1,6 @@
 # p5.js-svg
 
-[![build](https://travis-ci.org/zenozeng/p5.js-svg.svg)](https://travis-ci.org/zenozeng/p5.js-svg)
+[![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
 
 The main goal of p5.SVG is to provide a SVG runtime for p5.js,
 so that we can draw using p5's powerful API in \<svg\>, save things to svg file
