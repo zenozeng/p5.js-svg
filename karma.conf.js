@@ -24,10 +24,6 @@ module.exports = function(config) {
         },
         reporters: ['progress', 'coverage', 'mocha'],
         coverageReporter: {
-            // "reporters": [
-            //     {"type": "html"},
-            //     {"type": "text-summary"}
-            // ]
             type : 'html',
             dir : 'test/report/coverage/',
             subdir: function(browser) {

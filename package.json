@@ -20,7 +20,6 @@
     "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.1.1",
-    "karma-requirejs": "^0.2.2",
     "mocha": "^2.3.3"
   },
   "directories": {
