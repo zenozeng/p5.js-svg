@@ -1648,6 +1648,9 @@ var prepareDom = function(draw) {
 
 var testRender = function(draw, callback) {
 
+    testRender.setMaxDiff(0.05); // reset maxDiff
+    testRender.setMaxPixelDiff(0); // reset maxPixelDiff
+
     render(draw);
 
     var diff = function(el) {
@@ -1692,7 +1695,6 @@ var testRender = function(draw, callback) {
         var count = Math.max(countPixels(imgData1), countPixels(imgData2));
         var diffCount = countPixels(diffImgData2);
         var rate = diffCount / count;
-        console.log('Get Max Diff', testRender.maxDiff);
         var match = rate <= (testRender.maxDiff || 0.05);
 
         // update $match
@@ -1709,9 +1711,6 @@ var testRender = function(draw, callback) {
                 rate: rate
             }));
         }
-
-        testRender.setMaxDiff(0.05); // reset maxDiff
-        testRender.setMaxPixelDiff(0); // reset maxPixelDiff
 
         // callback
         callback(err);
@@ -1739,7 +1738,6 @@ testRender.describe = function(str) {
 
 testRender.setMaxDiff = function(max) {
     testRender.maxDiff = max;
-    console.log('Set Max Diff', testRender.maxDiff);
 };
 
 testRender.setMaxPixelDiff = function(max) {
@@ -1860,20 +1858,25 @@ describe('Filters', function() {
 });
 
 },{"../../lib/test-render":5}],7:[function(require,module,exports){
-mocha.setup('bdd');
-mocha.setup({timeout: 10000, slow: 2000});
-require('./filter/filter');
-require('./svg/element');
-require('./svg/manipulate');
-require('./rendering/rendering');
-require('./io/save-frames');
-require('./io/save');
-require('./io/save-svg');
-require('./shape/2d_primitives');
-require('./shape/attributes');
-require('./shape/curves');
-require('./shape/vertex');
-mocha.run();
+var test = function() {
+    mocha.setup('bdd');
+    mocha.setup({timeout: 10000, slow: 2000});
+    require('./filter/filter');
+    require('./svg/element');
+    require('./svg/manipulate');
+    require('./rendering/rendering');
+    require('./io/save-frames');
+    require('./io/save');
+    require('./io/save-svg');
+    require('./shape/2d_primitives');
+    require('./shape/attributes');
+    require('./shape/curves');
+    require('./shape/vertex');
+    mocha.run();
+};
+
+
+test();
 
 },{"./filter/filter":6,"./io/save":10,"./io/save-frames":8,"./io/save-svg":9,"./rendering/rendering":12,"./shape/2d_primitives":13,"./shape/attributes":14,"./shape/curves":15,"./shape/vertex":16,"./svg/element":17,"./svg/manipulate":18}],8:[function(require,module,exports){
 var assert = require('assert');

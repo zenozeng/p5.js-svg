@@ -193,6 +193,9 @@ var prepareDom = function(draw) {
 
 var testRender = function(draw, callback) {
 
+    testRender.setMaxDiff(0.05); // reset maxDiff
+    testRender.setMaxPixelDiff(0); // reset maxPixelDiff
+
     render(draw);
 
     var diff = function(el) {
@@ -237,7 +240,6 @@ var testRender = function(draw, callback) {
         var count = Math.max(countPixels(imgData1), countPixels(imgData2));
         var diffCount = countPixels(diffImgData2);
         var rate = diffCount / count;
-        console.log('Get Max Diff', testRender.maxDiff);
         var match = rate <= (testRender.maxDiff || 0.05);
 
         // update $match
@@ -254,9 +256,6 @@ var testRender = function(draw, callback) {
                 rate: rate
             }));
         }
-
-        testRender.setMaxDiff(0.05); // reset maxDiff
-        testRender.setMaxPixelDiff(0); // reset maxPixelDiff
 
         // callback
         callback(err);
@@ -284,7 +283,6 @@ testRender.describe = function(str) {
 
 testRender.setMaxDiff = function(max) {
     testRender.maxDiff = max;
-    console.log('Set Max Diff', testRender.maxDiff);
 };
 
 testRender.setMaxPixelDiff = function(max) {
