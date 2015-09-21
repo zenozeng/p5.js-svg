@@ -1,5 +1,5 @@
 /*!!
- *  p5.svg v0.5.0
+ *  p5.svg v0.5.1
  *  SVG Runtime for p5.js.
  *
  *  Copyright (C) 2015 Zeno Zeng
