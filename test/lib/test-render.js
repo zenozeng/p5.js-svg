@@ -28,6 +28,7 @@ var resetCanvas = function(p) {
     p.ellipseMode(p.CENTER);
     p.rectMode(p.CORNER);
     p.smooth();
+    p.pixelDensity(3); // for 200% and 150%
 };
 
 // count non transparent pixels
