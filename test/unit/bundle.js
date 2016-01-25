@@ -3281,6 +3281,7 @@ describe('Shape/2d_primitives', function() {
             ellipse(56, 46, 55, 35);
         },
         line: function() {
+            strokeWeight(10);
             line(30, 20, 85, 20);
             stroke(126);
             line(85, 20, 85, 75);
@@ -3445,8 +3446,6 @@ describe('Shape/Curves', function() {
         bezier: function() {
             noFill();
             stroke(255, 102, 0);
-            line(85, 20, 10, 10);
-            line(90, 90, 15, 80);
             stroke(0, 0, 0);
             bezier(85, 20, 10, 10, 90, 90, 15, 80);
         },

@@ -15,6 +15,7 @@ describe('Shape/2d_primitives', function() {
             ellipse(56, 46, 55, 35);
         },
         line: function() {
+            strokeWeight(10);
             line(30, 20, 85, 20);
             stroke(126);
             line(85, 20, 85, 75);
