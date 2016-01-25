@@ -22,7 +22,7 @@ p5canvas = new p5(function(p) {
 
 var resetCanvas = function(p) {
     p.clear();
-    p.strokeWeight(3); // for using XOR with thin line removed (using 8-connected neighborhood < 5) for diff
+    p.strokeWeight(6); // for using XOR with thin line removed (using 8-connected neighborhood < 5) for diff
     p.fill(200);
     p.stroke(0);
     p.ellipseMode(p.CENTER);
