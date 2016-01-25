@@ -3467,6 +3467,7 @@ describe('Shape/Curves', function() {
             bezier(85, 20, 10, 10, 90, 90, 15, 80);
             steps = 6;
             fill(255);
+            strokeWeight(10);
             for (i = 0; i <= steps; i++) {
                 t = i / steps;
                 x = bezierPoint(85, 10, 90, 15, t);
