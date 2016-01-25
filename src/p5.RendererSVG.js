@@ -46,6 +46,21 @@ module.exports = function(p5) {
         this.drawingContext.lineWidth = 1;
     };
 
+    RendererSVG.prototype.line = function(x1, y1, x2, y2) {
+        var styleEmpty = 'rgba(0,0,0,0)';
+        var ctx = this.drawingContext;
+        if (!this._doStroke) {
+            return this;
+        } else if(ctx.strokeStyle === styleEmpty){
+            return this;
+        }
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        return this;
+    };
+
     RendererSVG.prototype.resize = function(w, h) {
         if (!w || !h) {
             // ignore invalid values for width and height

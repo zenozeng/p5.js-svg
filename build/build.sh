@@ -6,7 +6,7 @@ header="/*!!
  *  p5.svg v$version
  *  SVG Runtime for p5.js.
  *
- *  Copyright (C) 2015 Zeno Zeng
+ *  Copyright (C) 2015-2016 Zeno Zeng
  *  Licensed under the LGPL license.
  */
 (function (root, factory) {

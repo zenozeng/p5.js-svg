@@ -1,4 +1,483 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
+//
+// THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
+//
+// Originally from narwhal.js (http://narwhaljs.org)
+// Copyright (c) 2009 Thomas Robinson <280north.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the 'Software'), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// when used in node, this will actually load the util module we depend on
+// versus loading the builtin util module as happens otherwise
+// this is a bug in node module loading as far as I am concerned
+var util = require('util/');
+
+var pSlice = Array.prototype.slice;
+var hasOwn = Object.prototype.hasOwnProperty;
+
+// 1. The assert module provides functions that throw
+// AssertionError's when particular conditions are not met. The
+// assert module must conform to the following interface.
+
+var assert = module.exports = ok;
+
+// 2. The AssertionError is defined in assert.
+// new assert.AssertionError({ message: message,
+//                             actual: actual,
+//                             expected: expected })
+
+assert.AssertionError = function AssertionError(options) {
+  this.name = 'AssertionError';
+  this.actual = options.actual;
+  this.expected = options.expected;
+  this.operator = options.operator;
+  if (options.message) {
+    this.message = options.message;
+    this.generatedMessage = false;
+  } else {
+    this.message = getMessage(this);
+    this.generatedMessage = true;
+  }
+  var stackStartFunction = options.stackStartFunction || fail;
+
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, stackStartFunction);
+  }
+  else {
+    // non v8 browsers so we can have a stacktrace
+    var err = new Error();
+    if (err.stack) {
+      var out = err.stack;
+
+      // try to strip useless frames
+      var fn_name = stackStartFunction.name;
+      var idx = out.indexOf('\n' + fn_name);
+      if (idx >= 0) {
+        // once we have located the function frame
+        // we need to strip out everything before it (and its line)
+        var next_line = out.indexOf('\n', idx + 1);
+        out = out.substring(next_line + 1);
+      }
+
+      this.stack = out;
+    }
+  }
+};
+
+// assert.AssertionError instanceof Error
+util.inherits(assert.AssertionError, Error);
+
+function replacer(key, value) {
+  if (util.isUndefined(value)) {
+    return '' + value;
+  }
+  if (util.isNumber(value) && !isFinite(value)) {
+    return value.toString();
+  }
+  if (util.isFunction(value) || util.isRegExp(value)) {
+    return value.toString();
+  }
+  return value;
+}
+
+function truncate(s, n) {
+  if (util.isString(s)) {
+    return s.length < n ? s : s.slice(0, n);
+  } else {
+    return s;
+  }
+}
+
+function getMessage(self) {
+  return truncate(JSON.stringify(self.actual, replacer), 128) + ' ' +
+         self.operator + ' ' +
+         truncate(JSON.stringify(self.expected, replacer), 128);
+}
+
+// At present only the three keys mentioned above are used and
+// understood by the spec. Implementations or sub modules can pass
+// other keys to the AssertionError's constructor - they will be
+// ignored.
+
+// 3. All of the following functions must throw an AssertionError
+// when a corresponding condition is not met, with a message that
+// may be undefined if not provided.  All assertion methods provide
+// both the actual and expected values to the assertion error for
+// display purposes.
+
+function fail(actual, expected, message, operator, stackStartFunction) {
+  throw new assert.AssertionError({
+    message: message,
+    actual: actual,
+    expected: expected,
+    operator: operator,
+    stackStartFunction: stackStartFunction
+  });
+}
+
+// EXTENSION! allows for well behaved errors defined elsewhere.
+assert.fail = fail;
+
+// 4. Pure assertion tests whether a value is truthy, as determined
+// by !!guard.
+// assert.ok(guard, message_opt);
+// This statement is equivalent to assert.equal(true, !!guard,
+// message_opt);. To test strictly for the value true, use
+// assert.strictEqual(true, guard, message_opt);.
+
+function ok(value, message) {
+  if (!value) fail(value, true, message, '==', assert.ok);
+}
+assert.ok = ok;
+
+// 5. The equality assertion tests shallow, coercive equality with
+// ==.
+// assert.equal(actual, expected, message_opt);
+
+assert.equal = function equal(actual, expected, message) {
+  if (actual != expected) fail(actual, expected, message, '==', assert.equal);
+};
+
+// 6. The non-equality assertion tests for whether two objects are not equal
+// with != assert.notEqual(actual, expected, message_opt);
+
+assert.notEqual = function notEqual(actual, expected, message) {
+  if (actual == expected) {
+    fail(actual, expected, message, '!=', assert.notEqual);
+  }
+};
+
+// 7. The equivalence assertion tests a deep equality relation.
+// assert.deepEqual(actual, expected, message_opt);
+
+assert.deepEqual = function deepEqual(actual, expected, message) {
+  if (!_deepEqual(actual, expected)) {
+    fail(actual, expected, message, 'deepEqual', assert.deepEqual);
+  }
+};
+
+function _deepEqual(actual, expected) {
+  // 7.1. All identical values are equivalent, as determined by ===.
+  if (actual === expected) {
+    return true;
+
+  } else if (util.isBuffer(actual) && util.isBuffer(expected)) {
+    if (actual.length != expected.length) return false;
+
+    for (var i = 0; i < actual.length; i++) {
+      if (actual[i] !== expected[i]) return false;
+    }
+
+    return true;
+
+  // 7.2. If the expected value is a Date object, the actual value is
+  // equivalent if it is also a Date object that refers to the same time.
+  } else if (util.isDate(actual) && util.isDate(expected)) {
+    return actual.getTime() === expected.getTime();
+
+  // 7.3 If the expected value is a RegExp object, the actual value is
+  // equivalent if it is also a RegExp object with the same source and
+  // properties (`global`, `multiline`, `lastIndex`, `ignoreCase`).
+  } else if (util.isRegExp(actual) && util.isRegExp(expected)) {
+    return actual.source === expected.source &&
+           actual.global === expected.global &&
+           actual.multiline === expected.multiline &&
+           actual.lastIndex === expected.lastIndex &&
+           actual.ignoreCase === expected.ignoreCase;
+
+  // 7.4. Other pairs that do not both pass typeof value == 'object',
+  // equivalence is determined by ==.
+  } else if (!util.isObject(actual) && !util.isObject(expected)) {
+    return actual == expected;
+
+  // 7.5 For all other Object pairs, including Array objects, equivalence is
+  // determined by having the same number of owned properties (as verified
+  // with Object.prototype.hasOwnProperty.call), the same set of keys
+  // (although not necessarily the same order), equivalent values for every
+  // corresponding key, and an identical 'prototype' property. Note: this
+  // accounts for both named and indexed properties on Arrays.
+  } else {
+    return objEquiv(actual, expected);
+  }
+}
+
+function isArguments(object) {
+  return Object.prototype.toString.call(object) == '[object Arguments]';
+}
+
+function objEquiv(a, b) {
+  if (util.isNullOrUndefined(a) || util.isNullOrUndefined(b))
+    return false;
+  // an identical 'prototype' property.
+  if (a.prototype !== b.prototype) return false;
+  // if one is a primitive, the other must be same
+  if (util.isPrimitive(a) || util.isPrimitive(b)) {
+    return a === b;
+  }
+  var aIsArgs = isArguments(a),
+      bIsArgs = isArguments(b);
+  if ((aIsArgs && !bIsArgs) || (!aIsArgs && bIsArgs))
+    return false;
+  if (aIsArgs) {
+    a = pSlice.call(a);
+    b = pSlice.call(b);
+    return _deepEqual(a, b);
+  }
+  var ka = objectKeys(a),
+      kb = objectKeys(b),
+      key, i;
+  // having the same number of owned properties (keys incorporates
+  // hasOwnProperty)
+  if (ka.length != kb.length)
+    return false;
+  //the same set of keys (although not necessarily the same order),
+  ka.sort();
+  kb.sort();
+  //~~~cheap key test
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] != kb[i])
+      return false;
+  }
+  //equivalent values for every corresponding key, and
+  //~~~possibly expensive deep test
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!_deepEqual(a[key], b[key])) return false;
+  }
+  return true;
+}
+
+// 8. The non-equivalence assertion tests for any deep inequality.
+// assert.notDeepEqual(actual, expected, message_opt);
+
+assert.notDeepEqual = function notDeepEqual(actual, expected, message) {
+  if (_deepEqual(actual, expected)) {
+    fail(actual, expected, message, 'notDeepEqual', assert.notDeepEqual);
+  }
+};
+
+// 9. The strict equality assertion tests strict equality, as determined by ===.
+// assert.strictEqual(actual, expected, message_opt);
+
+assert.strictEqual = function strictEqual(actual, expected, message) {
+  if (actual !== expected) {
+    fail(actual, expected, message, '===', assert.strictEqual);
+  }
+};
+
+// 10. The strict non-equality assertion tests for strict inequality, as
+// determined by !==.  assert.notStrictEqual(actual, expected, message_opt);
+
+assert.notStrictEqual = function notStrictEqual(actual, expected, message) {
+  if (actual === expected) {
+    fail(actual, expected, message, '!==', assert.notStrictEqual);
+  }
+};
+
+function expectedException(actual, expected) {
+  if (!actual || !expected) {
+    return false;
+  }
+
+  if (Object.prototype.toString.call(expected) == '[object RegExp]') {
+    return expected.test(actual);
+  } else if (actual instanceof expected) {
+    return true;
+  } else if (expected.call({}, actual) === true) {
+    return true;
+  }
+
+  return false;
+}
+
+function _throws(shouldThrow, block, expected, message) {
+  var actual;
+
+  if (util.isString(expected)) {
+    message = expected;
+    expected = null;
+  }
+
+  try {
+    block();
+  } catch (e) {
+    actual = e;
+  }
+
+  message = (expected && expected.name ? ' (' + expected.name + ').' : '.') +
+            (message ? ' ' + message : '.');
+
+  if (shouldThrow && !actual) {
+    fail(actual, expected, 'Missing expected exception' + message);
+  }
+
+  if (!shouldThrow && expectedException(actual, expected)) {
+    fail(actual, expected, 'Got unwanted exception' + message);
+  }
+
+  if ((shouldThrow && actual && expected &&
+      !expectedException(actual, expected)) || (!shouldThrow && actual)) {
+    throw actual;
+  }
+}
+
+// 11. Expected to throw an error:
+// assert.throws(block, Error_opt, message_opt);
+
+assert.throws = function(block, /*optional*/error, /*optional*/message) {
+  _throws.apply(this, [true].concat(pSlice.call(arguments)));
+};
+
+// EXTENSION! This is annoying to write outside this module.
+assert.doesNotThrow = function(block, /*optional*/message) {
+  _throws.apply(this, [false].concat(pSlice.call(arguments)));
+};
+
+assert.ifError = function(err) { if (err) {throw err;}};
+
+var objectKeys = Object.keys || function (obj) {
+  var keys = [];
+  for (var key in obj) {
+    if (hasOwn.call(obj, key)) keys.push(key);
+  }
+  return keys;
+};
+
+},{"util/":8}],2:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+},{}],3:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = setTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    clearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        setTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],4:[function(require,module,exports){
 /*!!
  *  Canvas 2 Svg v1.0.9
  *  A low level canvas to SVG converter. Uses a mock canvas context to build an SVG document.
@@ -1107,7 +1586,7 @@
 
 }());
 
-},{}],2:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var C2S = require('./canvas2svg');
 
 var Context = function(width, height, options) {
@@ -1321,7 +1800,7 @@ Context.prototype.getSerializedSvg = null;
 
 module.exports = Context;
 
-},{"./canvas2svg":1}],3:[function(require,module,exports){
+},{"./canvas2svg":4}],6:[function(require,module,exports){
 var Context = require('./context');
 
 function SVGCanvas(options) {
@@ -1448,1629 +1927,14 @@ SVGCanvas.prototype.getElement = function() {
 
 module.exports = SVGCanvas;
 
-},{"./context":2}],4:[function(require,module,exports){
-// wrapper for p5.js
-module.exports = window.p5;
-
-},{}],5:[function(require,module,exports){
-var p5 = require('./p5');
-var assert = require('assert');
-var _ = window._; // lodash
-var SVGCanvas = require('svgcanvas');
-
-// init p5 canvas instance and p5-svg instance
-var canvasGraphics, svgGraphics, p5svg, p5canvas;
-p5svg = new p5(function(p) {
-    p.setup = function() {
-        svgGraphics = p.createCanvas(100, 100, p.SVG);
-        p.noLoop();
-        p.isSVG = true;
-    };
-}, true);
-p5canvas = new p5(function(p) {
-    p.setup = function() {
-        canvasGraphics = p.createCanvas(100, 100);
-        p.noLoop();
-        p.isSVG = false;
-    };
-}, true);
-
-var resetCanvas = function(p) {
-    p.clear();
-    p.strokeWeight(3); // for using XOR with thin line removed (using 8-connected neighborhood < 5) for diff
-    p.fill(200);
-    p.stroke(0);
-    p.ellipseMode(p.CENTER);
-    p.rectMode(p.CORNER);
-    p.smooth();
-};
-
-// count non transparent pixels
-var countPixels = function(imgData) {
-    var count = 0;
-    for (var i = 3; i < imgData.data.length; i += 4) {
-        if (imgData.data[i] > 0) {
-            count++;
-        }
-    }
-    return count;
-};
-
-var maxPixelDiff = 0;
-var diffPixels = function(imgData1, imgData2, diffImgData) {
-    for (var i = 0; i < imgData1.data.length; i += 4) {
-        var indexes = [i, i+1, i+2, i+3];
-        indexes.forEach(function(i) {
-            diffImgData.data[i] = 0;
-        });
-        if(indexes.some(function(i) {
-            return Math.abs(imgData1.data[i] - imgData2.data[i]) > maxPixelDiff;
-        })) {
-            diffImgData.data[i+3] = 255; // set black
-        }
-    }
-};
-
-// remove thin lines using 8-connected neighborhood < 5
-var removeThinLines = function(canvas) {
-    var ctx = canvas.getContext('2d');
-    var width = canvas.width;
-    var height = canvas.height;
-    var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    var imgDataCopy = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-    var getPixelIndex = function(x, y) {
-        return (y * width + x) * 4 + 3;
-    };
-
-    var getPixel = function(x, y) {
-        var alphaIndex = getPixelIndex(x, y);
-        return imgDataCopy.data[alphaIndex];
-    };
-
-    var setPixel = function(x, y, value) {
-        imgData.data[getPixelIndex(x, y)] = value;
-    };
-
-    for (var x = 1; x < width - 1; x++) {
-        for (var y = 1; y < height - 1; y++) {
-            if (getPixel(x, y) == 0) {
-                continue; // ignore transparents
-            }
-            var links = [
-                {x: x - 1, y: y - 1},
-                {x: x, y: y - 1},
-                {x: x + 1, y: y - 1},
-                {x: x - 1, y: y},
-                {x: x + 1, y: y},
-                {x: x - 1, y: y + 1},
-                {x: x, y: y + 1},
-                {x: x + 1, y: y + 1}
-            ].map(function(p) {
-                return getPixel(p.x, p.y);
-            }).filter(function(val) {
-                return val > 0; // not transparent?
-            }).length;
-
-            if (links < 5) { // is a thin line
-                setPixel(x, y, 0); // make it transparent
-            }
-        }
-    }
-    canvas.getContext('2d').putImageData(imgData, 0, 0);
-};
-
-// render given function
-var render = function(draw) {
-    var fnbody = draw.toString();
-    fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
-    [p5svg, p5canvas].forEach(function(p) {
-        resetCanvas(p);
-        with (p) {
-            p.canvas.getContext('2d').__history = [];
-            eval(fnbody);
-        }
-    });
-};
-
-// prepare dom for tests container
-var prepareDom = function(draw) {
-    var $container = $('#test-graph');
-
-    var status = {};
-
-    // draw header
-    var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div><div></div><div class="function">p5.js</div></div>';
-    $container.append(th);
-
-    // the svg result
-    var svg = new Image();
-    svg.onload = function() {
-        status.svg = true;
-    };
-    svg.src = SVGCanvas.prototype.toDataURL.call({svg: p5svg._renderer.svg},
-                                                 "image/svg+xml");
-    var _svg = p5svg._renderer.svg.cloneNode(true);
-    _svg.id = null;
-    _svg.className = 'svg';
-    $container.append(_svg);
-
-    // the canvas result
-    var canvas = new Image();
-    canvas.onload = function() {
-        status.canvas = true;
-    };
-    canvas.src = p5canvas._curElement.elt.toDataURL('image/png');
-    $container.append(canvas);
-
-    // diff canvas
-    var diffCanvas = document.createElement('canvas');
-    diffCanvas.width = 100 * window.devicePixelRatio;
-    diffCanvas.height = 100 * window.devicePixelRatio;;
-    $container.append(diffCanvas);
-
-    // diff canvas2 for removing thin lines
-    var diffCanvas2 = document.createElement('canvas');
-    diffCanvas2.width = 100 * window.devicePixelRatio;;
-    diffCanvas2.height = 100 * window.devicePixelRatio;;
-    $container.append(diffCanvas2);
-
-    // match?
-    var $match = $('<div class="match"></div>');
-    $container.append($match);
-
-    // p5.js API call history
-    var fnbody = draw.toString();
-    fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
-    // re-indent
-    var indent = fnbody.match(/( +)/)[0].length;
-    indent = new RegExp('^[ ]{' + indent + '}', 'gm');
-    fnbody = fnbody.replace(indent, '');
-    $container.append('<pre class="function">' + fnbody + '</pre>');
-
-    // canvas API call history
-    // var history = p5svg.canvas.getContext('2d').__history;
-    // $container.append('<div class="canvas-fn">' + history.join('<br>') + '</div>');
-
-    $container.append('<hr>');
-
-    return {
-        svg: svg,
-        canvas: canvas,
-        diffCanvas: diffCanvas,
-        diffCanvas2: diffCanvas2,
-        $match: $match,
-        isReady: function() {
-            return status.svg && status.canvas;
-        }
-    };
-};
-
-var testRender = function(draw, callback) {
-
-    testRender.setMaxDiff(0.05); // reset maxDiff
-    testRender.setMaxPixelDiff(0); // reset maxPixelDiff
-
-    render(draw);
-
-    var diff = function(el) {
-
-        // wait until ready
-        // if (!el.svg.complete || !el.canvas.complete) {
-        if (!el.isReady()) {
-            // 100 is workround for NS_ERROR_NOT_AVAILABLE in karma
-            setTimeout(function() {
-                diff(el);
-            }, 100);
-            return;
-        }
-
-        var ctx = el.diffCanvas.getContext('2d');
-        var w = 100 * window.devicePixelRatio;
-        var h = 100 * window.devicePixelRatio;
-
-        // svg render result
-        ctx.clearRect(0, 0, w, h);
-        ctx.drawImage(el.svg, 0, 0, w, h);
-        var imgData1 = ctx.getImageData(0, 0, w, h);
-
-        // canvas render result
-        ctx.clearRect(0, 0, w, h);
-        ctx.drawImage(el.canvas, 0, 0, w, h);
-        var imgData2 = ctx.getImageData(0, 0, w, h);
-
-        // get diff
-        var diffImgData = ctx.getImageData(0, 0, w, h);
-        diffPixels(imgData1, imgData2, diffImgData);
-        ctx.putImageData(diffImgData, 0, 0);
-
-        // get diff with thin line removed (8-connected neighborhood < 5)
-        ctx = el.diffCanvas2.getContext('2d');
-        ctx.putImageData(diffImgData, 0, 0);
-        removeThinLines(el.diffCanvas2);
-        removeThinLines(el.diffCanvas2); // twice
-        var diffImgData2 = ctx.getImageData(0, 0, w, h);
-
-        // match?
-        var count = Math.max(countPixels(imgData1), countPixels(imgData2));
-        var diffCount = countPixels(diffImgData2);
-        var rate = diffCount / count;
-        var match = rate <= (testRender.maxDiff || 0.05);
-
-        // update $match
-        var icon = match ? 'fa-check': 'fa-times';
-        el.$match.html('<i class="fa ' + icon + '"></i>');
-
-        var err = null;
-        if (!match) {
-            err = new Error(JSON.stringify({
-                maxPixelDiff: maxPixelDiff,
-                maxDiffRate: testRender.maxDiff,
-                pixels: count,
-                diffPixels: diffCount,
-                rate: rate
-            }));
-        }
-
-        // callback
-        callback(err);
-    };
-
-    var next = function() {
-        // handle testRender.wait(ms);
-        if (testRender.waitUntil && (Date.now() < testRender.waitUntil)) {
-            setTimeout(next, 100);
-            return;
-        }
-        var el = prepareDom(draw);
-        diff(el);
-    };
-
-    next();
-};
-
-testRender.describe = function(str) {
-    $(function() {
-        var $container = $('#test-graph');
-        $container.append('<h2>' + str + '</h2>');
-    });
-};
-
-testRender.setMaxDiff = function(max) {
-    testRender.maxDiff = max;
-};
-
-testRender.setMaxPixelDiff = function(max) {
-    maxPixelDiff = max;
-};
-
-testRender.wait = function(ms) {
-    testRender.waitUntil = Date.now() + ms;
-};
-
-// add lock so testRender will wait
-testRender.lock = function() {
-    testRender.wait(1000 * 1000 * 1000);
-};
-
-// remove lock
-testRender.unlock = function() {
-    testRender.wait(0);
-};
-
-module.exports = testRender;
-
-},{"./p5":4,"assert":19,"svgcanvas":3}],6:[function(require,module,exports){
-var testRender = require('../../lib/test-render');
-
-window.TESTIMG = window.__karma__ ? "/base/test/unit/filter/light_by_zenozeng.jpg" : "./unit/filter/light_by_zenozeng.jpg";
-
-describe('Filters', function() {
-
-    var tests = {
-        // in SVG Renderer, I use feGaussianBlur,
-        // but Canvas Renderer uses a pixels based blur (port of processing's blur),
-        // so the results may not be exactly same.
-        blur: function() {
-            testRender.setMaxDiff(1); // ignore diff, see known issue
-            testRender.setMaxPixelDiff(2);
-            background(255);
-            stroke(255, 0, 0);
-            strokeWeight(10);
-            line(0, 0, 100, 100);
-            line(0, 100, 100, 0);
-            filter(BLUR, 5);
-        },
-        gray: function() {
-            testRender.setMaxPixelDiff(1);
-            background(200, 100, 50);
-            filter(GRAY);
-        },
-        invert: function() {
-            testRender.setMaxPixelDiff(1);
-            background(255, 0, 0);
-            filter(INVERT);
-            ellipse(50, 50, 50, 50);
-        },
-        threshold: function() {
-            background(255, 0, 0);
-            stroke(255);
-            strokeWeight(10);
-            line(0, 0, 100, 100);
-            filter(THRESHOLD, 0.5);
-        },
-        opaque: function() {
-            testRender.setMaxPixelDiff(1);
-            background(255, 0, 0, 127);
-            filter(OPAQUE); // Sets the alpha channel to 255
-        },
-        posterize: function() {
-            testRender.lock();
-            testRender.setMaxDiff(1); // ignore diff, see https://github.com/zenozeng/p5.js-svg/issues/124
-            loadImage(TESTIMG, function(img) {
-                image(img, 0, 0);
-                filter(POSTERIZE, 2);
-                if (_isSafari()) {
-                }
-                testRender.unlock();
-            });
-        },
-        erode: function() {
-            testRender.lock();
-            testRender.setMaxDiff(1); // ignore diff, see known issue
-            loadImage(TESTIMG, function(img) {
-                image(img, 0, 0);
-                filter(ERODE);
-                testRender.unlock();
-            });
-        },
-        dilate: function() {
-            testRender.lock();
-            testRender.setMaxDiff(1); // ignore diff, see known issue
-            loadImage(TESTIMG, function(img) {
-                image(img, 0, 0);
-                filter(DILATE);
-                testRender.unlock();
-            });
-        },
-        custom: function() {
-            testRender.setMaxPixelDiff(1);
-            background(200, 100, 50);
-            registerSVGFilter('mygray', p5.SVGFilters.gray);
-            if (isSVG) {
-                filter('mygray');
-            } else {
-                filter(GRAY);
-            }
-        }
-    };
-
-    Object.keys(tests).forEach(function(key) {
-        describe("Filters/" + key, function() {
-            it(key + ': SVG API should draw same image as Canvas API', function(done) {
-                this.timeout(0);
-                testRender.describe("Filters/" + key);
-                testRender(tests[key], done);
-            });
-        });
-    });
-
-});
-
-},{"../../lib/test-render":5}],7:[function(require,module,exports){
-var test = function() {
-    mocha.setup('bdd');
-    mocha.setup({timeout: 10000, slow: 2000});
-    require('./filter/filter');
-    require('./svg/element');
-    require('./svg/manipulate');
-    require('./rendering/rendering');
-    require('./io/save-frames');
-    require('./io/save');
-    require('./io/save-svg');
-    require('./shape/2d_primitives');
-    require('./shape/attributes');
-    require('./shape/curves');
-    require('./shape/vertex');
-
-    // Note that since recent version of karma, mocha.run will be called automatically
-    // So, we only call mocah.run() if not running inside karma
-    if (!window.__karma__) {
-        mocha.run();
-    }
-};
-
-
-test();
-
-},{"./filter/filter":6,"./io/save":10,"./io/save-frames":8,"./io/save-svg":9,"./rendering/rendering":12,"./shape/2d_primitives":13,"./shape/attributes":14,"./shape/curves":15,"./shape/vertex":16,"./svg/element":17,"./svg/manipulate":18}],8:[function(require,module,exports){
-var assert = require('assert');
-var p5 = require('../../lib/p5');
-
-describe('IO/saveFrames', function() {
-    it('should capture canvas frames', function(done) {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100);
-                p.strokeWeight(3);
-                p.saveFrames('hello', 'png', 3, 10, function(frames) {
-                    try {
-                        assert.ok(frames.length > 1);
-                        p.noCanvas();
-                        done();
-                    } catch (e) {
-                        p.noCanvas();
-                        done(e);
-                    }
-                });
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-
-    it('should capture svg frames', function(done) {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                p.strokeWeight(3);
-                p.saveFrames('hello', 'svg', 0.5, 10, function(frames) {
-                    try {
-                        assert.ok(frames.length > 1);
-                        p.noCanvas();
-                        done();
-                    } catch (e) {
-                        p.noCanvas();
-                        done(e);
-                    }
-                });
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-
-    it('should capture svg frames even omitting duration and fps', function(done) {
-        this.timeout(0);
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                p.strokeWeight(3);
-                p.saveFrames('hello', 'svg', null, null, function(frames) {
-                    try {
-                        assert.ok(frames.length > 1);
-                        p.noCanvas();
-                        done();
-                    } catch (e) {
-                        p.noCanvas();
-                        done(e);
-                    }
-                });
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-
-    it('should download svg frames', function(done) {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                var _downloadFile = p.downloadFile;
-                var count = 0;
-                var _done;
-                p.downloadFile = function() {
-                    count++;
-                    if (count > 1) {
-                        if (!_done) {
-                            p.noCanvas();
-                            done();
-                            _done = true;
-                        }
-                    }
-                };
-                p.saveFrames('hello', 'svg', 0.5, 10);
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-
-    it('should wait all pending jobs done', function(done) {
-        this.timeout(0);
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                var pending = 0;
-                var _makeSVGFrame = p._makeSVGFrame;
-                p._makeSVGFrame = function(options) {
-                    // slow version
-                    pending++;
-                    setTimeout(function() {
-                        _makeSVGFrame.call(p, options);
-                    }, 500);
-                };
-                p.downloadFile = function() {
-                    pending--;
-                    if (pending === 0) {
-                        p.noCanvas();
-                        done();
-                    }
-                };
-                p.saveFrames('hello', 'svg', 0.5, 10);
-            };
-            p.draw = function() {
-                var i = p.frameCount * 2;
-                p.line(0, 0, i, i);
-            };
-        });
-    });
-});
-
-},{"../../lib/p5":4,"assert":19}],9:[function(require,module,exports){
-var assert = require('assert');
-var testDownload = require('./test-download.js');
-var p5 = require('../../lib/p5');
-
-describe('IO/saveSVG', function() {
-
-    it('should save untitled.svg', function(done) {
-        testDownload('untitled', 'svg', function(p) {
-            p.saveSVG();
-        }, done);
-    });
-    it('should save hello.svg', function(done) {
-        testDownload('hello', 'svg', function(p) {
-            p.saveSVG('hello.svg');
-        }, done);
-    });
-    it('should save hello.jpg', function(done) {
-        testDownload('hello', 'jpg', function(p) {
-            p.saveSVG('hello', 'jpg');
-        }, done);
-    });
-    it('should save hello.jpeg', function(done) {
-        testDownload('hello', 'jpeg', function(p) {
-            p.saveSVG('hello.jpeg');
-        }, done);
-    });
-    it('should save hello.png', function(done) {
-        testDownload('hello', 'png', function(p) {
-            p.saveSVG('hello.png');
-        }, done);
-    });
-    it('source is Graphics', function(done) {
-        testDownload('source-graphics', 'png', function(p) {
-            var pg = p.createGraphics(100, 100, p.SVG);
-            pg.background(100);
-            p.saveSVG(pg, 'source-graphics.png');
-        }, done);
-    });
-    it('source is <svg>', function(done) {
-        testDownload('source-svg', 'png', function(p) {
-            var pg = p.createGraphics(100, 100, p.SVG);
-            pg.background(100);
-            p.saveSVG(pg._renderer.svg, 'source-svg.png');
-        }, done);
-    });
-    it('should throw if given unsupported type', function() {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                p.background(255);
-                p.stroke(0, 0, 0);
-                p.line(0, 0, 100, 100);
-                assert.throws(function() {
-                    p.saveSVG('hello.txt');
-                });
-                p.noCanvas();
-            };
-        });
-    });
-});
-
-},{"../../lib/p5":4,"./test-download.js":11,"assert":19}],10:[function(require,module,exports){
-var assert = require('assert');
-var p5 = require('../../lib/p5');
-var testDownload = require('./test-download.js');
-
-describe('IO/save', function() {
-    this.timeout(1000 * 5);
-
-    it('save()', function(done) {
-        testDownload('untitled', 'svg', function(p) {
-            p.save();
-        }, done);
-    });
-
-    it('save(Graphics)', function(done) {
-        testDownload('untitled', 'svg', function(p) {
-            p.save(p._defaultGraphics);
-        }, done);
-    });
-
-    it('save(<svg>)', function(done) {
-        testDownload('untitled', 'svg', function(p) {
-            p.save(p._renderer.svg);
-        }, done);
-    });
-
-    it('canvas\'s save should still work', function(done) {
-        new p5(function(p) {
-            p.setup = function() {
-                var _saveCanvas = p5.prototype.saveCanvas;
-                p5.prototype.saveCanvas = function() {
-                    p5.prototype.saveCanvas = _saveCanvas;
-                    done();
-                };
-                p.save('canvas-save.png');
-            };
-        });
-    });
-});
-
-},{"../../lib/p5":4,"./test-download.js":11,"assert":19}],11:[function(require,module,exports){
-var assert = require('assert');
-var p5 = require('../../lib/p5');
-
-var testDownload = function(filename, ext, fn, done, useCanvas) {
-    new p5(function(p) {
-        p.setup = function() {
-            p.createCanvas(100, 100, useCanvas ? p.P2D : p.SVG);
-            p.background(255);
-            p.stroke(0, 0, 0);
-            p.strokeWeight(3);
-            p.line(0, 0, 100, 100);
-
-            p.downloadFile = function(dataURL, _filename, _ext) {
-                try {
-                    assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
-                    assert.equal(_filename, filename);
-                    assert.equal(_ext, ext);
-                    p.noCanvas();
-                    done();
-                } catch(e) {
-                    p.noCanvas();
-                    done(e);
-                }
-            };
-            fn(p);
-        };
-    });
-};
-
-module.exports = testDownload;
-
-},{"../../lib/p5":4,"assert":19}],12:[function(require,module,exports){
-var p5 = require('../../lib/p5');
-var testRender = require('../../lib/test-render');
-var assert = require('assert');
-
-describe('Rendering', function() {
-    this.timeout(0);
-
-    describe('noCanvas', function() {
-        it('should remove the <svg> created by createCanvas', function() {
-            new p5(function(p) {
-                p.setup = function() {
-                    p.createCanvas(100, 100, p.SVG);
-                    var svg = p._renderer.svg;
-                    assert.strictEqual(true, document.body.contains(svg));
-                    p.line(0, 0, 100, 100);
-                    p.noCanvas();
-                    assert.strictEqual(false, document.body.contains(svg));
-                };
-            });
-        });
-    });
-    describe('createGraphics', function() {
-        it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
-            testRender.describe('createGraphics');
-            testRender(function() {
-                pg = createGraphics(400, 400, isSVG ? SVG : P2D);
-                background(200);
-                pg.background(100);
-                pg.noStroke();
-                pg.ellipse(pg.width/2, pg.height/2, 50, 50);
-                loadGraphics(pg, function(pg) {
-                    image(pg, 50, 50);
-                    image(pg, 0, 0, 50, 50);
-                    ellipse(width/2, height/2, 50, 50);
-                }, function(err) {
-                    console.error(err);
-                });
-                testRender.wait(1000); // wait loadGraphics before run diff
-            }, done);
-        });
-    });
-    describe('resizeCanvas', function() {
-        it('resizeCanvas: should be scaled', function(done) {
-            testRender.describe('resizeCanvas: scaled');
-            testRender(function() {
-                resizeCanvas(200, 200);
-                strokeWeight(10);
-                ellipse(width/2, height/2, 50, 50);
-            }, done);
-        });
-        it('resizeCanvas: all pixels should be cleared after resize', function(done) {
-            testRender.describe('resizeCanvas: all pixels cleared');
-            testRender(function() {
-                ellipse(width/2, height/2, 50, 50);
-                resizeCanvas(200, 200);
-                resizeCanvas(100, 100);
-                strokeWeight(10);
-                ellipse(0, 0, 100, 100);
-            }, done);
-        });
-    });
-});
-
-},{"../../lib/p5":4,"../../lib/test-render":5,"assert":19}],13:[function(require,module,exports){
-var testRender = require('../../lib/test-render');
-
-describe('Shape/2d_primitives', function() {
-    // the tests code are from p5.js's example reference
-    var tests = {
-        arc: function() {
-            arc(50, 55, 50, 50, 0, PI * 0.5);
-            noFill();
-            arc(50, 55, 60, 60, PI * 0.5, PI * 1.5);
-        },
-        circle: function() {
-            ellipse(56, 46, 55, 55);
-        },
-        ellipse: function() {
-            ellipse(56, 46, 55, 35);
-        },
-        line: function() {
-            line(30, 20, 85, 20);
-            stroke(126);
-            line(85, 20, 85, 75);
-            stroke(200);
-            line(85, 75, 30, 75);
-        },
-        point: function() {
-            point(30, 20);
-            point(85, 20);
-            point(85, 75);
-            point(30, 75);
-        },
-        quad: function() {
-            quad(38, 31, 86, 20, 69, 63, 30, 76);
-        },
-        rect: function() {
-            rect(30, 20, 55, 55);
-        },
-        roundRect: function() {
-            rect(30, 20, 55, 55, 20, 15, 10, 5);
-        },
-        triangle: function() {
-            triangle(30, 75, 58, 20, 86, 75);
-        }
-    };
-
-    Object.keys(tests).forEach(function(key) {
-        describe(key, function() {
-            it(key + ': SVG API should draw same image as Canvas API', function(done) {
-                testRender.describe(key);
-                testRender(tests[key], done);
-            });
-        });
-    });
-});
-
-},{"../../lib/test-render":5}],14:[function(require,module,exports){
-var testRender = require('../../lib/test-render');
-
-describe('Shape/Attributes', function() {
-    // the tests code are from p5.js's example reference
-    var tests = {
-        strokeWeight: function() {
-            strokeWeight(10);
-            line(0, 0, 100, 100);
-            strokeWeight(5);
-            line(0, 0, 50, 100);
-        },
-        strokeCap: function() {
-            strokeWeight(12.0);
-            strokeCap(ROUND);
-            line(20, 30, 80, 30);
-            strokeCap(SQUARE);
-            line(20, 50, 80, 50);
-            strokeCap(PROJECT);
-            line(20, 70, 80, 70);
-        },
-        strokeJoinMiter: function() {
-            noFill();
-            strokeWeight(10.0);
-            strokeJoin(MITER);
-            beginShape();
-            vertex(35, 20);
-            vertex(65, 50);
-            vertex(35, 80);
-            endShape();
-        },
-        strokeJoinBevel: function() {
-            noFill();
-            strokeWeight(10.0);
-            strokeJoin(BEVEL);
-            beginShape();
-            vertex(35, 20);
-            vertex(65, 50);
-            vertex(35, 80);
-            endShape();
-        },
-        strokeJoinRound: function() {
-            noFill();
-            strokeWeight(10.0);
-            strokeJoin(ROUND);
-            beginShape();
-            vertex(35, 20);
-            vertex(65, 50);
-            vertex(35, 80);
-            endShape();
-        },
-        ellipseModeRadius: function() {
-            ellipseMode(RADIUS);
-            fill(255);
-            ellipse(50, 50, 30, 30);
-        },
-        ellipseModeCenter: function() {
-            ellipseMode(RADIUS);
-            fill(255);
-            ellipse(50, 50, 30, 30);
-            ellipseMode(CENTER);
-            fill(100);
-            ellipse(50, 50, 30, 30);
-        },
-        ellipseModeCorner: function() {
-            ellipseMode(RADIUS);
-            fill(255);
-            ellipse(50, 50, 30, 30);
-            ellipseMode(CORNER);
-            fill(255);
-            ellipse(25, 25, 50, 50);
-        },
-        ellipseModeCorners: function() {
-            ellipseMode(RADIUS);
-            fill(255);
-            ellipse(50, 50, 30, 30);
-            ellipseMode(CORNERS);
-            fill(100);
-            ellipse(25, 25, 50, 50);
-        },
-        rectModeCornerAndCorners: function() {
-            rectMode(CORNER);
-            fill(255);
-            rect(25, 25, 50, 50);
-
-            rectMode(CORNERS);
-            fill(100);
-            rect(25, 25, 50, 50);
-        },
-        rectModeRadiusAndCenter: function() {
-            rectMode(RADIUS);
-            fill(255);
-            rect(50, 50, 30, 30);
-
-            rectMode(CENTER);
-            fill(100);
-            rect(50, 50, 30, 30);
-        },
-        smooth: function() {
-            background(0);
-            fill(255);
-            noStroke();
-            smooth();
-            ellipse(30, 48, 36, 36);
-            noSmooth();
-            ellipse(70, 48, 36, 36);
-        }
-    };
-
-    Object.keys(tests).forEach(function(key) {
-        describe(key, function() {
-            it(key + ': SVG API should draw same image as Canvas API', function(done) {
-                testRender.describe(key);
-                testRender(tests[key], done);
-            });
-        });
-    });
-});
-
-},{"../../lib/test-render":5}],15:[function(require,module,exports){
-var testRender = require('../../lib/test-render');
-
-describe('Shape/Curves', function() {
-
-    var tests = {
-        bezier: function() {
-            noFill();
-            stroke(255, 102, 0);
-            line(85, 20, 10, 10);
-            line(90, 90, 15, 80);
-            stroke(0, 0, 0);
-            bezier(85, 20, 10, 10, 90, 90, 15, 80);
-        },
-        bezierPoint: function() {
-            noFill();
-            bezier(85, 20, 10, 10, 90, 90, 15, 80);
-            fill(255);
-            stroke(100);
-            steps = 10;
-            for (var i = 0; i <= steps; i++) {
-                var t = i / steps;
-                x = bezierPoint(85, 10, 90, 15, t);
-                y = bezierPoint(20, 10, 90, 80, t);
-                ellipse(x, y, 5, 5);
-            }
-        },
-        bezierTangent: function() {
-            noFill();
-            bezier(85, 20, 10, 10, 90, 90, 15, 80);
-            steps = 6;
-            fill(255);
-            for (i = 0; i <= steps; i++) {
-                t = i / steps;
-                x = bezierPoint(85, 10, 90, 15, t);
-                y = bezierPoint(20, 10, 90, 80, t);
-                tx = bezierTangent(85, 10, 90, 15, t);
-                ty = bezierTangent(20, 10, 90, 80, t);
-                a = atan2(ty, tx);
-                a += PI;
-                stroke(255, 102, 0);
-                line(x, y, cos(a)*30 + x, sin(a)*30 + y);
-                stroke(0);
-                // ellipse(x, y, 5, 5);
-            }
-        },
-        curve: function() {
-            noFill();
-            stroke(255, 102, 0);
-            curve(5, 26, 5, 26, 73, 24, 73, 61);
-            stroke(0);
-            curve(5, 26, 73, 24, 73, 61, 15, 65);
-            stroke(255, 102, 0);
-            curve(73, 24, 73, 61, 15, 65, 15, 65);
-        },
-        curvePoint: function() {
-            noFill();
-            curve(5, 26, 5, 26, 73, 24, 73, 61);
-            curve(5, 26, 73, 24, 73, 61, 15, 65);
-            fill(255);
-            ellipseMode(CENTER);
-            steps = 6;
-            for (i = 0; i <= steps; i++) {
-                t = i / steps;
-                x = curvePoint(5, 5, 73, 73, t);
-                y = curvePoint(26, 26, 24, 61, t);
-                ellipse(x, y, 5, 5);
-                x = curvePoint(5, 73, 73, 15, t);
-                y = curvePoint(26, 24, 61, 65, t);
-                ellipse(x, y, 5, 5);
-            }
-        },
-        curveTangent: function() {
-            noFill();
-            curve(5, 26, 73, 24, 73, 61, 15, 65);
-            steps = 6;
-            for (i = 0; i <= steps; i++) {
-                t = i / steps;
-                x = curvePoint(5, 73, 73, 15, t);
-                y = curvePoint(26, 24, 61, 65, t);
-                //ellipse(x, y, 5, 5);
-                tx = curveTangent(5, 73, 73, 15, t);
-                ty = curveTangent(26, 24, 61, 65, t);
-                a = atan2(ty, tx);
-                a -= PI/2.0;
-                line(x, y, cos(a)*8 + x, sin(a)*8 + y);
-            }
-        },
-        curveTightness: function() {
-            curveTightness(10);
-            beginShape();
-            curveVertex(10, 26);
-            curveVertex(10, 26);
-            curveVertex(83, 24);
-            curveVertex(83, 61);
-            curveVertex(25, 65);
-            curveVertex(25, 65);
-            endShape();
-        }
-    };
-
-    Object.keys(tests).forEach(function(key) {
-        describe(key, function() {
-            it(key + ': SVG API should draw same image as Canvas API', function(done) {
-                testRender.describe(key);
-                testRender(tests[key], done);
-            });
-        });
-    });
-
-});
-
-},{"../../lib/test-render":5}],16:[function(require,module,exports){
-var testRender = require('../../lib/test-render');
-
-describe('Shape/Vertex', function() {
-    var tests = {
-        contour: function() {
-            translate(50, 50);
-            stroke(255, 0, 0);
-            beginShape();
-            vertex(-40, -40);
-            vertex(40, -40);
-            vertex(40, 40);
-            vertex(-40, 40);
-            beginContour();
-            vertex(-20, -20);
-            vertex(-20, 20);
-            vertex(20, 20);
-            vertex(20, -20);
-            endContour();
-            endShape(CLOSE);
-            translate(-50, -50);
-        },
-        bezierVertex: function() {
-            beginShape();
-            vertex(30, 20);
-            bezierVertex(80, 0, 80, 75, 30, 75);
-            bezierVertex(50, 80, 60, 25, 30, 20);
-            endShape();
-        },
-        curveVertex: function() {
-            noFill();
-            beginShape();
-            curveVertex(84,  91);
-            curveVertex(84,  91);
-            curveVertex(68,  19);
-            curveVertex(21,  17);
-            curveVertex(32, 100);
-            curveVertex(32, 100);
-            endShape();
-        },
-        quadraticVertex: function() {
-            noFill();
-            strokeWeight(4);
-            beginShape();
-            vertex(20, 20);
-            quadraticVertex(80, 20, 50, 50);
-            quadraticVertex(20, 80, 80, 80);
-            vertex(80, 60);
-            endShape();
-        }
-    };
-
-    Object.keys(tests).forEach(function(key) {
-        describe(key, function() {
-            it(key + ': SVG API should draw same image as Canvas API', function(done) {
-                testRender.describe(key);
-                testRender(tests[key], done);
-            });
-        });
-    });
-});
-
-},{"../../lib/test-render":5}],17:[function(require,module,exports){
-var p5 = require('../../lib/p5');
-var assert = require('assert');
-
-describe('SVG Element API', function() {
-    it('querySVG', function() {
-        new p5(function(p) {
-            p.setup = function() {
-                p.createCanvas(100, 100, p.SVG);
-                p.ellipse(50, 50, 50, 50);
-                assert.equal(p.querySVG('path')[0].elt.nodeName.toLowerCase(), 'path');
-
-                var pg = p.createGraphics(100, 100, p.SVG);
-                pg.ellipse(60, 60, 50, 50);
-                assert.equal(pg.querySVG('path')[0].elt.nodeName.toLowerCase(), 'path');
-            };
-        });
-    });
-});
-
-},{"../../lib/p5":4,"assert":19}],18:[function(require,module,exports){
-var p5 = require('../../lib/p5');
-var assert = require('assert');
-
-var SVGDataURL = 'data:image/svg+xml;charset=utf-8,<svg%20version%3D"1.1"%20xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg"%20xmlns%3Axlink%3D"http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink"%20width%3D"100"%20height%3D"100"%20viewBox%3D"0%200%20100%20100"><defs%2F><g%20transform%3D"scale(1%2C1)"%2F><g><path%20fill%3D"none"%20stroke%3D"rgb(0%2C0%2C0)"%20paint-order%3D"fill%20stroke%20markers"%20d%3D"%20M%200%200%20L%20100%20100"%20stroke-opacity%3D"1"%20stroke-linecap%3D"round"%20stroke-miterlimit%3D"10"%20stroke-width%3D"10"%2F><g%20transform%3D"translate(0.5%2C0.5)"><path%20fill%3D"none"%20stroke%3D"rgb(0%2C0%2C0)"%20paint-order%3D"fill%20stroke%20markers"%20d%3D"%20M%200%200%20L%2050%20100"%20stroke-opacity%3D"1"%20stroke-linecap%3D"round"%20stroke-miterlimit%3D"10"%20stroke-width%3D"5"%2F><g%20transform%3D"translate(-0.5%2C-0.5)"%2F><%2Fg><%2Fg><%2Fsvg>';
-
-var SVGHTTPURL = window.__karma__ ? "/base/test/unit/svg/test.svg" : "./unit/svg/test.svg";
-
-describe('SVG Manipulating API', function() {
-    it('Manipulate SVG', function(done) {
-        new p5(function(p) {
-            var svg;
-            var svg2;
-            p.preload = function() {
-                svg = p.loadSVG(SVGDataURL);
-                svg2 = p.loadSVG(SVGHTTPURL);
-            };
-            p.setup = function() {
-                svg2.query("path")[0].attribute("stroke-width", 100);
-                var pg = p.createGraphics(400, 400, p.SVG);
-                pg.image(svg, 0, 0, 400, 400);
-                var paths = pg.querySVG('path');
-                try {
-                    assert.equal(paths.length, 2);
-                    paths[0].attribute("stroke-width", 1);
-                    assert.equal(paths[0].attribute("stroke-width"), 1);
-                    pg.image(svg2, 0, 0);
-                    assert.equal(pg.querySVG('path')[2].attribute("stroke-width"),
-                                 100);
-                    done();
-                } catch(e) {
-                    done(e);
-                }
-            };
-        });
-    });
-});
-
-},{"../../lib/p5":4,"assert":19}],19:[function(require,module,exports){
-// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
-//
-// THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
-//
-// Originally from narwhal.js (http://narwhaljs.org)
-// Copyright (c) 2009 Thomas Robinson <280north.com>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the 'Software'), to
-// deal in the Software without restriction, including without limitation the
-// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-// sell copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// when used in node, this will actually load the util module we depend on
-// versus loading the builtin util module as happens otherwise
-// this is a bug in node module loading as far as I am concerned
-var util = require('util/');
-
-var pSlice = Array.prototype.slice;
-var hasOwn = Object.prototype.hasOwnProperty;
-
-// 1. The assert module provides functions that throw
-// AssertionError's when particular conditions are not met. The
-// assert module must conform to the following interface.
-
-var assert = module.exports = ok;
-
-// 2. The AssertionError is defined in assert.
-// new assert.AssertionError({ message: message,
-//                             actual: actual,
-//                             expected: expected })
-
-assert.AssertionError = function AssertionError(options) {
-  this.name = 'AssertionError';
-  this.actual = options.actual;
-  this.expected = options.expected;
-  this.operator = options.operator;
-  if (options.message) {
-    this.message = options.message;
-    this.generatedMessage = false;
-  } else {
-    this.message = getMessage(this);
-    this.generatedMessage = true;
-  }
-  var stackStartFunction = options.stackStartFunction || fail;
-
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, stackStartFunction);
-  }
-  else {
-    // non v8 browsers so we can have a stacktrace
-    var err = new Error();
-    if (err.stack) {
-      var out = err.stack;
-
-      // try to strip useless frames
-      var fn_name = stackStartFunction.name;
-      var idx = out.indexOf('\n' + fn_name);
-      if (idx >= 0) {
-        // once we have located the function frame
-        // we need to strip out everything before it (and its line)
-        var next_line = out.indexOf('\n', idx + 1);
-        out = out.substring(next_line + 1);
-      }
-
-      this.stack = out;
-    }
-  }
-};
-
-// assert.AssertionError instanceof Error
-util.inherits(assert.AssertionError, Error);
-
-function replacer(key, value) {
-  if (util.isUndefined(value)) {
-    return '' + value;
-  }
-  if (util.isNumber(value) && !isFinite(value)) {
-    return value.toString();
-  }
-  if (util.isFunction(value) || util.isRegExp(value)) {
-    return value.toString();
-  }
-  return value;
-}
-
-function truncate(s, n) {
-  if (util.isString(s)) {
-    return s.length < n ? s : s.slice(0, n);
-  } else {
-    return s;
-  }
-}
-
-function getMessage(self) {
-  return truncate(JSON.stringify(self.actual, replacer), 128) + ' ' +
-         self.operator + ' ' +
-         truncate(JSON.stringify(self.expected, replacer), 128);
-}
-
-// At present only the three keys mentioned above are used and
-// understood by the spec. Implementations or sub modules can pass
-// other keys to the AssertionError's constructor - they will be
-// ignored.
-
-// 3. All of the following functions must throw an AssertionError
-// when a corresponding condition is not met, with a message that
-// may be undefined if not provided.  All assertion methods provide
-// both the actual and expected values to the assertion error for
-// display purposes.
-
-function fail(actual, expected, message, operator, stackStartFunction) {
-  throw new assert.AssertionError({
-    message: message,
-    actual: actual,
-    expected: expected,
-    operator: operator,
-    stackStartFunction: stackStartFunction
-  });
-}
-
-// EXTENSION! allows for well behaved errors defined elsewhere.
-assert.fail = fail;
-
-// 4. Pure assertion tests whether a value is truthy, as determined
-// by !!guard.
-// assert.ok(guard, message_opt);
-// This statement is equivalent to assert.equal(true, !!guard,
-// message_opt);. To test strictly for the value true, use
-// assert.strictEqual(true, guard, message_opt);.
-
-function ok(value, message) {
-  if (!value) fail(value, true, message, '==', assert.ok);
-}
-assert.ok = ok;
-
-// 5. The equality assertion tests shallow, coercive equality with
-// ==.
-// assert.equal(actual, expected, message_opt);
-
-assert.equal = function equal(actual, expected, message) {
-  if (actual != expected) fail(actual, expected, message, '==', assert.equal);
-};
-
-// 6. The non-equality assertion tests for whether two objects are not equal
-// with != assert.notEqual(actual, expected, message_opt);
-
-assert.notEqual = function notEqual(actual, expected, message) {
-  if (actual == expected) {
-    fail(actual, expected, message, '!=', assert.notEqual);
-  }
-};
-
-// 7. The equivalence assertion tests a deep equality relation.
-// assert.deepEqual(actual, expected, message_opt);
-
-assert.deepEqual = function deepEqual(actual, expected, message) {
-  if (!_deepEqual(actual, expected)) {
-    fail(actual, expected, message, 'deepEqual', assert.deepEqual);
-  }
-};
-
-function _deepEqual(actual, expected) {
-  // 7.1. All identical values are equivalent, as determined by ===.
-  if (actual === expected) {
-    return true;
-
-  } else if (util.isBuffer(actual) && util.isBuffer(expected)) {
-    if (actual.length != expected.length) return false;
-
-    for (var i = 0; i < actual.length; i++) {
-      if (actual[i] !== expected[i]) return false;
-    }
-
-    return true;
-
-  // 7.2. If the expected value is a Date object, the actual value is
-  // equivalent if it is also a Date object that refers to the same time.
-  } else if (util.isDate(actual) && util.isDate(expected)) {
-    return actual.getTime() === expected.getTime();
-
-  // 7.3 If the expected value is a RegExp object, the actual value is
-  // equivalent if it is also a RegExp object with the same source and
-  // properties (`global`, `multiline`, `lastIndex`, `ignoreCase`).
-  } else if (util.isRegExp(actual) && util.isRegExp(expected)) {
-    return actual.source === expected.source &&
-           actual.global === expected.global &&
-           actual.multiline === expected.multiline &&
-           actual.lastIndex === expected.lastIndex &&
-           actual.ignoreCase === expected.ignoreCase;
-
-  // 7.4. Other pairs that do not both pass typeof value == 'object',
-  // equivalence is determined by ==.
-  } else if (!util.isObject(actual) && !util.isObject(expected)) {
-    return actual == expected;
-
-  // 7.5 For all other Object pairs, including Array objects, equivalence is
-  // determined by having the same number of owned properties (as verified
-  // with Object.prototype.hasOwnProperty.call), the same set of keys
-  // (although not necessarily the same order), equivalent values for every
-  // corresponding key, and an identical 'prototype' property. Note: this
-  // accounts for both named and indexed properties on Arrays.
-  } else {
-    return objEquiv(actual, expected);
-  }
-}
-
-function isArguments(object) {
-  return Object.prototype.toString.call(object) == '[object Arguments]';
-}
-
-function objEquiv(a, b) {
-  if (util.isNullOrUndefined(a) || util.isNullOrUndefined(b))
-    return false;
-  // an identical 'prototype' property.
-  if (a.prototype !== b.prototype) return false;
-  // if one is a primitive, the other must be same
-  if (util.isPrimitive(a) || util.isPrimitive(b)) {
-    return a === b;
-  }
-  var aIsArgs = isArguments(a),
-      bIsArgs = isArguments(b);
-  if ((aIsArgs && !bIsArgs) || (!aIsArgs && bIsArgs))
-    return false;
-  if (aIsArgs) {
-    a = pSlice.call(a);
-    b = pSlice.call(b);
-    return _deepEqual(a, b);
-  }
-  var ka = objectKeys(a),
-      kb = objectKeys(b),
-      key, i;
-  // having the same number of owned properties (keys incorporates
-  // hasOwnProperty)
-  if (ka.length != kb.length)
-    return false;
-  //the same set of keys (although not necessarily the same order),
-  ka.sort();
-  kb.sort();
-  //~~~cheap key test
-  for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i])
-      return false;
-  }
-  //equivalent values for every corresponding key, and
-  //~~~possibly expensive deep test
-  for (i = ka.length - 1; i >= 0; i--) {
-    key = ka[i];
-    if (!_deepEqual(a[key], b[key])) return false;
-  }
-  return true;
-}
-
-// 8. The non-equivalence assertion tests for any deep inequality.
-// assert.notDeepEqual(actual, expected, message_opt);
-
-assert.notDeepEqual = function notDeepEqual(actual, expected, message) {
-  if (_deepEqual(actual, expected)) {
-    fail(actual, expected, message, 'notDeepEqual', assert.notDeepEqual);
-  }
-};
-
-// 9. The strict equality assertion tests strict equality, as determined by ===.
-// assert.strictEqual(actual, expected, message_opt);
-
-assert.strictEqual = function strictEqual(actual, expected, message) {
-  if (actual !== expected) {
-    fail(actual, expected, message, '===', assert.strictEqual);
-  }
-};
-
-// 10. The strict non-equality assertion tests for strict inequality, as
-// determined by !==.  assert.notStrictEqual(actual, expected, message_opt);
-
-assert.notStrictEqual = function notStrictEqual(actual, expected, message) {
-  if (actual === expected) {
-    fail(actual, expected, message, '!==', assert.notStrictEqual);
-  }
-};
-
-function expectedException(actual, expected) {
-  if (!actual || !expected) {
-    return false;
-  }
-
-  if (Object.prototype.toString.call(expected) == '[object RegExp]') {
-    return expected.test(actual);
-  } else if (actual instanceof expected) {
-    return true;
-  } else if (expected.call({}, actual) === true) {
-    return true;
-  }
-
-  return false;
-}
-
-function _throws(shouldThrow, block, expected, message) {
-  var actual;
-
-  if (util.isString(expected)) {
-    message = expected;
-    expected = null;
-  }
-
-  try {
-    block();
-  } catch (e) {
-    actual = e;
-  }
-
-  message = (expected && expected.name ? ' (' + expected.name + ').' : '.') +
-            (message ? ' ' + message : '.');
-
-  if (shouldThrow && !actual) {
-    fail(actual, expected, 'Missing expected exception' + message);
-  }
-
-  if (!shouldThrow && expectedException(actual, expected)) {
-    fail(actual, expected, 'Got unwanted exception' + message);
-  }
-
-  if ((shouldThrow && actual && expected &&
-      !expectedException(actual, expected)) || (!shouldThrow && actual)) {
-    throw actual;
-  }
-}
-
-// 11. Expected to throw an error:
-// assert.throws(block, Error_opt, message_opt);
-
-assert.throws = function(block, /*optional*/error, /*optional*/message) {
-  _throws.apply(this, [true].concat(pSlice.call(arguments)));
-};
-
-// EXTENSION! This is annoying to write outside this module.
-assert.doesNotThrow = function(block, /*optional*/message) {
-  _throws.apply(this, [false].concat(pSlice.call(arguments)));
-};
-
-assert.ifError = function(err) { if (err) {throw err;}};
-
-var objectKeys = Object.keys || function (obj) {
-  var keys = [];
-  for (var key in obj) {
-    if (hasOwn.call(obj, key)) keys.push(key);
-  }
-  return keys;
-};
-
-},{"util/":23}],20:[function(require,module,exports){
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
-}
-
-},{}],21:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    draining = true;
-    var currentQueue;
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        var i = -1;
-        while (++i < len) {
-            currentQueue[i]();
-        }
-        len = queue.length;
-    }
-    draining = false;
-}
-process.nextTick = function (fun) {
-    queue.push(fun);
-    if (!draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],22:[function(require,module,exports){
+},{"./context":5}],7:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],23:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3660,4 +2524,1174 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":22,"_process":21,"inherits":20}]},{},[7]);
+},{"./support/isBuffer":7,"_process":3,"inherits":2}],9:[function(require,module,exports){
+// wrapper for p5.js
+module.exports = window.p5;
+
+},{}],10:[function(require,module,exports){
+var p5 = require('./p5');
+var assert = require('assert');
+var _ = window._; // lodash
+var SVGCanvas = require('svgcanvas');
+
+// init p5 canvas instance and p5-svg instance
+var canvasGraphics, svgGraphics, p5svg, p5canvas;
+p5svg = new p5(function(p) {
+    p.setup = function() {
+        svgGraphics = p.createCanvas(100, 100, p.SVG);
+        p.noLoop();
+        p.isSVG = true;
+    };
+}, true);
+p5canvas = new p5(function(p) {
+    p.setup = function() {
+        canvasGraphics = p.createCanvas(100, 100);
+        p.noLoop();
+        p.isSVG = false;
+    };
+}, true);
+
+var resetCanvas = function(p) {
+    p.clear();
+    p.strokeWeight(3); // for using XOR with thin line removed (using 8-connected neighborhood < 5) for diff
+    p.fill(200);
+    p.stroke(0);
+    p.ellipseMode(p.CENTER);
+    p.rectMode(p.CORNER);
+    p.smooth();
+};
+
+// count non transparent pixels
+var countPixels = function(imgData) {
+    var count = 0;
+    for (var i = 3; i < imgData.data.length; i += 4) {
+        if (imgData.data[i] > 0) {
+            count++;
+        }
+    }
+    return count;
+};
+
+var maxPixelDiff = 0;
+var diffPixels = function(imgData1, imgData2, diffImgData) {
+    for (var i = 0; i < imgData1.data.length; i += 4) {
+        var indexes = [i, i+1, i+2, i+3];
+        indexes.forEach(function(i) {
+            diffImgData.data[i] = 0;
+        });
+        if(indexes.some(function(i) {
+            return Math.abs(imgData1.data[i] - imgData2.data[i]) > maxPixelDiff;
+        })) {
+            diffImgData.data[i+3] = 255; // set black
+        }
+    }
+};
+
+// remove thin lines using 8-connected neighborhood < 5
+var removeThinLines = function(canvas) {
+    var ctx = canvas.getContext('2d');
+    var width = canvas.width;
+    var height = canvas.height;
+    var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var imgDataCopy = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    var getPixelIndex = function(x, y) {
+        return (y * width + x) * 4 + 3;
+    };
+
+    var getPixel = function(x, y) {
+        var alphaIndex = getPixelIndex(x, y);
+        return imgDataCopy.data[alphaIndex];
+    };
+
+    var setPixel = function(x, y, value) {
+        imgData.data[getPixelIndex(x, y)] = value;
+    };
+
+    for (var x = 1; x < width - 1; x++) {
+        for (var y = 1; y < height - 1; y++) {
+            if (getPixel(x, y) == 0) {
+                continue; // ignore transparents
+            }
+            var links = [
+                {x: x - 1, y: y - 1},
+                {x: x, y: y - 1},
+                {x: x + 1, y: y - 1},
+                {x: x - 1, y: y},
+                {x: x + 1, y: y},
+                {x: x - 1, y: y + 1},
+                {x: x, y: y + 1},
+                {x: x + 1, y: y + 1}
+            ].map(function(p) {
+                return getPixel(p.x, p.y);
+            }).filter(function(val) {
+                return val > 0; // not transparent?
+            }).length;
+
+            if (links < 5) { // is a thin line
+                setPixel(x, y, 0); // make it transparent
+            }
+        }
+    }
+    canvas.getContext('2d').putImageData(imgData, 0, 0);
+};
+
+// render given function
+var render = function(draw) {
+    var fnbody = draw.toString();
+    fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
+    [p5svg, p5canvas].forEach(function(p) {
+        resetCanvas(p);
+        with (p) {
+            p.canvas.getContext('2d').__history = [];
+            eval(fnbody);
+        }
+    });
+};
+
+// prepare dom for tests container
+var prepareDom = function(draw) {
+    var $container = $('#test-graph');
+
+    var status = {};
+
+    // draw header
+    var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div><div></div><div class="function">p5.js</div></div>';
+    $container.append(th);
+
+    // the svg result
+    var svg = new Image();
+    svg.onload = function() {
+        status.svg = true;
+    };
+    svg.src = SVGCanvas.prototype.toDataURL.call({svg: p5svg._renderer.svg},
+                                                 "image/svg+xml");
+    var _svg = p5svg._renderer.svg.cloneNode(true);
+    _svg.id = null;
+    _svg.className = 'svg';
+    $container.append(_svg);
+
+    // the canvas result
+    var canvas = new Image();
+    canvas.onload = function() {
+        status.canvas = true;
+    };
+    canvas.src = p5canvas._curElement.elt.toDataURL('image/png');
+    $container.append(canvas);
+
+    // diff canvas
+    var diffCanvas = document.createElement('canvas');
+    diffCanvas.width = 100 * window.devicePixelRatio;
+    diffCanvas.height = 100 * window.devicePixelRatio;;
+    $container.append(diffCanvas);
+
+    // diff canvas2 for removing thin lines
+    var diffCanvas2 = document.createElement('canvas');
+    diffCanvas2.width = 100 * window.devicePixelRatio;;
+    diffCanvas2.height = 100 * window.devicePixelRatio;;
+    $container.append(diffCanvas2);
+
+    // match?
+    var $match = $('<div class="match"></div>');
+    $container.append($match);
+
+    // p5.js API call history
+    var fnbody = draw.toString();
+    fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
+    // re-indent
+    var indent = fnbody.match(/( +)/)[0].length;
+    indent = new RegExp('^[ ]{' + indent + '}', 'gm');
+    fnbody = fnbody.replace(indent, '');
+    $container.append('<pre class="function">' + fnbody + '</pre>');
+
+    // canvas API call history
+    // var history = p5svg.canvas.getContext('2d').__history;
+    // $container.append('<div class="canvas-fn">' + history.join('<br>') + '</div>');
+
+    $container.append('<hr>');
+
+    return {
+        svg: svg,
+        canvas: canvas,
+        diffCanvas: diffCanvas,
+        diffCanvas2: diffCanvas2,
+        $match: $match,
+        isReady: function() {
+            return status.svg && status.canvas;
+        }
+    };
+};
+
+var testRender = function(draw, callback) {
+
+    testRender.setMaxDiff(0.05); // reset maxDiff
+    testRender.setMaxPixelDiff(0); // reset maxPixelDiff
+
+    render(draw);
+
+    var diff = function(el) {
+
+        // wait until ready
+        // if (!el.svg.complete || !el.canvas.complete) {
+        if (!el.isReady()) {
+            // 100 is workround for NS_ERROR_NOT_AVAILABLE in karma
+            setTimeout(function() {
+                diff(el);
+            }, 100);
+            return;
+        }
+
+        var ctx = el.diffCanvas.getContext('2d');
+        var w = 100 * window.devicePixelRatio;
+        var h = 100 * window.devicePixelRatio;
+
+        // svg render result
+        ctx.clearRect(0, 0, w, h);
+        ctx.drawImage(el.svg, 0, 0, w, h);
+        var imgData1 = ctx.getImageData(0, 0, w, h);
+
+        // canvas render result
+        ctx.clearRect(0, 0, w, h);
+        ctx.drawImage(el.canvas, 0, 0, w, h);
+        var imgData2 = ctx.getImageData(0, 0, w, h);
+
+        // get diff
+        var diffImgData = ctx.getImageData(0, 0, w, h);
+        diffPixels(imgData1, imgData2, diffImgData);
+        ctx.putImageData(diffImgData, 0, 0);
+
+        // get diff with thin line removed (8-connected neighborhood < 5)
+        ctx = el.diffCanvas2.getContext('2d');
+        ctx.putImageData(diffImgData, 0, 0);
+        removeThinLines(el.diffCanvas2);
+        removeThinLines(el.diffCanvas2); // twice
+        var diffImgData2 = ctx.getImageData(0, 0, w, h);
+
+        // match?
+        var count = Math.max(countPixels(imgData1), countPixels(imgData2));
+        var diffCount = countPixels(diffImgData2);
+        var rate = diffCount / count;
+        var match = rate <= (testRender.maxDiff || 0.05);
+
+        // update $match
+        var icon = match ? 'fa-check': 'fa-times';
+        el.$match.html('<i class="fa ' + icon + '"></i>');
+
+        var err = null;
+        if (!match) {
+            err = new Error(JSON.stringify({
+                maxPixelDiff: maxPixelDiff,
+                maxDiffRate: testRender.maxDiff,
+                pixels: count,
+                diffPixels: diffCount,
+                rate: rate
+            }));
+        }
+
+        // callback
+        callback(err);
+    };
+
+    var next = function() {
+        // handle testRender.wait(ms);
+        if (testRender.waitUntil && (Date.now() < testRender.waitUntil)) {
+            setTimeout(next, 100);
+            return;
+        }
+        var el = prepareDom(draw);
+        diff(el);
+    };
+
+    next();
+};
+
+testRender.describe = function(str) {
+    $(function() {
+        var $container = $('#test-graph');
+        $container.append('<h2>' + str + '</h2>');
+    });
+};
+
+testRender.setMaxDiff = function(max) {
+    testRender.maxDiff = max;
+};
+
+testRender.setMaxPixelDiff = function(max) {
+    maxPixelDiff = max;
+};
+
+testRender.wait = function(ms) {
+    testRender.waitUntil = Date.now() + ms;
+};
+
+// add lock so testRender will wait
+testRender.lock = function() {
+    testRender.wait(1000 * 1000 * 1000);
+};
+
+// remove lock
+testRender.unlock = function() {
+    testRender.wait(0);
+};
+
+module.exports = testRender;
+
+},{"./p5":9,"assert":1,"svgcanvas":6}],11:[function(require,module,exports){
+var testRender = require('../../lib/test-render');
+
+window.TESTIMG = window.__karma__ ? "/base/test/unit/filter/light_by_zenozeng.jpg" : "./unit/filter/light_by_zenozeng.jpg";
+
+describe('Filters', function() {
+
+    var tests = {
+        // in SVG Renderer, I use feGaussianBlur,
+        // but Canvas Renderer uses a pixels based blur (port of processing's blur),
+        // so the results may not be exactly same.
+        blur: function() {
+            testRender.setMaxDiff(1); // ignore diff, see known issue
+            testRender.setMaxPixelDiff(2);
+            background(255);
+            stroke(255, 0, 0);
+            strokeWeight(10);
+            line(0, 0, 100, 100);
+            line(0, 100, 100, 0);
+            filter(BLUR, 5);
+        },
+        gray: function() {
+            testRender.setMaxPixelDiff(1);
+            background(200, 100, 50);
+            filter(GRAY);
+        },
+        invert: function() {
+            testRender.setMaxPixelDiff(1);
+            background(255, 0, 0);
+            filter(INVERT);
+            ellipse(50, 50, 50, 50);
+        },
+        threshold: function() {
+            background(255, 0, 0);
+            stroke(255);
+            strokeWeight(10);
+            line(0, 0, 100, 100);
+            filter(THRESHOLD, 0.5);
+        },
+        opaque: function() {
+            testRender.setMaxPixelDiff(1);
+            background(255, 0, 0, 127);
+            filter(OPAQUE); // Sets the alpha channel to 255
+        },
+        posterize: function() {
+            testRender.lock();
+            testRender.setMaxDiff(1); // ignore diff, see https://github.com/zenozeng/p5.js-svg/issues/124
+            loadImage(TESTIMG, function(img) {
+                image(img, 0, 0);
+                filter(POSTERIZE, 2);
+                if (_isSafari()) {
+                }
+                testRender.unlock();
+            });
+        },
+        erode: function() {
+            testRender.lock();
+            testRender.setMaxDiff(1); // ignore diff, see known issue
+            loadImage(TESTIMG, function(img) {
+                image(img, 0, 0);
+                filter(ERODE);
+                testRender.unlock();
+            });
+        },
+        dilate: function() {
+            testRender.lock();
+            testRender.setMaxDiff(1); // ignore diff, see known issue
+            loadImage(TESTIMG, function(img) {
+                image(img, 0, 0);
+                filter(DILATE);
+                testRender.unlock();
+            });
+        },
+        custom: function() {
+            testRender.setMaxPixelDiff(1);
+            background(200, 100, 50);
+            registerSVGFilter('mygray', p5.SVGFilters.gray);
+            if (isSVG) {
+                filter('mygray');
+            } else {
+                filter(GRAY);
+            }
+        }
+    };
+
+    Object.keys(tests).forEach(function(key) {
+        describe("Filters/" + key, function() {
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                this.timeout(0);
+                testRender.describe("Filters/" + key);
+                testRender(tests[key], done);
+            });
+        });
+    });
+
+});
+
+},{"../../lib/test-render":10}],12:[function(require,module,exports){
+var assert = require('assert');
+var p5 = require('../../lib/p5');
+
+describe('IO/saveFrames', function() {
+    it('should capture canvas frames', function(done) {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100);
+                p.strokeWeight(3);
+                p.saveFrames('hello', 'png', 3, 10, function(frames) {
+                    try {
+                        assert.ok(frames.length > 1);
+                        p.noCanvas();
+                        done();
+                    } catch (e) {
+                        p.noCanvas();
+                        done(e);
+                    }
+                });
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+
+    it('should capture svg frames', function(done) {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                p.strokeWeight(3);
+                p.saveFrames('hello', 'svg', 0.5, 10, function(frames) {
+                    try {
+                        assert.ok(frames.length > 1);
+                        p.noCanvas();
+                        done();
+                    } catch (e) {
+                        p.noCanvas();
+                        done(e);
+                    }
+                });
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+
+    it('should capture svg frames even omitting duration and fps', function(done) {
+        this.timeout(0);
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                p.strokeWeight(3);
+                p.saveFrames('hello', 'svg', null, null, function(frames) {
+                    try {
+                        assert.ok(frames.length > 1);
+                        p.noCanvas();
+                        done();
+                    } catch (e) {
+                        p.noCanvas();
+                        done(e);
+                    }
+                });
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+
+    it('should download svg frames', function(done) {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                var _downloadFile = p.downloadFile;
+                var count = 0;
+                var _done;
+                p.downloadFile = function() {
+                    count++;
+                    if (count > 1) {
+                        if (!_done) {
+                            p.noCanvas();
+                            done();
+                            _done = true;
+                        }
+                    }
+                };
+                p.saveFrames('hello', 'svg', 0.5, 10);
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+
+    it('should wait all pending jobs done', function(done) {
+        this.timeout(0);
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                var pending = 0;
+                var _makeSVGFrame = p._makeSVGFrame;
+                p._makeSVGFrame = function(options) {
+                    // slow version
+                    pending++;
+                    setTimeout(function() {
+                        _makeSVGFrame.call(p, options);
+                    }, 500);
+                };
+                p.downloadFile = function() {
+                    pending--;
+                    if (pending === 0) {
+                        p.noCanvas();
+                        done();
+                    }
+                };
+                p.saveFrames('hello', 'svg', 0.5, 10);
+            };
+            p.draw = function() {
+                var i = p.frameCount * 2;
+                p.line(0, 0, i, i);
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":9,"assert":1}],13:[function(require,module,exports){
+var assert = require('assert');
+var testDownload = require('./test-download.js');
+var p5 = require('../../lib/p5');
+
+describe('IO/saveSVG', function() {
+
+    it('should save untitled.svg', function(done) {
+        testDownload('untitled', 'svg', function(p) {
+            p.saveSVG();
+        }, done);
+    });
+    it('should save hello.svg', function(done) {
+        testDownload('hello', 'svg', function(p) {
+            p.saveSVG('hello.svg');
+        }, done);
+    });
+    it('should save hello.jpg', function(done) {
+        testDownload('hello', 'jpg', function(p) {
+            p.saveSVG('hello', 'jpg');
+        }, done);
+    });
+    it('should save hello.jpeg', function(done) {
+        testDownload('hello', 'jpeg', function(p) {
+            p.saveSVG('hello.jpeg');
+        }, done);
+    });
+    it('should save hello.png', function(done) {
+        testDownload('hello', 'png', function(p) {
+            p.saveSVG('hello.png');
+        }, done);
+    });
+    it('source is Graphics', function(done) {
+        testDownload('source-graphics', 'png', function(p) {
+            var pg = p.createGraphics(100, 100, p.SVG);
+            pg.background(100);
+            p.saveSVG(pg, 'source-graphics.png');
+        }, done);
+    });
+    it('source is <svg>', function(done) {
+        testDownload('source-svg', 'png', function(p) {
+            var pg = p.createGraphics(100, 100, p.SVG);
+            pg.background(100);
+            p.saveSVG(pg._renderer.svg, 'source-svg.png');
+        }, done);
+    });
+    it('should throw if given unsupported type', function() {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                p.background(255);
+                p.stroke(0, 0, 0);
+                p.line(0, 0, 100, 100);
+                assert.throws(function() {
+                    p.saveSVG('hello.txt');
+                });
+                p.noCanvas();
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":9,"./test-download.js":15,"assert":1}],14:[function(require,module,exports){
+var assert = require('assert');
+var p5 = require('../../lib/p5');
+var testDownload = require('./test-download.js');
+
+describe('IO/save', function() {
+    this.timeout(1000 * 5);
+
+    it('save()', function(done) {
+        testDownload('untitled', 'svg', function(p) {
+            p.save();
+        }, done);
+    });
+
+    it('save(Graphics)', function(done) {
+        testDownload('untitled', 'svg', function(p) {
+            p.save(p._defaultGraphics);
+        }, done);
+    });
+
+    it('save(<svg>)', function(done) {
+        testDownload('untitled', 'svg', function(p) {
+            p.save(p._renderer.svg);
+        }, done);
+    });
+
+    it('canvas\'s save should still work', function(done) {
+        new p5(function(p) {
+            p.setup = function() {
+                var _saveCanvas = p5.prototype.saveCanvas;
+                p5.prototype.saveCanvas = function() {
+                    p5.prototype.saveCanvas = _saveCanvas;
+                    done();
+                };
+                p.save('canvas-save.png');
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":9,"./test-download.js":15,"assert":1}],15:[function(require,module,exports){
+var assert = require('assert');
+var p5 = require('../../lib/p5');
+
+var testDownload = function(filename, ext, fn, done, useCanvas) {
+    new p5(function(p) {
+        p.setup = function() {
+            p.createCanvas(100, 100, useCanvas ? p.P2D : p.SVG);
+            p.background(255);
+            p.stroke(0, 0, 0);
+            p.strokeWeight(3);
+            p.line(0, 0, 100, 100);
+
+            p.downloadFile = function(dataURL, _filename, _ext) {
+                try {
+                    assert.notEqual(dataURL.indexOf('image/octet-stream'), -1);
+                    assert.equal(_filename, filename);
+                    assert.equal(_ext, ext);
+                    p.noCanvas();
+                    done();
+                } catch(e) {
+                    p.noCanvas();
+                    done(e);
+                }
+            };
+            fn(p);
+        };
+    });
+};
+
+module.exports = testDownload;
+
+},{"../../lib/p5":9,"assert":1}],16:[function(require,module,exports){
+var p5 = require('../../lib/p5');
+var testRender = require('../../lib/test-render');
+var assert = require('assert');
+
+describe('Rendering', function() {
+    this.timeout(0);
+
+    describe('noCanvas', function() {
+        it('should remove the <svg> created by createCanvas', function() {
+            new p5(function(p) {
+                p.setup = function() {
+                    p.createCanvas(100, 100, p.SVG);
+                    var svg = p._renderer.svg;
+                    assert.strictEqual(true, document.body.contains(svg));
+                    p.line(0, 0, 100, 100);
+                    p.noCanvas();
+                    assert.strictEqual(false, document.body.contains(svg));
+                };
+            });
+        });
+    });
+    describe('createGraphics', function() {
+        it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
+            testRender.describe('createGraphics');
+            testRender(function() {
+                pg = createGraphics(400, 400, isSVG ? SVG : P2D);
+                background(200);
+                pg.background(100);
+                pg.noStroke();
+                pg.ellipse(pg.width/2, pg.height/2, 50, 50);
+                loadGraphics(pg, function(pg) {
+                    image(pg, 50, 50);
+                    image(pg, 0, 0, 50, 50);
+                    ellipse(width/2, height/2, 50, 50);
+                }, function(err) {
+                    console.error(err);
+                });
+                testRender.wait(1000); // wait loadGraphics before run diff
+            }, done);
+        });
+    });
+    describe('resizeCanvas', function() {
+        it('resizeCanvas: should be scaled', function(done) {
+            testRender.describe('resizeCanvas: scaled');
+            testRender(function() {
+                resizeCanvas(200, 200);
+                strokeWeight(10);
+                ellipse(width/2, height/2, 50, 50);
+            }, done);
+        });
+        it('resizeCanvas: all pixels should be cleared after resize', function(done) {
+            testRender.describe('resizeCanvas: all pixels cleared');
+            testRender(function() {
+                ellipse(width/2, height/2, 50, 50);
+                resizeCanvas(200, 200);
+                resizeCanvas(100, 100);
+                strokeWeight(10);
+                ellipse(0, 0, 100, 100);
+            }, done);
+        });
+    });
+});
+
+},{"../../lib/p5":9,"../../lib/test-render":10,"assert":1}],17:[function(require,module,exports){
+var testRender = require('../../lib/test-render');
+
+describe('Shape/2d_primitives', function() {
+    // the tests code are from p5.js's example reference
+    var tests = {
+        arc: function() {
+            arc(50, 55, 50, 50, 0, PI * 0.5);
+            noFill();
+            arc(50, 55, 60, 60, PI * 0.5, PI * 1.5);
+        },
+        circle: function() {
+            ellipse(56, 46, 55, 55);
+        },
+        ellipse: function() {
+            ellipse(56, 46, 55, 35);
+        },
+        line: function() {
+            line(30, 20, 85, 20);
+            stroke(126);
+            line(85, 20, 85, 75);
+            stroke(200);
+            line(85, 75, 30, 75);
+        },
+        point: function() {
+            point(30, 20);
+            point(85, 20);
+            point(85, 75);
+            point(30, 75);
+        },
+        quad: function() {
+            quad(38, 31, 86, 20, 69, 63, 30, 76);
+        },
+        rect: function() {
+            rect(30, 20, 55, 55);
+        },
+        roundRect: function() {
+            rect(30, 20, 55, 55, 20, 15, 10, 5);
+        },
+        triangle: function() {
+            triangle(30, 75, 58, 20, 86, 75);
+        }
+    };
+
+    Object.keys(tests).forEach(function(key) {
+        describe(key, function() {
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                testRender.describe(key);
+                testRender(tests[key], done);
+            });
+        });
+    });
+});
+
+},{"../../lib/test-render":10}],18:[function(require,module,exports){
+var testRender = require('../../lib/test-render');
+
+describe('Shape/Attributes', function() {
+    // the tests code are from p5.js's example reference
+    var tests = {
+        strokeWeight: function() {
+            strokeWeight(10);
+            line(0, 0, 100, 100);
+            strokeWeight(5);
+            line(0, 0, 50, 100);
+        },
+        strokeCap: function() {
+            strokeWeight(12.0);
+            strokeCap(ROUND);
+            line(20, 30, 80, 30);
+            strokeCap(SQUARE);
+            line(20, 50, 80, 50);
+            strokeCap(PROJECT);
+            line(20, 70, 80, 70);
+        },
+        strokeJoinMiter: function() {
+            noFill();
+            strokeWeight(10.0);
+            strokeJoin(MITER);
+            beginShape();
+            vertex(35, 20);
+            vertex(65, 50);
+            vertex(35, 80);
+            endShape();
+        },
+        strokeJoinBevel: function() {
+            noFill();
+            strokeWeight(10.0);
+            strokeJoin(BEVEL);
+            beginShape();
+            vertex(35, 20);
+            vertex(65, 50);
+            vertex(35, 80);
+            endShape();
+        },
+        strokeJoinRound: function() {
+            noFill();
+            strokeWeight(10.0);
+            strokeJoin(ROUND);
+            beginShape();
+            vertex(35, 20);
+            vertex(65, 50);
+            vertex(35, 80);
+            endShape();
+        },
+        ellipseModeRadius: function() {
+            ellipseMode(RADIUS);
+            fill(255);
+            ellipse(50, 50, 30, 30);
+        },
+        ellipseModeCenter: function() {
+            ellipseMode(RADIUS);
+            fill(255);
+            ellipse(50, 50, 30, 30);
+            ellipseMode(CENTER);
+            fill(100);
+            ellipse(50, 50, 30, 30);
+        },
+        ellipseModeCorner: function() {
+            ellipseMode(RADIUS);
+            fill(255);
+            ellipse(50, 50, 30, 30);
+            ellipseMode(CORNER);
+            fill(255);
+            ellipse(25, 25, 50, 50);
+        },
+        ellipseModeCorners: function() {
+            ellipseMode(RADIUS);
+            fill(255);
+            ellipse(50, 50, 30, 30);
+            ellipseMode(CORNERS);
+            fill(100);
+            ellipse(25, 25, 50, 50);
+        },
+        rectModeCornerAndCorners: function() {
+            rectMode(CORNER);
+            fill(255);
+            rect(25, 25, 50, 50);
+
+            rectMode(CORNERS);
+            fill(100);
+            rect(25, 25, 50, 50);
+        },
+        rectModeRadiusAndCenter: function() {
+            rectMode(RADIUS);
+            fill(255);
+            rect(50, 50, 30, 30);
+
+            rectMode(CENTER);
+            fill(100);
+            rect(50, 50, 30, 30);
+        },
+        smooth: function() {
+            background(0);
+            fill(255);
+            noStroke();
+            smooth();
+            ellipse(30, 48, 36, 36);
+            noSmooth();
+            ellipse(70, 48, 36, 36);
+        }
+    };
+
+    Object.keys(tests).forEach(function(key) {
+        describe(key, function() {
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                testRender.describe(key);
+                testRender(tests[key], done);
+            });
+        });
+    });
+});
+
+},{"../../lib/test-render":10}],19:[function(require,module,exports){
+var testRender = require('../../lib/test-render');
+
+describe('Shape/Curves', function() {
+
+    var tests = {
+        bezier: function() {
+            noFill();
+            stroke(255, 102, 0);
+            line(85, 20, 10, 10);
+            line(90, 90, 15, 80);
+            stroke(0, 0, 0);
+            bezier(85, 20, 10, 10, 90, 90, 15, 80);
+        },
+        bezierPoint: function() {
+            noFill();
+            bezier(85, 20, 10, 10, 90, 90, 15, 80);
+            fill(255);
+            stroke(100);
+            steps = 10;
+            for (var i = 0; i <= steps; i++) {
+                var t = i / steps;
+                x = bezierPoint(85, 10, 90, 15, t);
+                y = bezierPoint(20, 10, 90, 80, t);
+                ellipse(x, y, 5, 5);
+            }
+        },
+        bezierTangent: function() {
+            noFill();
+            bezier(85, 20, 10, 10, 90, 90, 15, 80);
+            steps = 6;
+            fill(255);
+            for (i = 0; i <= steps; i++) {
+                t = i / steps;
+                x = bezierPoint(85, 10, 90, 15, t);
+                y = bezierPoint(20, 10, 90, 80, t);
+                tx = bezierTangent(85, 10, 90, 15, t);
+                ty = bezierTangent(20, 10, 90, 80, t);
+                a = atan2(ty, tx);
+                a += PI;
+                stroke(255, 102, 0);
+                line(x, y, cos(a)*30 + x, sin(a)*30 + y);
+                stroke(0);
+                // ellipse(x, y, 5, 5);
+            }
+        },
+        curve: function() {
+            noFill();
+            stroke(255, 102, 0);
+            curve(5, 26, 5, 26, 73, 24, 73, 61);
+            stroke(0);
+            curve(5, 26, 73, 24, 73, 61, 15, 65);
+            stroke(255, 102, 0);
+            curve(73, 24, 73, 61, 15, 65, 15, 65);
+        },
+        curvePoint: function() {
+            noFill();
+            curve(5, 26, 5, 26, 73, 24, 73, 61);
+            curve(5, 26, 73, 24, 73, 61, 15, 65);
+            fill(255);
+            ellipseMode(CENTER);
+            steps = 6;
+            for (i = 0; i <= steps; i++) {
+                t = i / steps;
+                x = curvePoint(5, 5, 73, 73, t);
+                y = curvePoint(26, 26, 24, 61, t);
+                ellipse(x, y, 5, 5);
+                x = curvePoint(5, 73, 73, 15, t);
+                y = curvePoint(26, 24, 61, 65, t);
+                ellipse(x, y, 5, 5);
+            }
+        },
+        curveTangent: function() {
+            noFill();
+            curve(5, 26, 73, 24, 73, 61, 15, 65);
+            steps = 6;
+            for (i = 0; i <= steps; i++) {
+                t = i / steps;
+                x = curvePoint(5, 73, 73, 15, t);
+                y = curvePoint(26, 24, 61, 65, t);
+                //ellipse(x, y, 5, 5);
+                tx = curveTangent(5, 73, 73, 15, t);
+                ty = curveTangent(26, 24, 61, 65, t);
+                a = atan2(ty, tx);
+                a -= PI/2.0;
+                line(x, y, cos(a)*8 + x, sin(a)*8 + y);
+            }
+        },
+        curveTightness: function() {
+            curveTightness(10);
+            beginShape();
+            curveVertex(10, 26);
+            curveVertex(10, 26);
+            curveVertex(83, 24);
+            curveVertex(83, 61);
+            curveVertex(25, 65);
+            curveVertex(25, 65);
+            endShape();
+        }
+    };
+
+    Object.keys(tests).forEach(function(key) {
+        describe(key, function() {
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                testRender.describe(key);
+                testRender(tests[key], done);
+            });
+        });
+    });
+
+});
+
+},{"../../lib/test-render":10}],20:[function(require,module,exports){
+var testRender = require('../../lib/test-render');
+
+describe('Shape/Vertex', function() {
+    var tests = {
+        contour: function() {
+            translate(50, 50);
+            stroke(255, 0, 0);
+            beginShape();
+            vertex(-40, -40);
+            vertex(40, -40);
+            vertex(40, 40);
+            vertex(-40, 40);
+            beginContour();
+            vertex(-20, -20);
+            vertex(-20, 20);
+            vertex(20, 20);
+            vertex(20, -20);
+            endContour();
+            endShape(CLOSE);
+            translate(-50, -50);
+        },
+        bezierVertex: function() {
+            beginShape();
+            vertex(30, 20);
+            bezierVertex(80, 0, 80, 75, 30, 75);
+            bezierVertex(50, 80, 60, 25, 30, 20);
+            endShape();
+        },
+        curveVertex: function() {
+            noFill();
+            beginShape();
+            curveVertex(84,  91);
+            curveVertex(84,  91);
+            curveVertex(68,  19);
+            curveVertex(21,  17);
+            curveVertex(32, 100);
+            curveVertex(32, 100);
+            endShape();
+        },
+        quadraticVertex: function() {
+            noFill();
+            strokeWeight(4);
+            beginShape();
+            vertex(20, 20);
+            quadraticVertex(80, 20, 50, 50);
+            quadraticVertex(20, 80, 80, 80);
+            vertex(80, 60);
+            endShape();
+        }
+    };
+
+    Object.keys(tests).forEach(function(key) {
+        describe(key, function() {
+            it(key + ': SVG API should draw same image as Canvas API', function(done) {
+                testRender.describe(key);
+                testRender(tests[key], done);
+            });
+        });
+    });
+});
+
+},{"../../lib/test-render":10}],21:[function(require,module,exports){
+var p5 = require('../../lib/p5');
+var assert = require('assert');
+
+describe('SVG Element API', function() {
+    it('querySVG', function() {
+        new p5(function(p) {
+            p.setup = function() {
+                p.createCanvas(100, 100, p.SVG);
+                p.ellipse(50, 50, 50, 50);
+                assert.equal(p.querySVG('path')[0].elt.nodeName.toLowerCase(), 'path');
+
+                var pg = p.createGraphics(100, 100, p.SVG);
+                pg.ellipse(60, 60, 50, 50);
+                assert.equal(pg.querySVG('path')[0].elt.nodeName.toLowerCase(), 'path');
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":9,"assert":1}],22:[function(require,module,exports){
+var p5 = require('../../lib/p5');
+var assert = require('assert');
+
+var SVGDataURL = 'data:image/svg+xml;charset=utf-8,<svg%20version%3D"1.1"%20xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg"%20xmlns%3Axlink%3D"http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink"%20width%3D"100"%20height%3D"100"%20viewBox%3D"0%200%20100%20100"><defs%2F><g%20transform%3D"scale(1%2C1)"%2F><g><path%20fill%3D"none"%20stroke%3D"rgb(0%2C0%2C0)"%20paint-order%3D"fill%20stroke%20markers"%20d%3D"%20M%200%200%20L%20100%20100"%20stroke-opacity%3D"1"%20stroke-linecap%3D"round"%20stroke-miterlimit%3D"10"%20stroke-width%3D"10"%2F><g%20transform%3D"translate(0.5%2C0.5)"><path%20fill%3D"none"%20stroke%3D"rgb(0%2C0%2C0)"%20paint-order%3D"fill%20stroke%20markers"%20d%3D"%20M%200%200%20L%2050%20100"%20stroke-opacity%3D"1"%20stroke-linecap%3D"round"%20stroke-miterlimit%3D"10"%20stroke-width%3D"5"%2F><g%20transform%3D"translate(-0.5%2C-0.5)"%2F><%2Fg><%2Fg><%2Fsvg>';
+
+var SVGHTTPURL = window.__karma__ ? "/base/test/unit/svg/test.svg" : "./unit/svg/test.svg";
+
+describe('SVG Manipulating API', function() {
+    it('Manipulate SVG', function(done) {
+        new p5(function(p) {
+            var svg;
+            var svg2;
+            p.preload = function() {
+                svg = p.loadSVG(SVGDataURL);
+                svg2 = p.loadSVG(SVGHTTPURL);
+            };
+            p.setup = function() {
+                svg2.query("path")[0].attribute("stroke-width", 100);
+                var pg = p.createGraphics(400, 400, p.SVG);
+                pg.image(svg, 0, 0, 400, 400);
+                var paths = pg.querySVG('path');
+                try {
+                    assert.equal(paths.length, 2);
+                    paths[0].attribute("stroke-width", 1);
+                    assert.equal(paths[0].attribute("stroke-width"), 1);
+                    pg.image(svg2, 0, 0);
+                    assert.equal(pg.querySVG('path')[2].attribute("stroke-width"),
+                                 100);
+                    done();
+                } catch(e) {
+                    done(e);
+                }
+            };
+        });
+    });
+});
+
+},{"../../lib/p5":9,"assert":1}],23:[function(require,module,exports){
+var test = function() {
+    mocha.setup('bdd');
+    mocha.setup({timeout: 10000, slow: 2000});
+    require('./filter/filter');
+    require('./svg/element');
+    require('./svg/manipulate');
+    require('./rendering/rendering');
+    require('./io/save-frames');
+    require('./io/save');
+    require('./io/save-svg');
+    require('./shape/2d_primitives');
+    require('./shape/attributes');
+    require('./shape/curves');
+    require('./shape/vertex');
+
+    // Note that since recent version of karma, mocha.run will be called automatically
+    // So, we only call mocah.run() if not running inside karma
+    if (!window.__karma__) {
+        mocha.run();
+    }
+};
+
+
+test();
+
+},{"./filter/filter":11,"./io/save":14,"./io/save-frames":12,"./io/save-svg":13,"./rendering/rendering":16,"./shape/2d_primitives":17,"./shape/attributes":18,"./shape/curves":19,"./shape/vertex":20,"./svg/element":21,"./svg/manipulate":22}]},{},[23]);
