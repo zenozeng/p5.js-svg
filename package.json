@@ -28,7 +28,7 @@
     "test": "test"
   },
   "dependencies": {
-    "svgcanvas": "latest"
+    "svgcanvas": "^0.10.0"
   },
   "repository": {
     "type": "git",
