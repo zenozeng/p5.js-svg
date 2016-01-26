@@ -57,10 +57,14 @@ module.exports = function(p5) {
             pg._renderer.svg = svg.cloneNode(true);
             pg.loadImage(url, function(img) {
                 pg.image(img);
-                successCallback(pg);
+                setTimeout(function() {
+                    successCallback(pg);
+                }, 1);
             }, failureCallback);
         } else {
-            successCallback(graphics);
+            setTimeout(function() {
+                successCallback(graphics);
+            }, 1);
         }
     };
 
