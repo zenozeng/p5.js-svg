@@ -3234,26 +3234,26 @@ describe('Rendering', function() {
             });
         });
     });
-    //describe('createGraphics', function() {
-    //    it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
-    //        testRender.describe('createGraphics');
-    //        testRender(function() {
-    //            pg = createGraphics(400, 400, isSVG ? SVG : P2D);
-    //            background(200);
-    //            pg.background(100);
-    //            pg.noStroke();
-    //            pg.ellipse(pg.width/2, pg.height/2, 50, 50);
-    //            loadGraphics(pg, function(pg) {
-    //                image(pg, 50, 50);
-    //                image(pg, 0, 0, 50, 50);
-    //                ellipse(width/2, height/2, 50, 50);
-    //            }, function(err) {
-    //                console.error(err);
-    //            });
-    //            testRender.wait(1000); // wait loadGraphics before run diff
-    //        }, done);
-    //    });
-    //});
+    describe('createGraphics', function() {
+        it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
+            testRender.describe('createGraphics');
+            testRender(function() {
+                pg = createGraphics(400, 400, isSVG ? SVG : P2D);
+                background(200);
+                pg.background(100);
+                pg.noStroke();
+                pg.ellipse(pg.width/2, pg.height/2, 50, 50);
+                loadGraphics(pg, function(pg) {
+                    image(pg, 50, 50);
+                    image(pg, 0, 0, 50, 50);
+                    ellipse(width/2, height/2, 50, 50);
+                }, function(err) {
+                    console.error(err);
+                });
+                testRender.wait(10000); // wait loadGraphics before run diff
+            }, done);
+        });
+    });
     describe('resizeCanvas', function() {
         it('resizeCanvas: should be scaled', function(done) {
             testRender.describe('resizeCanvas: scaled');

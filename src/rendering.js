@@ -52,7 +52,7 @@ module.exports = function(p5) {
         if (graphics._renderer.svg) {
             var svg = graphics._renderer.svg;
             var url = SVGCanvas.prototype.toDataURL.call(graphics._renderer.elt, 'image/svg+xml');
-            var pg = this.createGraphics(graphics.width, graphics.height);
+            var pg = this.createGraphics(graphics.width, graphics.height, constants.SVG);
             // also copy SVG, so we can keep vector SVG when image(pg) in SVG runtime
             pg._renderer.svg = svg.cloneNode(true);
             pg.loadImage(url, function(img) {

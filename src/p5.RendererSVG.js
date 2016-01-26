@@ -136,6 +136,8 @@ module.exports = function(p5) {
     /**
      * Draw an image or SVG to current SVG Graphics
      *
+     * FIXME: sx, sy, sWidth, sHeight
+     *
      * @function image
      * @memberof RendererSVG.prototype
      * @param {p5.Graphics|SVGGraphics|SVGElement|Element} image
@@ -144,7 +146,7 @@ module.exports = function(p5) {
      * @param {Number} width
      * @param {Number} height
      */
-    RendererSVG.prototype.image = function(img, x, y, w, h) {
+    RendererSVG.prototype.image = function(img,  sx, sy, sWidth, sHeight, x, y, w, h) {
         if (!img) {
             throw new Error('Invalid image: ' + img);
         }
