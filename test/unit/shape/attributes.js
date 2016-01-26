@@ -78,6 +78,7 @@ describe('Shape/Attributes', function() {
             ellipse(25, 25, 50, 50);
         },
         rectModeCornerAndCorners: function() {
+            testRender.setMaxDiff(0.12);
             rectMode(CORNER);
             fill(255);
             rect(25, 25, 50, 50);
@@ -87,6 +88,7 @@ describe('Shape/Attributes', function() {
             rect(25, 25, 50, 50);
         },
         rectModeRadiusAndCenter: function() {
+            testRender.setMaxDiff(0.12);
             rectMode(RADIUS);
             fill(255);
             rect(50, 50, 30, 30);

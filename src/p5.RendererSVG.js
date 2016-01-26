@@ -36,8 +36,6 @@ module.exports = function(p5) {
         this.isSVG = true;
         this.svg = svg;
 
-        console.log(this);
-
         return this;
     }
 

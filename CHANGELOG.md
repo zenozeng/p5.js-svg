@@ -1,6 +1,10 @@
-## v0.6.0
+## v0.6.0-alpha.0
 
-p5.svg@0.6.0 (tests with p5.js@0.4.13)
+p5.svg@0.6.0-alpha.0 (tests with p5.js@0.4.21)
+
+## v0.5.2
+
+p5.svg@0.5.2 (tests with p5.js@0.4.13)
 
 - Remove String.prototype.repeat polyfill
 
