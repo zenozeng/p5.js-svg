@@ -36,6 +36,8 @@ module.exports = function(p5) {
         this.isSVG = true;
         this.svg = svg;
 
+        console.log(this);
+
         return this;
     }
 
@@ -73,10 +75,7 @@ module.exports = function(p5) {
             // canvas will be cleared if its size changed
             // so, we do same thing for SVG
             // note that at first this.width and this.height is undefined
-            // so, also check that
-            if (this.width && this.height) {
-                this.drawingContext.clearRect(0, 0, this.width, this.height);
-            }
+            this.drawingContext.__clearCanvas();
         }
         this._withPixelDensity(function() {
             p5.Renderer2D.prototype.resize.call(this, w, h);
