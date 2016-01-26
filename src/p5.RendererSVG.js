@@ -146,7 +146,7 @@ module.exports = function(p5) {
      * @param {Number} width
      * @param {Number} height
      */
-    RendererSVG.prototype.image = function(img,  sx, sy, sWidth, sHeight, x, y, w, h) {
+    RendererSVG.prototype.image = function(img, sx, sy, sWidth, sHeight, x, y, w, h) {
         if (!img) {
             throw new Error('Invalid image: ' + img);
         }
@@ -160,6 +160,11 @@ module.exports = function(p5) {
             elt.setAttribute('height', h);
             elt.setAttribute('x', x);
             elt.setAttribute('y', y);
+            if (sx || sy || sWidth || sHeight) {
+                sWidth /= this._pInst._pixelDensity;
+                sHeight /= this._pInst._pixelDensity;
+                elt.setAttribute('viewBox', [sx, sy, sWidth, sHeight].join(', '));
+            }
             this.appendChild(elt);
         } else {
             p5.Renderer2D.prototype.image.apply(this, arguments);
