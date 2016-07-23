@@ -25,12 +25,10 @@ var route = function() {
         Rainbow.color(code, 'javascript', function(code) {
             elt.innerHTML = code;
         });
-        var patch = [
-            "window.setup = setup;",
-            "window.draw = draw;",
-            "(typeof mouseClicked !== 'undefined') && (window.mouseClicked = mouseClicked);",
-            "(typeof preload !== 'undefined') && (window.preload = preload);"
-        ].join('\n');
+        var functions = ['setup', 'draw', 'mouseClicked', 'mousePressed', 'preload'];
+        functions.forEach((fn) => window[fn] = null); // reset
+        var patch = functions.map((fn) => `window.${fn} = typeof ${fn} === 'undefined' ? null : ${fn};`).join('\n');
+        console.log(patch);
         eval(code + patch);
         new p5(null, document.getElementById("canvas")); // global init p5
     };
@@ -43,4 +41,3 @@ route();
 window.onhashchange = function() {
     window.location.reload();
 };
-
