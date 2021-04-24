@@ -13,6 +13,7 @@
     "ci-test": "./node_modules/.bin/karma start --browsers Firefox --single-run"
   },
   "devDependencies": {
+    "browserify": "^17.0.0",
     "browserify-istanbul": "^3.0.1",
     "coveralls": "^3.1.0",
     "jsdoc": "^3.6.6",
