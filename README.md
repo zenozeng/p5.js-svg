@@ -44,7 +44,7 @@ Make sure you have karma installed.
 
 ## License
 
-Licensed under LGPL.
+Licensed under MIT.
 
 This program incorporates work covered by the following copyright and permission notices:
 
