@@ -1,5 +1,5 @@
 import constants from './constants';
-import * as SVGGCanvas from 'svgcanvas';
+import * as SVGCanvas from 'svgcanvas';
 
 export default function(p5) {
     // patch p5.Graphics for SVG
@@ -94,4 +94,4 @@ export default function(p5) {
         }
         return this._renderer;
     };
-};
+}

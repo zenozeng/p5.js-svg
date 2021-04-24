@@ -290,4 +290,4 @@ export default function(p5) {
     p5.prototype.getDataURL = function() {
         return this._renderer.elt.toDataURL('image/svg+xml');
     };
-};
+}

@@ -19,4 +19,4 @@ import constants from './constants';
     Object.keys(constants).forEach(function(k) {
         p5.prototype[k] = constants[k];
     });
-})(window.p5)
+})(window.p5);

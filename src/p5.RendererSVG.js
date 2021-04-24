@@ -172,4 +172,4 @@ export default function(p5) {
     };
 
     p5.RendererSVG = RendererSVG;
-};
+}

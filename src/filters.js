@@ -60,4 +60,4 @@ export default function(p5) {
             _filter.apply(this, arguments);
         }
     };
-};
+}
