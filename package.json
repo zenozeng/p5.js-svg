@@ -4,8 +4,7 @@
   "main": "./src/index.js",
   "scripts": {
     "lint": "eslint src/",
-    "build": "npm run build-dist & npm run build-test & npm run build-doc & npm run lint",
-    "build:dist": "rollup src/index.js --file dist/p5.svg.js --format iife",
+    "build": "eslint src/ && rollup",
     "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
     "build-doc": "jsdoc src doc/reference.md -c jsdoc.json -d doc/reference/",
     "test": "npm run build & karma start --browsers PhantomJS",
@@ -13,6 +12,7 @@
     "ci-test": "./node_modules/.bin/karma start --browsers Firefox --single-run"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^18.0.0",
     "browserify": "^17.0.0",
     "browserify-istanbul": "^3.0.1",
     "coveralls": "^3.1.0",
