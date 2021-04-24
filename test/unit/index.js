@@ -20,5 +20,4 @@ var test = function() {
     }
 };
 
-
 test();
