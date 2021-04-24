@@ -1,4 +1,4 @@
-module.exports = function(p5) {
+export default function(p5) {
     /**
      * @namespace p5
      */

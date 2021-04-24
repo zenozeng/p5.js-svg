@@ -1,4 +1,4 @@
-module.exports = function(p5) {
+export default function(p5) {
     /**
      * Returns an Array of SVGElements of current SVG Graphics matching given selector
      *

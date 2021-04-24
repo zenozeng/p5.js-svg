@@ -2,4 +2,4 @@ var constants = {
     SVG: 'svg'
 };
 
-module.exports = constants;
+export default constants;
