@@ -1,4 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve'
 
 export default [
     {
@@ -7,6 +8,6 @@ export default [
             file: 'dist/p5.svg.js',
             format: 'iife',
         },
-        plugins: [commonjs()]
+        plugins: [resolve(), commonjs()]
     }
 ]
