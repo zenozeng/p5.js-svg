@@ -5,29 +5,26 @@
   "scripts": {
     "lint": "eslint src/",
     "build": "eslint src/ && rollup --config",
-    "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
     "build-doc": "jsdoc src doc/reference.md -c jsdoc.json -d doc/reference/",
-    "test": "npm run build & karma start --browsers PhantomJS",
+    "test": "npm run build & karma start --browsers ChromeHeadless",
     "coveralls": "cat ./test/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "ci-test": "./node_modules/.bin/karma start --browsers Firefox --single-run"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^18.0.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
-    "browserify-istanbul": "^3.0.1",
     "chai": "^4.3.4",
     "coveralls": "^3.1.0",
     "eslint": "^7.25.0",
     "jsdoc": "^3.6.6",
     "karma": "^6.3.2",
-    "karma-browserify": "^8.0.0",
-    "karma-chrome-launcher": "^0.2.0",
+    "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.3",
     "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.1.1",
-    "karma-phantomjs-launcher": "^1.0.4",
     "mocha": "^8.3.2",
+    "puppeteer": "^9.0.0",
     "rollup": "^2.45.2"
   },
   "directories": {
