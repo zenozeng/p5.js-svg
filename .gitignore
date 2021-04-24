@@ -5,3 +5,5 @@ test/coverage
 .idea
 .tern-port
 .tern-project
+dist
+test/unit/bundle.js
