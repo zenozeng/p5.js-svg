@@ -1,5 +1,5 @@
 import constants from './constants';
-var SVGCanvas = require('svgcanvas');
+import * as SVGGCanvas from 'svgcanvas';
 
 export default function(p5) {
     // patch p5.Graphics for SVG

@@ -1,16 +1,22 @@
-export default function(p5) {
+import RendererSVG from './p5.RendererSVG';
+import Rendering from './rendering';
+import IO from './io';
+import Element from './element';
+import Filters from './filters';
+import constants from './constants';
+
+(function(p5) {
     /**
      * @namespace p5
      */
-    require('./p5.RendererSVG')(p5);
-    require('./rendering')(p5);
-    require('./io')(p5);
-    require('./element')(p5);
-    require('./filters')(p5);
+    RendererSVG(p5);
+    Rendering(p5);
+    IO(p5);
+    Element(p5);
+    Filters(p5);
 
     // attach constants to p5 instance
-    var constants = require('./constants');
     Object.keys(constants).forEach(function(k) {
         p5.prototype[k] = constants[k];
     });
-};
+})(window.p5)

@@ -1,4 +1,4 @@
-var SVGCanvas = require('svgcanvas');
+import * as SVGCanvas from 'svgcanvas';
 
 export default function(p5) {
     /**
