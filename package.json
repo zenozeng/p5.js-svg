@@ -13,16 +13,16 @@
     "ci-test": "./node_modules/.bin/karma start --browsers Firefox --single-run"
   },
   "devDependencies": {
-    "browserify-istanbul": "^0.2.1",
-    "coveralls": "^2.11.4",
-    "karma": "^0.13.10",
-    "karma-browserify": "^4.3.0",
+    "browserify-istanbul": "^3.0.1",
+    "coveralls": "^3.1.0",
+    "karma": "^6.3.2",
+    "karma-browserify": "^8.0.0",
     "karma-chrome-launcher": "^0.2.0",
-    "karma-coverage": "^0.3.1",
+    "karma-coverage": "^2.0.3",
     "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.1.1",
-    "mocha": "^2.3.3"
+    "mocha": "^8.3.2"
   },
   "directories": {
     "test": "test"
