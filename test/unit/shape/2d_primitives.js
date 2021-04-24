@@ -1,4 +1,4 @@
-var testRender = require('../../lib/test-render');
+import {testRender} from '../../lib';
 
 describe('Shape/2d_primitives', function() {
     // the tests code are from p5.js's example reference

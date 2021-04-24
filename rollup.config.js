@@ -9,5 +9,13 @@ export default [
             format: 'iife',
         },
         plugins: [resolve(), commonjs()]
+    },
+    {
+        input: 'test/unit/index.js',
+        output: {
+            file: 'dist/test.js',
+            format: 'iife',
+        },
+        plugins: [resolve(), commonjs()]
     }
 ]

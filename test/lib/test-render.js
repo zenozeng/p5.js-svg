@@ -1,6 +1,4 @@
-var p5 = require('./p5');
-var assert = require('assert');
-var _ = window._; // lodash
+var p5 = window.p5;
 var SVGCanvas = require('svgcanvas');
 
 // init p5 canvas instance and p5-svg instance
@@ -107,15 +105,11 @@ var removeThinLines = function(canvas) {
 };
 
 // render given function
-var render = function(draw) {
-    var fnbody = draw.toString();
-    fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
+var render = function(drawFunction) {
     [p5svg, p5canvas].forEach(function(p) {
         resetCanvas(p);
-        with (p) {
-            p.canvas.getContext('2d').__history = [];
-            eval(fnbody);
-        }
+        p.canvas.getContext('2d').__history = [];
+        drawFunction(p);
     });
 };
 
@@ -304,4 +298,4 @@ testRender.unlock = function() {
     testRender.wait(0);
 };
 
-module.exports = testRender;
+export default testRender;

@@ -1,4 +1,4 @@
-var testRender = require('../../lib/test-render');
+import {testRender} from '../../lib';
 
 describe('Shape/Vertex', function() {
     var tests = {

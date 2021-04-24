@@ -1,6 +1,6 @@
-var assert = require('assert');
+import {assert, p5} from '../../lib';
+
 var testDownload = require('./test-download.js');
-var p5 = require('../../lib/p5');
 
 describe('IO/saveSVG', function() {
 

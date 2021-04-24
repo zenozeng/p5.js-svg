@@ -1,6 +1,4 @@
-var p5 = require('../../lib/p5');
-var testRender = require('../../lib/test-render');
-var assert = require('assert');
+import {assert, p5, testRender} from '../../lib';
 
 describe('Rendering', function() {
     this.timeout(0);
