@@ -7,3 +7,4 @@ test/coverage
 .tern-project
 dist
 test/unit/bundle.js
+doc/reference

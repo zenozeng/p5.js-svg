@@ -8,7 +8,7 @@
     "build-dist": "./build/build.sh",
     "build-test": "browserify test/unit/index.js --outfile test/unit/bundle.js",
     "build-doc": "jsdoc src doc/reference.md -c jsdoc.json -d doc/reference/",
-    "test": "npm run build & karma start",
+    "test": "npm run build & karma start --browsers PhantomJS",
     "coveralls": "cat ./test/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "ci-test": "./node_modules/.bin/karma start --browsers Firefox --single-run"
   },
@@ -25,6 +25,7 @@
     "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.1.1",
+    "karma-phantomjs-launcher": "^1.0.4",
     "mocha": "^8.3.2"
   },
   "directories": {

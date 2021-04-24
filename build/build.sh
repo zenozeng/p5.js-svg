@@ -28,6 +28,7 @@ content=$(browserify build/entry.js)
 
 footer="});"
 
+mkdir -p dist
 cat > dist/p5.svg.js <<EOF
 $header
 $content
