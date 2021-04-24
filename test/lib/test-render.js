@@ -1,5 +1,5 @@
 var p5 = window.p5;
-var SVGCanvas = require('svgcanvas');
+import SVGCanvas from 'svgcanvas';
 
 // init p5 canvas instance and p5-svg instance
 var canvasGraphics, svgGraphics, p5svg, p5canvas;

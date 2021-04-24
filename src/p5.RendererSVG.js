@@ -1,4 +1,4 @@
-import * as SVGCanvas from 'svgcanvas';
+import SVGCanvas from 'svgcanvas';
 
 export default function(p5) {
     /**

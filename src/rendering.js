@@ -1,5 +1,5 @@
 import constants from './constants';
-import * as SVGCanvas from 'svgcanvas';
+import SVGCanvas from 'svgcanvas';
 
 export default function(p5) {
     // patch p5.Graphics for SVG
