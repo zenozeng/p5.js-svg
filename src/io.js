@@ -1,4 +1,4 @@
-module.exports = function(p5) {
+export default function(p5) {
     /**
      * Convert SVG Element to jpeg / png data url
      *
@@ -290,4 +290,4 @@ module.exports = function(p5) {
     p5.prototype.getDataURL = function() {
         return this._renderer.elt.toDataURL('image/svg+xml');
     };
-};
+}

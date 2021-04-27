@@ -1,7 +1,5 @@
-var p5 = require('./p5');
-var assert = require('assert');
-var _ = window._; // lodash
-var SVGCanvas = require('svgcanvas');
+var p5 = window.p5;
+import SVGCanvas from 'svgcanvas';
 
 // init p5 canvas instance and p5-svg instance
 var canvasGraphics, svgGraphics, p5svg, p5canvas;
@@ -107,15 +105,11 @@ var removeThinLines = function(canvas) {
 };
 
 // render given function
-var render = function(draw) {
-    var fnbody = draw.toString();
-    fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
+var render = function(drawFunction) {
     [p5svg, p5canvas].forEach(function(p) {
         resetCanvas(p);
-        with (p) {
-            p.canvas.getContext('2d').__history = [];
-            eval(fnbody);
-        }
+        p.canvas.getContext('2d').__history = [];
+        drawFunction(p);
     });
 };
 
@@ -138,7 +132,7 @@ var prepareDom = function(draw) {
                                                  "image/svg+xml");
     var _svg = p5svg._renderer.svg.cloneNode(true);
     _svg.id = null;
-    _svg.className = 'svg';
+    _svg.setAttribute('class', 'svg');
     $container.append(_svg);
 
     // the canvas result
@@ -304,4 +298,4 @@ testRender.unlock = function() {
     testRender.wait(0);
 };
 
-module.exports = testRender;
+export default testRender;

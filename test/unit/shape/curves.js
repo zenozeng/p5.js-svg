@@ -1,99 +1,98 @@
-var testRender = require('../../lib/test-render');
+import {testRender} from '../../lib';
 
 describe('Shape/Curves', function() {
 
     var tests = {
-        bezier: function() {
-            noFill();
-            stroke(255, 102, 0);
-            stroke(0, 0, 0);
-            bezier(85, 20, 10, 10, 90, 90, 15, 80);
+        bezier: function(p) {
+            p.noFill();
+            p.stroke(255, 102, 0);
+            p.stroke(0, 0, 0);
+            p.bezier(85, 20, 10, 10, 90, 90, 15, 80);
         },
-        bezierPoint: function() {
-            noFill();
-            bezier(85, 20, 10, 10, 90, 90, 15, 80);
-            fill(255);
-            stroke(100);
-            steps = 10;
+        bezierPoint: function(p) {
+            p.noFill();
+            p.bezier(85, 20, 10, 10, 90, 90, 15, 80);
+            p.fill(255);
+            p.stroke(100);
+            let steps = 10;
             for (var i = 0; i <= steps; i++) {
                 var t = i / steps;
-                x = bezierPoint(85, 10, 90, 15, t);
-                y = bezierPoint(20, 10, 90, 80, t);
-                ellipse(x, y, 5, 5);
+                let x = p.bezierPoint(85, 10, 90, 15, t);
+                let y = p.bezierPoint(20, 10, 90, 80, t);
+                p.ellipse(x, y, 5, 5);
             }
         },
-        bezierTangent: function() {
-            noFill();
-            bezier(85, 20, 10, 10, 90, 90, 15, 80);
-            steps = 6;
-            fill(255);
-            strokeWeight(10);
-            for (i = 0; i <= steps; i++) {
-                t = i / steps;
-                x = bezierPoint(85, 10, 90, 15, t);
-                y = bezierPoint(20, 10, 90, 80, t);
-                tx = bezierTangent(85, 10, 90, 15, t);
-                ty = bezierTangent(20, 10, 90, 80, t);
-                a = atan2(ty, tx);
-                a += PI;
-                stroke(255, 102, 0);
-                line(x, y, cos(a)*30 + x, sin(a)*30 + y);
-                stroke(0);
-                // ellipse(x, y, 5, 5);
+        bezierTangent: function(p) {
+            p.noFill();
+            p.bezier(85, 20, 10, 10, 90, 90, 15, 80);
+            let steps = 6;
+            p.fill(255);
+            p.strokeWeight(10);
+            for (let i = 0; i <= steps; i++) {
+                let t = i / steps;
+                let x = p.bezierPoint(85, 10, 90, 15, t);
+                let y = p.bezierPoint(20, 10, 90, 80, t);
+                let tx = p.bezierTangent(85, 10, 90, 15, t);
+                let ty = p.bezierTangent(20, 10, 90, 80, t);
+                let a = p.atan2(ty, tx);
+                a += p.PI;
+                p.stroke(255, 102, 0);
+                p.line(x, y, p.cos(a)*30 + x, p.sin(a)*30 + y);
+                p.stroke(0);
             }
         },
-        curve: function() {
-            noFill();
-            stroke(255, 102, 0);
-            curve(5, 26, 5, 26, 73, 24, 73, 61);
-            stroke(0);
-            curve(5, 26, 73, 24, 73, 61, 15, 65);
-            stroke(255, 102, 0);
-            curve(73, 24, 73, 61, 15, 65, 15, 65);
+        curve: function(p) {
+            p.noFill();
+            p.stroke(255, 102, 0);
+            p.curve(5, 26, 5, 26, 73, 24, 73, 61);
+            p.stroke(0);
+            p.curve(5, 26, 73, 24, 73, 61, 15, 65);
+            p.stroke(255, 102, 0);
+            p.curve(73, 24, 73, 61, 15, 65, 15, 65);
         },
-        curvePoint: function() {
-            noFill();
-            curve(5, 26, 5, 26, 73, 24, 73, 61);
-            curve(5, 26, 73, 24, 73, 61, 15, 65);
-            fill(255);
-            ellipseMode(CENTER);
-            steps = 6;
-            for (i = 0; i <= steps; i++) {
-                t = i / steps;
-                x = curvePoint(5, 5, 73, 73, t);
-                y = curvePoint(26, 26, 24, 61, t);
-                ellipse(x, y, 5, 5);
-                x = curvePoint(5, 73, 73, 15, t);
-                y = curvePoint(26, 24, 61, 65, t);
-                ellipse(x, y, 5, 5);
+        curvePoint: function(p) {
+            p.noFill();
+            p.curve(5, 26, 5, 26, 73, 24, 73, 61);
+            p.curve(5, 26, 73, 24, 73, 61, 15, 65);
+            p.fill(255);
+            p.ellipseMode(p.CENTER);
+            let steps = 6;
+            for (let i = 0; i <= steps; i++) {
+                let t = i / steps;
+                let x = p.curvePoint(5, 5, 73, 73, t);
+                let y = p.curvePoint(26, 26, 24, 61, t);
+                p.ellipse(x, y, 5, 5);
+                x = p.curvePoint(5, 73, 73, 15, t);
+                y = p.curvePoint(26, 24, 61, 65, t);
+                p.ellipse(x, y, 5, 5);
             }
         },
-        curveTangent: function() {
-            noFill();
-            curve(5, 26, 73, 24, 73, 61, 15, 65);
-            steps = 6;
-            for (i = 0; i <= steps; i++) {
-                t = i / steps;
-                x = curvePoint(5, 73, 73, 15, t);
-                y = curvePoint(26, 24, 61, 65, t);
+        curveTangent: function(p) {
+            p.noFill();
+            p.curve(5, 26, 73, 24, 73, 61, 15, 65);
+            let steps = 6;
+            for (let i = 0; i <= steps; i++) {
+                let t = i / steps;
+                let x = p.curvePoint(5, 73, 73, 15, t);
+                let y = p.curvePoint(26, 24, 61, 65, t);
                 //ellipse(x, y, 5, 5);
-                tx = curveTangent(5, 73, 73, 15, t);
-                ty = curveTangent(26, 24, 61, 65, t);
-                a = atan2(ty, tx);
-                a -= PI/2.0;
-                line(x, y, cos(a)*8 + x, sin(a)*8 + y);
+                let tx = p.curveTangent(5, 73, 73, 15, t);
+                let ty = p.curveTangent(26, 24, 61, 65, t);
+                let a = p.atan2(ty, tx);
+                a -= p.PI/2.0;
+                p.line(x, y, p.cos(a)*8 + x, p.sin(a)*8 + y);
             }
         },
-        curveTightness: function() {
-            curveTightness(10);
-            beginShape();
-            curveVertex(10, 26);
-            curveVertex(10, 26);
-            curveVertex(83, 24);
-            curveVertex(83, 61);
-            curveVertex(25, 65);
-            curveVertex(25, 65);
-            endShape();
+        curveTightness: function(p) {
+            p.curveTightness(10);
+            p.beginShape();
+            p.curveVertex(10, 26);
+            p.curveVertex(10, 26);
+            p.curveVertex(83, 24);
+            p.curveVertex(83, 61);
+            p.curveVertex(25, 65);
+            p.curveVertex(25, 65);
+            p.endShape();
         }
     };
 

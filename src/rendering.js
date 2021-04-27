@@ -1,7 +1,7 @@
-var constants = require('./constants');
-var SVGCanvas = require('svgcanvas');
+import constants from './constants';
+import SVGCanvas from 'svgcanvas';
 
-module.exports = function(p5) {
+export default function(p5) {
     // patch p5.Graphics for SVG
     var _graphics = p5.Graphics;
     p5.Graphics = function(w, h, renderer, pInst) {
@@ -94,4 +94,4 @@ module.exports = function(p5) {
         }
         return this._renderer;
     };
-};
+}

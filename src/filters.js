@@ -1,9 +1,11 @@
+import P5SVGFilters from './p5.SVGFilters';
+
 // SVG Filter
 
-module.exports = function(p5) {
+export default function(p5) {
     var _filter = p5.prototype.filter;
 
-    var SVGFilters = require('./p5.SVGFilters')(p5);
+    var SVGFilters = P5SVGFilters(p5);
 
     /**
      * Register a custom SVG Filter
@@ -58,4 +60,4 @@ module.exports = function(p5) {
             _filter.apply(this, arguments);
         }
     };
-};
+}

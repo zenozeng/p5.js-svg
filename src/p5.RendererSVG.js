@@ -1,6 +1,6 @@
-var SVGCanvas = require('svgcanvas');
+import SVGCanvas from 'svgcanvas';
 
-module.exports = function(p5) {
+export default function(p5) {
     /**
      * @namespace RendererSVG
      * @constructor
@@ -172,4 +172,4 @@ module.exports = function(p5) {
     };
 
     p5.RendererSVG = RendererSVG;
-};
+}

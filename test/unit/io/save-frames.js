@@ -1,5 +1,4 @@
-var assert = require('assert');
-var p5 = require('../../lib/p5');
+import {assert, p5} from '../../lib';
 
 describe('IO/saveFrames', function() {
     it('should capture canvas frames', function(done) {

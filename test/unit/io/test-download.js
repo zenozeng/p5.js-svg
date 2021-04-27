@@ -1,5 +1,4 @@
-var assert = require('assert');
-var p5 = require('../../lib/p5');
+import {assert, p5} from '../../lib';
 
 var testDownload = function(filename, ext, fn, done, useCanvas) {
     new p5(function(p) {
@@ -27,4 +26,4 @@ var testDownload = function(filename, ext, fn, done, useCanvas) {
     });
 };
 
-module.exports = testDownload;
+export {testDownload};

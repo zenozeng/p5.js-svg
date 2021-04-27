@@ -1,4 +1,4 @@
-var testRender = require('../../lib/test-render');
+import {testRender} from '../../lib';
 
 window.TESTIMG = window.__karma__ ? "/base/test/unit/filter/light_by_zenozeng.jpg" : "./unit/filter/light_by_zenozeng.jpg";
 
@@ -8,76 +8,74 @@ describe('Filters', function() {
         // in SVG Renderer, I use feGaussianBlur,
         // but Canvas Renderer uses a pixels based blur (port of processing's blur),
         // so the results may not be exactly same.
-        blur: function() {
+        blur: function(p) {
             testRender.setMaxDiff(1); // ignore diff, see known issue
             testRender.setMaxPixelDiff(2);
-            background(255);
-            stroke(255, 0, 0);
-            strokeWeight(10);
-            line(0, 0, 100, 100);
-            line(0, 100, 100, 0);
-            filter(BLUR, 5);
+            p.background(255);
+            p.stroke(255, 0, 0);
+            p.strokeWeight(10);
+            p.line(0, 0, 100, 100);
+            p.line(0, 100, 100, 0);
+            p.filter(p.BLUR, 5);
         },
-        gray: function() {
+        gray: function(p) {
             testRender.setMaxPixelDiff(1);
-            background(200, 100, 50);
-            filter(GRAY);
+            p.background(200, 100, 50);
+            p.filter(p.GRAY);
         },
-        invert: function() {
+        invert: function(p) {
             testRender.setMaxPixelDiff(1);
-            background(255, 0, 0);
-            filter(INVERT);
-            ellipse(50, 50, 50, 50);
+            p.background(255, 0, 0);
+            p.filter(p.INVERT);
+            p.ellipse(50, 50, 50, 50);
         },
-        threshold: function() {
-            background(255, 0, 0);
-            stroke(255);
-            strokeWeight(10);
-            line(0, 0, 100, 100);
-            filter(THRESHOLD, 0.5);
+        threshold: function(p) {
+            p.background(255, 0, 0);
+            p.stroke(255);
+            p.strokeWeight(10);
+            p.line(0, 0, 100, 100);
+            p.filter(p.THRESHOLD, 0.5);
         },
-        opaque: function() {
+        opaque: function(p) {
             testRender.setMaxPixelDiff(1);
-            background(255, 0, 0, 127);
-            filter(OPAQUE); // Sets the alpha channel to 255
+            p.background(255, 0, 0, 127);
+            p.filter(p.OPAQUE); // Sets the alpha channel to 255
         },
-        posterize: function() {
+        posterize: function(p) {
             testRender.lock();
             testRender.setMaxDiff(1); // ignore diff, see https://github.com/zenozeng/p5.js-svg/issues/124
-            loadImage(TESTIMG, function(img) {
-                image(img, 0, 0);
-                filter(POSTERIZE, 2);
-                if (_isSafari()) {
-                }
+            p.loadImage(TESTIMG, function(img) {
+                p.image(img, 0, 0);
+                p.filter(p.POSTERIZE, 2);
                 testRender.unlock();
             });
         },
-        erode: function() {
+        erode: function(p) {
             testRender.lock();
             testRender.setMaxDiff(1); // ignore diff, see known issue
-            loadImage(TESTIMG, function(img) {
-                image(img, 0, 0);
-                filter(ERODE);
+            p.loadImage(TESTIMG, function(img) {
+                p.image(img, 0, 0);
+                p.filter(p.ERODE);
                 testRender.unlock();
             });
         },
-        dilate: function() {
+        dilate: function(p) {
             testRender.lock();
             testRender.setMaxDiff(1); // ignore diff, see known issue
-            loadImage(TESTIMG, function(img) {
-                image(img, 0, 0);
-                filter(DILATE);
+            p.loadImage(TESTIMG, function(img) {
+                p.image(img, 0, 0);
+                p.filter(p.DILATE);
                 testRender.unlock();
             });
         },
-        custom: function() {
+        custom: function(p) {
             testRender.setMaxPixelDiff(1);
-            background(200, 100, 50);
-            registerSVGFilter('mygray', p5.SVGFilters.gray);
-            if (isSVG) {
-                filter('mygray');
+            p.background(200, 100, 50);
+            p.registerSVGFilter('mygray', p5.SVGFilters.gray);
+            if (p.isSVG) {
+                p.filter('mygray');
             } else {
-                filter(GRAY);
+                p.filter(p.GRAY);
             }
         }
     };

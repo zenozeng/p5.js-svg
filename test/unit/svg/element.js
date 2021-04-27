@@ -1,5 +1,4 @@
-var p5 = require('../../lib/p5');
-var assert = require('assert');
+import {assert, p5} from '../../lib';
 
 describe('SVG Element API', function() {
     it('querySVG', function() {
