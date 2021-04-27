@@ -9,14 +9,17 @@ module.exports = function(config) {
         frameworks: ['mocha'],
         files: [
             // note: lower index will override greater index config
+            {pattern: 'dist/*.js.map', included: false},
+            {pattern: 'src/**/*.js', included: false},
+            {pattern: 'test/unit/**/*', included: false},
             'test/bower_components/p5.js/p5.js',
             'test/bower_components/jquery/dist/jquery.js',
-            'dist/p5.svg.js',
-            {pattern: 'src/**/*.js', included: false},
-            {pattern: 'test/unit/**/*.svg', included: false},
-            {pattern: 'test/unit/**/*.jpg', included: false},
+            'dist/p5.svg.js',            
             'dist/test.js'
         ],
+        preprocessors: {
+            '**/*.js': ['sourcemap']
+        },
         reporters: ['progress', 'coverage', 'mocha'],
         coverageReporter: {
             type: 'lcovonly',
