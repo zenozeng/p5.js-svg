@@ -26,4 +26,4 @@ var testDownload = function(filename, ext, fn, done, useCanvas) {
     });
 };
 
-module.exports = testDownload;
+export {testDownload};

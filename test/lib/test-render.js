@@ -132,7 +132,7 @@ var prepareDom = function(draw) {
                                                  "image/svg+xml");
     var _svg = p5svg._renderer.svg.cloneNode(true);
     _svg.id = null;
-    _svg.className = 'svg';
+    _svg.setAttribute('class', 'svg');
     $container.append(_svg);
 
     // the canvas result

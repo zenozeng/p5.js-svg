@@ -16,17 +16,17 @@ describe('Filters', function() {
             p.strokeWeight(10);
             p.line(0, 0, 100, 100);
             p.line(0, 100, 100, 0);
-            p.filter(BLUR, 5);
+            p.filter(p.BLUR, 5);
         },
         gray: function(p) {
             testRender.setMaxPixelDiff(1);
             p.background(200, 100, 50);
-            p.filter(GRAY);
+            p.filter(p.GRAY);
         },
         invert: function(p) {
             testRender.setMaxPixelDiff(1);
             p.background(255, 0, 0);
-            p.filter(INVERT);
+            p.filter(p.INVERT);
             p.ellipse(50, 50, 50, 50);
         },
         threshold: function(p) {
@@ -34,21 +34,19 @@ describe('Filters', function() {
             p.stroke(255);
             p.strokeWeight(10);
             p.line(0, 0, 100, 100);
-            p.filter(THRESHOLD, 0.5);
+            p.filter(p.THRESHOLD, 0.5);
         },
         opaque: function(p) {
             testRender.setMaxPixelDiff(1);
             p.background(255, 0, 0, 127);
-            p.filter(OPAQUE); // Sets the alpha channel to 255
+            p.filter(p.OPAQUE); // Sets the alpha channel to 255
         },
         posterize: function(p) {
             testRender.lock();
             testRender.setMaxDiff(1); // ignore diff, see https://github.com/zenozeng/p5.js-svg/issues/124
             p.loadImage(TESTIMG, function(img) {
                 p.image(img, 0, 0);
-                p.filter(POSTERIZE, 2);
-                if (_isSafari()) {
-                }
+                p.filter(p.POSTERIZE, 2);
                 testRender.unlock();
             });
         },
@@ -57,7 +55,7 @@ describe('Filters', function() {
             testRender.setMaxDiff(1); // ignore diff, see known issue
             p.loadImage(TESTIMG, function(img) {
                 p.image(img, 0, 0);
-                p.filter(ERODE);
+                p.filter(p.ERODE);
                 testRender.unlock();
             });
         },
@@ -66,18 +64,18 @@ describe('Filters', function() {
             testRender.setMaxDiff(1); // ignore diff, see known issue
             p.loadImage(TESTIMG, function(img) {
                 p.image(img, 0, 0);
-                p.filter(DILATE);
+                p.filter(p.DILATE);
                 testRender.unlock();
             });
         },
         custom: function(p) {
             testRender.setMaxPixelDiff(1);
             p.background(200, 100, 50);
-            registerSVGFilter('mygray', p5.SVGFilters.gray);
-            if (isSVG) {
+            p.registerSVGFilter('mygray', p5.SVGFilters.gray);
+            if (p.isSVG) {
                 p.filter('mygray');
             } else {
-                p.filter(GRAY);
+                p.filter(p.GRAY);
             }
         }
     };

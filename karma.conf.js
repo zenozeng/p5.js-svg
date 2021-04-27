@@ -14,7 +14,7 @@ module.exports = function(config) {
             {pattern: 'test/unit/**/*', included: false},
             'test/bower_components/p5.js/p5.js',
             'test/bower_components/jquery/dist/jquery.js',
-            'dist/p5.svg.js',            
+            'dist/p5.svg.js',
             'dist/test.js'
         ],
         preprocessors: {

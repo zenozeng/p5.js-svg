@@ -2,50 +2,50 @@ import {testRender} from '../../lib';
 
 describe('Shape/Vertex', function() {
     var tests = {
-        contour: function() {
-            translate(50, 50);
-            stroke(255, 0, 0);
-            beginShape();
-            vertex(-40, -40);
-            vertex(40, -40);
-            vertex(40, 40);
-            vertex(-40, 40);
-            beginContour();
-            vertex(-20, -20);
-            vertex(-20, 20);
-            vertex(20, 20);
-            vertex(20, -20);
-            endContour();
-            endShape(CLOSE);
-            translate(-50, -50);
+        contour: function(p) {
+            p.translate(50, 50);
+            p.stroke(255, 0, 0);
+            p.beginShape();
+            p.vertex(-40, -40);
+            p.vertex(40, -40);
+            p.vertex(40, 40);
+            p.vertex(-40, 40);
+            p.beginContour();
+            p.vertex(-20, -20);
+            p.vertex(-20, 20);
+            p.vertex(20, 20);
+            p.vertex(20, -20);
+            p.endContour();
+            p.endShape(p.CLOSE);
+            p.translate(-50, -50);
         },
-        bezierVertex: function() {
-            beginShape();
-            vertex(30, 20);
-            bezierVertex(80, 0, 80, 75, 30, 75);
-            bezierVertex(50, 80, 60, 25, 30, 20);
-            endShape();
+        bezierVertex: function(p) {
+            p.beginShape();
+            p.vertex(30, 20);
+            p.bezierVertex(80, 0, 80, 75, 30, 75);
+            p.bezierVertex(50, 80, 60, 25, 30, 20);
+            p.endShape();
         },
-        curveVertex: function() {
-            noFill();
-            beginShape();
-            curveVertex(84,  91);
-            curveVertex(84,  91);
-            curveVertex(68,  19);
-            curveVertex(21,  17);
-            curveVertex(32, 100);
-            curveVertex(32, 100);
-            endShape();
+        curveVertex: function(p) {
+            p.noFill();
+            p.beginShape();
+            p.curveVertex(84,  91);
+            p.curveVertex(84,  91);
+            p.curveVertex(68,  19);
+            p.curveVertex(21,  17);
+            p.curveVertex(32, 100);
+            p.curveVertex(32, 100);
+            p.endShape();
         },
-        quadraticVertex: function() {
-            noFill();
-            strokeWeight(4);
-            beginShape();
-            vertex(20, 20);
-            quadraticVertex(80, 20, 50, 50);
-            quadraticVertex(20, 80, 80, 80);
-            vertex(80, 60);
-            endShape();
+        quadraticVertex: function(p) {
+            p.noFill();
+            p.strokeWeight(4);
+            p.beginShape();
+            p.vertex(20, 20);
+            p.quadraticVertex(80, 20, 50, 50);
+            p.quadraticVertex(20, 80, 80, 80);
+            p.vertex(80, 60);
+            p.endShape();
         }
     };
 

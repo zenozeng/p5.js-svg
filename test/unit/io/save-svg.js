@@ -1,6 +1,5 @@
 import {assert, p5} from '../../lib';
-
-var testDownload = require('./test-download.js');
+import {testDownload} from './test-download';
 
 describe('IO/saveSVG', function() {
 

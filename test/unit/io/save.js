@@ -1,6 +1,5 @@
-import {assert, p5} from '../../lib';
-
-var testDownload = require('./test-download.js');
+import {p5} from '../../lib';
+import {testDownload} from './test-download';
 
 describe('IO/save', function() {
     this.timeout(1000 * 5);
