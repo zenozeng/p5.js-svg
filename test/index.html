@@ -1,16 +1,8 @@
 <!doctype html>
 <head>
     <meta charset="UTF-8">
-
-    <script src="bower_components/p5.js/p5.js"></script>
-    <script src="../dist/p5.svg.js"></script>
-
-    <script src="bower_components/lodash/lodash.js"></script>
-    <script src="bower_components/mocha/mocha.js"></script>
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/mocha/mocha.css">
     <link type="text/css" rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
-    <link type="text/css" rel="stylesheet" href="bower_components/mocha/mocha.css">
     <link type="text/css" rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -24,6 +16,15 @@
         <div>Canvas</div>
     </div>
 
-    <script src="unit/bundle.js"></script>
+    <script src="bower_components/p5.js/p5.js"></script>
+    <script src="../dist/p5.svg.js"></script>
+    <script src="https://unpkg.com/chai/chai.js"></script>
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
+    <script>
+        mocha.setup('bdd');
+        mocha.setup({timeout: 10000, slow: 2000});
+    </script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="../dist/test.js"></script>
 </body>
 
