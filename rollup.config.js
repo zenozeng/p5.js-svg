@@ -7,6 +7,7 @@ export default [
         output: {
             file: 'dist/p5.svg.js',
             format: 'iife',
+            sourcemap: true            
         },
         plugins: [resolve(), commonjs()]
     },
@@ -15,6 +16,7 @@ export default [
         output: {
             file: 'dist/test.js',
             format: 'iife',
+            sourcemap: true
         },
         plugins: [resolve(), commonjs()]
     }
