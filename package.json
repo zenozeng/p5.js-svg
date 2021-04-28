@@ -32,7 +32,7 @@
     "test": "test"
   },
   "dependencies": {
-    "svgcanvas": "^0.10.0"
+    "svgcanvas": "^0.11.0"
   },
   "repository": {
     "type": "git",
