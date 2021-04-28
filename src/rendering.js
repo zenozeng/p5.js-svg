@@ -86,7 +86,7 @@ export default function(p5) {
     p5.prototype.createCanvas = function(w, h, renderer) {
         var graphics = _createCanvas.apply(this, arguments);
         if (renderer === constants.SVG) {
-            var c = graphics.elt;
+            var c = graphics.canvas;
             this._setProperty('_renderer', new p5.RendererSVG(c, this, true));
             this._isdefaultGraphics = true;
             this._renderer.resize(w, h);

@@ -9,16 +9,16 @@ p5svg = new p5(function(p) {
         p.noLoop();
         p.isSVG = true;
     };
-}, true);
+});
 p5canvas = new p5(function(p) {
     p.setup = function() {
         canvasGraphics = p.createCanvas(100, 100);
         p.noLoop();
         p.isSVG = false;
     };
-}, true);
+});
 
-var resetCanvas = function(p) {
+const resetCanvas = function(p) {
     p.clear();
     p.strokeWeight(6); // for using XOR with thin line removed (using 8-connected neighborhood < 5) for diff
     p.fill(200);
