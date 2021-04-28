@@ -26,14 +26,13 @@
     "karma-sourcemap-loader": "^0.3.8",
     "mocha": "^8.3.2",
     "puppeteer": "^9.0.0",
-    "rollup": "^2.45.2"
+    "rollup": "^2.45.2",
+    "svgcanvas": "^0.12.0"
   },
   "directories": {
     "test": "test"
   },
-  "dependencies": {
-    "svgcanvas": "^0.11.0"
-  },
+  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/zenozeng/p5.js-svg.git"

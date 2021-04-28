@@ -36,7 +36,6 @@ export default function(p5) {
             // move nodes to a new <g>
             var nodes = svg.children || svg.childNodes; // childNodes is for IE
             var g = p5.SVGElement.create('g');
-            this._renderer._setGCFlag(g.elt);
             svg.appendChild(g.elt);
             // convert nodeList to array and use forEach
             // instead of using for loop,
@@ -53,7 +52,6 @@ export default function(p5) {
 
             // create new <g> so that new element won't be influenced by the filter
             g = p5.SVGElement.create('g');
-            this._renderer._setGCFlag(g.elt);
             this._renderer.svg.appendChild(g.elt);
             this._renderer.drawingContext.__currentElement = g.elt;
         } else {

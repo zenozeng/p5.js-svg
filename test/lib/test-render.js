@@ -6,6 +6,7 @@ var canvasGraphics, svgGraphics, p5svg, p5canvas;
 p5svg = new p5(function(p) {
     p.setup = function() {
         svgGraphics = p.createCanvas(100, 100, p.SVG);
+        // p.drawingContext.__gc = function() {} // disable gc
         p.noLoop();
         p.isSVG = true;
     };
@@ -20,6 +21,7 @@ p5canvas = new p5(function(p) {
 
 const resetCanvas = function(p) {
     p.clear();
+
     p.strokeWeight(6); // for using XOR with thin line removed (using 8-connected neighborhood < 5) for diff
     p.fill(200);
     p.stroke(0);
