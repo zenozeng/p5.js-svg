@@ -1,16 +1,21 @@
 var p5 = window.p5;
 import {Element as SVGCanvasElement} from 'svgcanvas';
 
+const config = {
+    pixelDensity: 3
+}
+
 // init p5 canvas instance and p5-svg instance
 var canvasGraphics, svgGraphics, p5svg, p5canvas;
+
 p5svg = new p5(function(p) {
     p.setup = function() {
         svgGraphics = p.createCanvas(100, 100, p.SVG);
-        // p.drawingContext.__gc = function() {} // disable gc
         p.noLoop();
         p.isSVG = true;
     };
 });
+
 p5canvas = new p5(function(p) {
     p.setup = function() {
         canvasGraphics = p.createCanvas(100, 100);
@@ -28,7 +33,7 @@ const resetCanvas = function(p) {
     p.ellipseMode(p.CENTER);
     p.rectMode(p.CORNER);
     p.smooth();
-    p.pixelDensity(3); // for 200% and 150%
+    p.pixelDensity(config.pixelDensity); // for 200% and 150%
 };
 
 // count non transparent pixels
@@ -110,7 +115,6 @@ var removeThinLines = function(canvas) {
 var render = function(drawFunction) {
     [p5svg, p5canvas].forEach(function(p) {
         resetCanvas(p);
-        p.canvas.getContext('2d').__history = [];
         drawFunction(p);
     });
 };
@@ -122,7 +126,7 @@ var prepareDom = function(draw) {
     var status = {};
 
     // draw header
-    var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas<br>Converted to PNG</div><div>Diff Bitmap</div><div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div><div></div><div class="function">p5.js</div></div>';
+    var th = '<div class="th"><div>Rendered in SVG</div><div>Rendered in Canvas</div><div>Diff Bitmap</div><div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div><div></div><div class="function">p5.js</div></div>';
     $container.append(th);
 
     // the svg result
@@ -137,24 +141,27 @@ var prepareDom = function(draw) {
     _svg.setAttribute('class', 'svg');
     $container.append(_svg);
 
+    // width & height
+    const width = 100 * config.pixelDensity;
+    const height = 100 * config.pixelDensity;
+
     // the canvas result
-    var canvas = new Image();
-    canvas.onload = function() {
-        status.canvas = true;
-    };
-    canvas.src = p5canvas._curElement.elt.toDataURL('image/png');
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext('2d').drawImage(p5canvas._curElement.elt, 0, 0, width, height);
     $container.append(canvas);
 
     // diff canvas
     var diffCanvas = document.createElement('canvas');
-    diffCanvas.width = 100 * window.devicePixelRatio;
-    diffCanvas.height = 100 * window.devicePixelRatio;;
+    diffCanvas.width = width;
+    diffCanvas.height = height;
     $container.append(diffCanvas);
 
     // diff canvas2 for removing thin lines
     var diffCanvas2 = document.createElement('canvas');
-    diffCanvas2.width = 100 * window.devicePixelRatio;;
-    diffCanvas2.height = 100 * window.devicePixelRatio;;
+    diffCanvas2.width = width;
+    diffCanvas2.height = height;
     $container.append(diffCanvas2);
 
     // match?
@@ -170,10 +177,6 @@ var prepareDom = function(draw) {
     fnbody = fnbody.replace(indent, '');
     $container.append('<pre class="function">' + fnbody + '</pre>');
 
-    // canvas API call history
-    // var history = p5svg.canvas.getContext('2d').__history;
-    // $container.append('<div class="canvas-fn">' + history.join('<br>') + '</div>');
-
     $container.append('<hr>');
 
     return {
@@ -183,7 +186,7 @@ var prepareDom = function(draw) {
         diffCanvas2: diffCanvas2,
         $match: $match,
         isReady: function() {
-            return status.svg && status.canvas;
+            return status.svg;
         }
     };
 };
@@ -208,8 +211,8 @@ var testRender = function(draw, callback) {
         }
 
         var ctx = el.diffCanvas.getContext('2d');
-        var w = 100 * window.devicePixelRatio;
-        var h = 100 * window.devicePixelRatio;
+        var w = 100 * config.pixelDensity;
+        var h = 100 * config.pixelDensity;
 
         // svg render result
         ctx.clearRect(0, 0, w, h);
