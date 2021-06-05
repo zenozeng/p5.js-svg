@@ -55,7 +55,7 @@ export default function(p5) {
             // also copy SVG, so we can keep vector SVG when image(pg) in SVG runtime
             pg._renderer.svg = svg.cloneNode(true);
             pg.loadImage(url, function(img) {
-                pg.image(img);
+                pg.image(img, 0, 0);
                 setTimeout(function() {
                     successCallback(pg);
                 }, 1);
