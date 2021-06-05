@@ -4,9 +4,9 @@ export default function(p5) {
     // patch p5.Graphics for SVG
     var _graphics = p5.Graphics;
     p5.Graphics = function(w, h, renderer, pInst) {
-        var args = arguments;
-        _graphics.apply(this, args);
-        if (renderer === constants.SVG) {
+        const isSVG = renderer === constants.SVG;
+        _graphics.apply(this, [w, h, isSVG ? p5.P2D : renderer, pInst]);
+        if (isSVG) {
             // replace <canvas> with <svg>
             var c = this._renderer.elt;
             this._renderer = new p5.RendererSVG(c, pInst, false); // replace renderer
@@ -93,4 +93,9 @@ export default function(p5) {
         }
         return this._renderer;
     };
+
+    p5.prototype.createGraphics = function(w, h, renderer) {
+        return new p5.Graphics(w, h, renderer, this);
+    };
+
 }

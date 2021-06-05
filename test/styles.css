@@ -65,3 +65,6 @@ h2 {
     color: #DC143C;
     font-weight: normal;
 }
+#p5_loading {
+    display: none;
+}
