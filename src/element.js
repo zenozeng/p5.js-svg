@@ -94,8 +94,8 @@ export default function(p5) {
      * @param {String} filter BLUR, GRAY, INVERT, THRESHOLD, OPAQUE, ERODE, DILATE (defined in p5's constants)
      * @param {Any} argument Argument for that filter
      */
-    SVGElement.prototype.filter = function(filter, arg) {
-        p5.SVGFilters.apply(this, filter, arg);
+    SVGElement.prototype.filter = function(filter, arg, defs) {
+        p5.SVGFilters.apply(this, filter, arg, defs);
         return this;
     };
 
@@ -146,43 +146,6 @@ export default function(p5) {
         return new SVGElement(elt);
     };
 
-    /**
-     * Tell if current element matching given selector.
-     * This is polyfill from MDN.
-     *
-     * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
-     *
-     * @function matches
-     * @memberof SVGElement.prototype
-     * @param {String} selector CSS Selector
-     * @return {Bool}
-     */
-    SVGElement.prototype.matches = function(selector) {
-        var element = this.elt;
-        var matches = (element.document || element.ownerDocument).querySelectorAll(selector);
-        var i = 0;
-        while (matches[i] && matches[i] !== element) {
-            i++;
-        }
-        return matches[i] ? true : false;
-    };
-
-    /**
-     * Get defs element, or create one if not exists
-     *
-     * @private
-     */
-    SVGElement.prototype._getDefs = function() {
-        var svg = this.parentNode('svg');
-        var defs = svg.query('defs');
-        if (defs[0]) {
-            defs = defs[0];
-        } else {
-            defs = SVGElement.create('defs');
-            svg.append(defs);
-        }
-        return defs;
-    };
 
     /**
      * Get parentNode.

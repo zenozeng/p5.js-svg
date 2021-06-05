@@ -19,11 +19,11 @@
             p.isSVG = true;
 
             resetCanvas(p);
-            p.background(100)
-            p.applyMatrix(1, 0, 0, 1, 50, 50);
-            p.rect(0, 0, 50, 50);
-            p.resetMatrix();
-            p.rect(0, 0, 20, 20);
+            p.background(255, 0, 0);
+            p.stroke(255);
+            p.strokeWeight(10);
+            p.line(0, 0, 100, 100);
+            p.filter(p.THRESHOLD, 0.5);
 	        
         };
 

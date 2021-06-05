@@ -33,27 +33,23 @@ export default function(p5) {
     p5.prototype.filter = function(operation, value) {
         var svg = this._renderer.svg;
         if (svg) {
+            const ctx = this._renderer.drawingContext;
+            const defs = ctx.__root.querySelectorAll('defs')[0];
+            const rootGroup = ctx.__root.childNodes[1];
             // move nodes to a new <g>
-            var nodes = svg.children || svg.childNodes; // childNodes is for IE
-            var g = p5.SVGElement.create('g');
-            svg.appendChild(g.elt);
-            // convert nodeList to array and use forEach
-            // instead of using for loop,
-            // which is buggy due to the length changed during append
-            nodes = Array.prototype.slice.call(nodes);
-            nodes.forEach(function(node) {
-                if (node !== g.elt && (node.nodeName.toLowerCase() !== 'defs')) {
-                    g.elt.appendChild(node);
-                }
-            });
+            let g = p5.SVGElement.create('g');
+            while (rootGroup.childNodes.length > 0) {
+                g.elt.appendChild(rootGroup.childNodes[0]);
+            }
+            rootGroup.appendChild(g.elt);
 
             // apply filter
-            g.filter(operation, value);
+            g.filter(operation, value, defs);
 
             // create new <g> so that new element won't be influenced by the filter
             g = p5.SVGElement.create('g');
-            this._renderer.svg.appendChild(g.elt);
-            this._renderer.drawingContext.__currentElement = g.elt;
+            rootGroup.appendChild(g.elt);
+            ctx.__currentElement = g.elt;
         } else {
             _filter.apply(this, arguments);
         }
