@@ -1,4 +1,4 @@
-import SVGCanvas from 'svgcanvas';
+import {Element as SVGCanvasElement} from 'svgcanvas';
 
 export default function(p5) {
     /**
@@ -9,7 +9,7 @@ export default function(p5) {
      * @param {Bool} isMainCanvas
      */
     function RendererSVG(elt, pInst, isMainCanvas) {
-        var svgCanvas = new SVGCanvas();
+        var svgCanvas = new SVGCanvasElement();
         var svg = svgCanvas.svg;
 
         // replace <canvas> with <svg> and copy id, className

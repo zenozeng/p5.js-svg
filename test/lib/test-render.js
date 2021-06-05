@@ -1,5 +1,5 @@
 var p5 = window.p5;
-import SVGCanvas from 'svgcanvas';
+import {Element as SVGCanvasElement} from 'svgcanvas';
 
 // init p5 canvas instance and p5-svg instance
 var canvasGraphics, svgGraphics, p5svg, p5canvas;
@@ -130,7 +130,7 @@ var prepareDom = function(draw) {
     svg.onload = function() {
         status.svg = true;
     };
-    svg.src = SVGCanvas.prototype.toDataURL.call({svg: p5svg._renderer.svg},
+    svg.src = SVGCanvasElement.prototype.toDataURL.call({svg: p5svg._renderer.svg},
                                                  "image/svg+xml");
     var _svg = p5svg._renderer.svg.cloneNode(true);
     _svg.id = null;
