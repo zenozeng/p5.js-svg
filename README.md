@@ -42,7 +42,6 @@ http://zenozeng.github.io/p5.js-svg/examples/
 The major difference is that SVG Renderer is based on SVG Document Object Model
 while Canvas 2D Renderer is based on pixels.
 Therefore, the performance may not be as good as canvas, but SVG-format vector images can be rendered at any size without loss of quality.
-However, being DOM-based also means that it is possible to modify what's already drawn without drawing new elements. This can be done using the SVGElement API.
 
 Note that not all drawing results are exactly same in pixel-level.
 
@@ -65,6 +64,7 @@ You can view all the pixels based diff on the [online tests](http://zenozeng.git
 p5.js-svg@1.x was tested and should work on:
 
 - Chromium 90 (Debian 11.0, LXQt 0.16)
+- Safari (iPadOS 14)
 
 ## How it works
 
