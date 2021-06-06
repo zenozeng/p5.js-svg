@@ -2,6 +2,7 @@ mocha.setup('bdd');
 mocha.setup({timeout: 10000, slow: 2000});
 
 var test = function() {
+    require('./basic/basic');
     require('./filter/filter');
     require('./svg/element');
     require('./svg/manipulate');

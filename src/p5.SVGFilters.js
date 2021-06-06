@@ -11,7 +11,7 @@ export default function(p5) {
     // We have to build a filter for each element
     // the `filter: f1 f2` and svg param is not supported by many browsers
     // so we can just modify the filter def to do so
-    SVGFilters.apply = function(svgElement, func, arg) {
+    SVGFilters.apply = function(svgElement, func, arg, defs) {
         // get filters
         var filters = svgElement.attribute('data-p5-svg-filters') || '[]';
         filters = JSON.parse(filters);
@@ -54,12 +54,11 @@ export default function(p5) {
         });
 
         // get defs
-        var defs = svgElement._getDefs();
-        var oldfilter = defs.query('#' + filterid)[0];
+        var oldfilter = defs.querySelectorAll('#' + filterid)[0];
         if (!oldfilter) {
-            defs.append(filter);
+            defs.appendChild(filter.elt);
         } else {
-            oldfilter.elt.parentNode.replaceChild(filter.elt, oldfilter.elt);
+            oldfilter.elt.parentNode.replaceChild(filter.elt, oldfilter);
         }
     };
 

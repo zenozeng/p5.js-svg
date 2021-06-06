@@ -268,24 +268,27 @@ export default function(p5) {
     p5.prototype.loadSVG = function(path, successCallback, failureCallback) {
         var div = document.createElement('div');
         var element = new p5.SVGElement(div);
-        this._svg_get(path, function(svg) {
-            div.innerHTML = svg;
-            svg = div.querySelector('svg');
-            if (!svg) {
-                if (failureCallback) {
-                    failureCallback(new Error('Fail to create <svg>.'));
+        this._incrementPreload();
+        new Promise((resolve, reject) => {
+            this._svg_get(path, function(svg) {
+                div.innerHTML = svg;
+                svg = div.querySelector('svg');
+                if (!svg) {
+                    reject('Fail to create <svg>.');
+                    return;
                 }
-                return;
-            }
-            element.elt = svg;
-            if (successCallback) {
-                successCallback(element);
-            }
-        }, failureCallback);
+                element.elt = svg;
+                resolve(element);
+            }, reject);
+        }).then((v) => {
+            successCallback && successCallback(v);
+        }).catch((e) => {
+            failureCallback && failureCallback(e);
+        }).finally(() => {
+            this._decrementPreload();
+        });
         return element;
     };
-    // cause preload to wait
-    p5.prototype._preloadMethods.loadSVG = p5.prototype;
 
     p5.prototype.getDataURL = function() {
         return this._renderer.elt.toDataURL('image/svg+xml');

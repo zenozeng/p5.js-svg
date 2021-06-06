@@ -11,6 +11,7 @@ h1 {
     padding-bottom: .5em;
 }
 #test-graph img, #test-graph .match, #test-graph svg, #test-graph canvas {
+    width: 100px;
     height: 100px;
     box-sizing: border-box;
     box-shadow: 0 0 5px #777;
@@ -63,4 +64,7 @@ hr {
 h2 {
     color: #DC143C;
     font-weight: normal;
+}
+#p5_loading {
+    display: none;
 }

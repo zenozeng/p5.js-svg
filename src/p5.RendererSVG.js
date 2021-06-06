@@ -1,4 +1,4 @@
-import SVGCanvas from 'svgcanvas';
+import {Element as SVGCanvasElement} from 'svgcanvas';
 
 export default function(p5) {
     /**
@@ -9,7 +9,7 @@ export default function(p5) {
      * @param {Bool} isMainCanvas
      */
     function RendererSVG(elt, pInst, isMainCanvas) {
-        var svgCanvas = new SVGCanvas();
+        var svgCanvas = new SVGCanvasElement();
         var svg = svgCanvas.svg;
 
         // replace <canvas> with <svg> and copy id, className
@@ -107,17 +107,6 @@ export default function(p5) {
     };
 
     /**
-     * set gc flag for svgcanvas
-     *
-     * @private
-     */
-    RendererSVG.prototype._setGCFlag = function(element) {
-        var that = this.drawingContext;
-        var currentGeneration = that.generations[that.generations.length - 1];
-        currentGeneration.push(element);
-    };
-
-    /**
      * Append a element to current SVG Graphics
      *
      * @function appendChild
@@ -128,7 +117,6 @@ export default function(p5) {
         if (element && element.elt) {
             element = element.elt;
         }
-        this._setGCFlag(element);
         var g = this.drawingContext.__closestGroupOrSvg();
         g.appendChild(element);
     };

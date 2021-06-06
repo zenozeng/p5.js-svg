@@ -25,14 +25,12 @@
     "karma-mocha-reporter": "^1.1.1",
     "karma-sourcemap-loader": "^0.3.8",
     "mocha": "^8.3.2",
-    "puppeteer": "^9.0.0",
-    "rollup": "^2.45.2"
+    "puppeteer": "^10.0.0",
+    "rollup": "^2.45.2",
+    "svgcanvas": "^2.0.0"
   },
   "directories": {
     "test": "test"
-  },
-  "dependencies": {
-    "svgcanvas": "^0.10.0"
   },
   "repository": {
     "type": "git",

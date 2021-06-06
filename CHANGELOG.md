@@ -1,3 +1,9 @@
+## v1.0.0 (WIP), 2021-05
+
+- Works with p5.js@1.3.1
+- refactor: ESM
+- fix: call _incrementPreload & _decrementPreload in p5.prototype.loadSVG, fixes https://github.com/zenozeng/p5.js-svg/issues/168
+
 ## v0.6.0-alpha.0
 
 p5.svg@0.6.0-alpha.0 (tests with p5.js@0.4.21)
