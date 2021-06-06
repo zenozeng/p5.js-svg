@@ -1,6 +1,6 @@
 {
   "name": "p5.js-svg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./src/index.js",
   "scripts": {
     "lint": "eslint src/",
@@ -40,6 +40,7 @@
     "p5.js",
     "svg"
   ],
+  "unpkg": "dist/p5.svg.js",
   "author": "Zeno Zeng",
   "license": "LGPL",
   "bugs": {
