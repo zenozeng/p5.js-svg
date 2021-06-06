@@ -9,9 +9,7 @@
 ### IO
 
 - saveSVG
-
 - saveFrames
-
 - noSVG
 
 ## Compatible (in SVG and Canvas) API covered with unit tests
@@ -58,4 +56,3 @@
 - curveTightness()
 - curvePoint()
 - curveTangent()
-

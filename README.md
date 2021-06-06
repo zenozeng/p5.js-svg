@@ -1,63 +1,99 @@
 # p5.js-svg
 
-[![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
-
-[travis-image]: https://travis-ci.org/zenozeng/p5.js-svg.svg?branch=master
-[travis-url]: https://travis-ci.org/zenozeng/p5.js-svg
-
-[coveralls-image]: https://coveralls.io/repos/zenozeng/p5.js-svg/badge.svg?branch=master&service=github
-[coveralls-url]: https://coveralls.io/github/zenozeng/p5.js-svg?branch=master
-
 The main goal of p5.SVG is to provide a SVG runtime for p5.js,
 so that we can draw using p5's powerful API in \<svg\>, save things to svg file
 and manipulating existing SVG file without rasterization.
 
-## Docs
+## Getting Started
 
-- [p5.SVG Overview](./doc/overview.md)
-
-- [Getting Started with p5.SVG](./doc/getting-started.md)
-
-- [Examples](http://zenozeng.github.io/p5.js-svg/examples/)
-
-- [API Reference](http://zenozeng.github.io/p5.js-svg/doc/reference/index.html)
-
-- [CHANGELOG](CHANGELOG.md)
-
-## For Contributor
-
-### To build
-
-```bash
-npm run build
+```html
+<script src="https://unpkg.com/p5@1.3.1/lib/p5.js"></script>
+<script src="https://unpkg.com/p5.js-svg@1.0.4"></script>
 ```
 
-Make sure you have bash, eslint, browserify and jsdoc installed.
+Open your sketch.js and edit it:
 
-### To run unit test
+```javascript
+function setup() {
+    createCanvas(100, 100, SVG);
+    background(255);
+    fill(150);
+    stroke(150);
+}
 
-```bash
-npm test
+function draw() {
+    var r = frameCount % 200 * Math.sqrt(2);
+    background(255);
+    ellipse(0, 0, r, r);
+}
 ```
 
-Make sure you have karma installed.
+Then you can open your html file, and view the result.
+It's \<svg\>!
 
-## License
+![SVG Gettting Started](./svg-getting-started.png)
 
-Licensed under MIT.
+## Examples
 
-This program incorporates work covered by the following copyright and permission notices:
+http://zenozeng.github.io/p5.js-svg/examples/
 
-- canvas2svg
+## SVG Renderer vs Canvas2D Renderer
 
-    ```
-    The MIT License (MIT)
-    Copyright (c) 2014 Gliffy Inc.
-    ```
+The major difference is that SVG Renderer is based on SVG Document Object Model
+while Canvas 2D Renderer is based on pixels.
+Therefore, the performance may not be as good as canvas, but SVG-format vector images can be rendered at any size without loss of quality.
+However, being DOM-based also means that it is possible to modify what's already drawn without drawing new elements. This can be done using the SVGElement API.
 
-- svgcanvas
+Note that not all drawing results are exactly same in pixel-level.
 
-    ```
-    The MIT License (MIT)
-    Copyright (c) 2015 Zeno Zeng
-    ```
+For example, the round rects below are almost same, but there are some pixels different.
+
+![round rect](doc/round-rect.png)
+
+As for filters, gray(), invert(), threshold(), opaque() did have same behavior as Canvas2D Renderer. But blur(), erode(), dilate() didn't.
+
+To implement blur, I use feGaussianBlur, which is different from Processing's blur.
+![blur](doc/blur.png)
+
+As for erode() and dilate(), they were implemnted using feOffset and feBlend. So, the result is not exactly same.
+![erode](doc/erode.png)
+
+You can view all the pixels based diff on the [online tests](http://zenozeng.github.io/p5.js-svg/test/).
+
+## Browser Compatibility
+
+p5.js-svg@1.x was tested and should work on:
+
+- Chromium 90 (Debian 11.0, LXQt 0.16)
+
+## How it works
+
+p5.RendererSVG is a class which extends p5.Renderer2D.
+I create a mock \<canvas\> element,
+which is JavaScript Object that syncs proprieties to \<svg\>.
+A drawing context is provided,
+it provides most canvas's API but will draw them on \<svg\> element.
+
+
+## Known issue
+
+- blendMode is not implemented yet.
+
+## Tests
+
+p5.SVG was driven by tests.
+We use Karma and mocha.
+Most tests are based on pixel-diff.
+There are still some p5's methods not covered with unit tests.
+But Rendering and Shape API are already covered with tests and should work.
+
+If you found a bug, feel free to open a issue or pull a request.
+
+All tests can be found here:
+https://github.com/zenozeng/p5.js-svg/tree/master/test/unit
+
+You can also run the online test yourself:
+http://zenozeng.github.io/p5.js-svg/test/
+
+And this is our coverage report:
+https://coveralls.io/github/zenozeng/p5.js-svg?branch=master
