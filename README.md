@@ -72,6 +72,15 @@ which is JavaScript Object that syncs proprieties to \<svg\>.
 A drawing context is provided,
 it provides most canvas's API but will draw them on \<svg\> element.
 
+## Building dist
+
+To build dist files after cloning repo, you can run:
+
+```bash
+npm install
+npm run build
+```
+
 ## Known issue
 
 - blendMode is not implemented yet.

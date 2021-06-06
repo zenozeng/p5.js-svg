@@ -8,3 +8,4 @@ test/coverage
 dist
 test/unit/bundle.js
 doc/reference
+test/test.html
