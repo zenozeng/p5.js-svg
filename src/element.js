@@ -94,37 +94,8 @@ export default function(p5) {
      * @param {String} filter BLUR, GRAY, INVERT, THRESHOLD, OPAQUE, ERODE, DILATE (defined in p5's constants)
      * @param {Any} argument Argument for that filter
      */
-    SVGElement.prototype.filter = function(filter, arg, defs) {
+    SVGElement.prototype._filter = function(filter, arg, defs) {
         p5.SVGFilters.apply(this, filter, arg, defs);
-        return this;
-    };
-
-    /**
-     * Remove applied filter on current element
-     * After called, rest filters will be chained together
-     * and combine to a new SVG filter.
-     *
-     * @function unfilter
-     * @memberof SVGElement.prototype
-     * @param {String} filter BLUR, GRAY, INVERT, THRESHOLD, OPAQUE, ERODE, DILATE (defined in p5's constants)
-     * @param {Any} argument Argument for that filter
-     */
-    SVGElement.prototype.unfilter = function(filterName, arg) {
-        var filters = this.attribute('data-p5-svg-filters') || '[]';
-        filters = JSON.parse(filters);
-        if (arg === undefined) {
-            arg = null;
-        }
-        var found = false;
-        filters = filters.reverse().filter(function(filter) {
-            if ((filter[0] === filterName) && (filter[1] === arg) && !found) {
-                found = true;
-                return false;
-            }
-            return true;
-        }).reverse();
-        this.attribute('data-p5-svg-filters', JSON.stringify(filters));
-        p5.SVGFilters.apply(this, null);
         return this;
     };
 
