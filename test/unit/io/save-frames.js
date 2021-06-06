@@ -2,6 +2,7 @@ import {assert, p5} from '../../lib';
 
 describe('IO/saveFrames', function() {
     it('should capture canvas frames', function(done) {
+        this.timeout(0);
         new p5(function(p) {
             p.setup = function() {
                 p.createCanvas(100, 100);
@@ -25,6 +26,7 @@ describe('IO/saveFrames', function() {
     });
 
     it('should capture svg frames', function(done) {
+        this.timeout(0);
         new p5(function(p) {
             p.setup = function() {
                 p.createCanvas(100, 100, p.SVG);
@@ -72,10 +74,10 @@ describe('IO/saveFrames', function() {
     });
 
     it('should download svg frames', function(done) {
+        this.timeout(0);
         new p5(function(p) {
             p.setup = function() {
                 p.createCanvas(100, 100, p.SVG);
-                var _downloadFile = p.downloadFile;
                 var count = 0;
                 var _done;
                 p.downloadFile = function() {
