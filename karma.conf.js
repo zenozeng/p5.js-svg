@@ -13,7 +13,7 @@ module.exports = function(config) {
             {pattern: 'src/**/*.js', included: false},
             {pattern: 'test/unit/**/*', included: false},
             'https://unpkg.com/p5@1.3.1/lib/p5.min.js',
-            'test/bower_components/jquery/dist/jquery.js',
+            'https://unpkg.com/jquery@3.6.0/dist/jquery.js',
             'dist/p5.svg.js',
             'dist/test.js'
         ],

@@ -43,15 +43,13 @@ The major difference is that SVG Renderer is based on SVG Document Object Model
 while Canvas 2D Renderer is based on pixels.
 Therefore, the performance may not be as good as canvas, but SVG-format vector images can be rendered at any size without loss of quality.
 
-Note that not all drawing results are exactly same in pixel-level.
-
-For example, the round rects below are almost same, but there are some pixels different.
+Note that not all drawing results are exactly same in pixel-level.For example, the round rects below are almost same, but there are some pixels different.
 
 ![round rect](doc/round-rect.png)
 
 As for filters, gray(), invert(), threshold(), opaque() did have same behavior as Canvas2D Renderer. But blur(), erode(), dilate() didn't.
 
-To implement blur, I use feGaussianBlur, which is different from Processing's blur.
+To implement blur, feGaussianBlur was used, which is different from Processing's blur.
 ![blur](doc/blur.png)
 
 As for erode() and dilate(), they were implemnted using feOffset and feBlend. So, the result is not exactly same.
@@ -74,7 +72,6 @@ which is JavaScript Object that syncs proprieties to \<svg\>.
 A drawing context is provided,
 it provides most canvas's API but will draw them on \<svg\> element.
 
-
 ## Known issue
 
 - blendMode is not implemented yet.
@@ -93,7 +90,7 @@ All tests can be found here:
 https://github.com/zenozeng/p5.js-svg/tree/master/test/unit
 
 You can also run the online test yourself:
-http://zenozeng.github.io/p5.js-svg/test/
+https://zenozeng.github.io/p5.js-svg/test/
 
 And this is our coverage report:
 https://coveralls.io/github/zenozeng/p5.js-svg?branch=master
