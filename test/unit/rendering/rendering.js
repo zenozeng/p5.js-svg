@@ -26,14 +26,9 @@ describe('Rendering', function() {
                 pg.background(100);
                 pg.noStroke();
                 pg.ellipse(pg.width/2, pg.height/2, 50, 50);
-                p.loadGraphics(pg, function(pg) {
-                    p.image(pg, 50, 50);
-                    p.image(pg, 0, 0, 50, 50);
-                    p.ellipse(p.width/2, p.height/2, 50, 50);
-                }, function(err) {
-                    console.error(err);
-                });
-                testRender.wait(10000); // wait loadGraphics before run diff
+                p.image(pg, 50, 50);
+                p.image(pg, 0, 0, 50, 50);
+                p.ellipse(p.width/2, p.height/2, 50, 50);
             }, done);
         });
     });

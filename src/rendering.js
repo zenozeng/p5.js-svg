@@ -21,53 +21,6 @@ export default function(p5) {
     p5.Graphics.prototype = _graphics.prototype;
 
     /**
-     * Due to a known issue (image is not surely ready before onload fires),
-     * we have no way to draw SVG element synchronously.
-     * So, this method will load a SVG Graphics
-     * and then convert it to Canvas Graphics asynchronously
-     *
-     * @see https://github.com/zenozeng/p5.js-svg/issues/78
-     *
-     * @function loadGraphics
-     * @memberof p5.prototype
-     * @param {p5.Graphics} graphics the p5.Grphaics object
-     * @param {Function(p5.Graphics)} [successCallback] Function to be called once
-     *                                 the SVG Graphics is loaded. Will be passed the
-     *                                 p5.Graphics.
-     * @param {Function(Event)}    [failureCallback] called with event error.
-     *
-     * @example
-     * pg = createGraphics(100, 100, SVG);
-     * background(200);
-     * pg.background(100);
-     * pg.ellipse(pg.width/2, pg.height/2, 50, 50);
-     * loadGraphics(pg, function(pgCanvas) {
-     *      image(pgCanvas, 50, 50);
-     *      image(pgCanvas, 0, 0, 50, 50);
-     * });
-     *
-     */
-    p5.prototype.loadGraphics = function(graphics, successCallback, failureCallback) {
-        if (graphics._renderer.svg) {
-            var svg = graphics._renderer.svg;
-            var url = graphics._renderer.elt.toDataURL('image/svg+xml');
-            var pg = this.createGraphics(graphics.width, graphics.height, constants.SVG);
-            // also copy SVG, so we can keep vector SVG when image(pg) in SVG runtime
-            pg._renderer.svg = svg.cloneNode(true);
-            pg.loadImage(url, function(img) {
-                pg.image(img, 0, 0);
-                setTimeout(function() {
-                    successCallback(pg);
-                }, 1);
-            }, failureCallback);
-        } else {
-            setTimeout(function() {
-                successCallback(graphics);
-            }, 1);
-        }
-    };
-
-    /**
      * Patched version of createCanvas
      *
      * use createCanvas(100, 100, SVG) to create SVG canvas.
