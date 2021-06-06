@@ -31,7 +31,7 @@ function draw() {
 Then you can open your html file, and view the result.
 It's \<svg\>!
 
-![SVG Gettting Started](./svg-getting-started.png)
+![SVG Gettting Started](./doc/svg-getting-started.png)
 
 ## Examples
 
