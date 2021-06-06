@@ -1,8 +1,14 @@
-## v1.0.0 (WIP), 2021-06
+## v1.0.5
 
+- feat: Implement canvas transformations, fixes https://github.com/zenozeng/p5.js-svg/issues/170
 - refactor: Works with p5.js@1.3.1
 - refactor: ESM
+- refactor: remove loadGraphics
+- fix: keep svgcanvas's root `<g>` when applying filter
 - fix: call _incrementPreload & _decrementPreload in p5.prototype.loadSVG, fixes https://github.com/zenozeng/p5.js-svg/issues/168
+- test: add test for resetMatrix, for https://github.com/zenozeng/p5.js-svg/issues/170
+- test: diff without converting to png
+- test: update IO/saveFrames tests
 
 ## v0.6.0-alpha.0
 
