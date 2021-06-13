@@ -1,6 +1,6 @@
 ## v1.0.5
 
-- feat: Implement canvas transformations, fixes https://github.com/zenozeng/p5.js-svg/issues/170
+- feat: Implement CanvasTransform Interface, see https://github.com/gliffy/canvas2svg/pull/83, fixes https://github.com/zenozeng/p5.js-svg/issues/170, 
 - refactor: Works with p5.js@1.3.1
 - refactor: ESM
 - refactor: remove loadGraphics
