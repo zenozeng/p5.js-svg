@@ -67,7 +67,7 @@ p5.js-svg@1.x was tested and should work on:
 ## How it works
 
 p5.RendererSVG is a class which extends p5.Renderer2D.
-A mocked \<canvas\> element and a drawing context are provided using [svgcanvas](https://github.com/zenozeng/svgcanvas),
+A mocked \<canvas\> element and a CanvasRenderingContext2D api are provided using [svgcanvas](https://github.com/zenozeng/svgcanvas),
 which is JavaScript Object that syncs proprieties and draws on \<svg\> element.
 
 ## Building dist
