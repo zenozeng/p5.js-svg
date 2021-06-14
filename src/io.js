@@ -9,7 +9,7 @@ export default function(p5) {
      */
     var svg2img = function(svg, mine, callback) {
         svg = (new XMLSerializer()).serializeToString(svg);
-        svg = 'data:image/svg+xml;charset=utf-8,' + encodeURI(svg);
+        svg = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
         if (mine == 'image/svg+xml') {
             callback(null, svg);
             return;
