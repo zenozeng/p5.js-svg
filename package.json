@@ -1,6 +1,6 @@
 {
   "name": "p5.js-svg",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "./src/index.js",
   "scripts": {
     "start": "python3 -m http.server 3000",

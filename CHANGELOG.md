@@ -1,3 +1,7 @@
+## v1.0.6
+
+- fix: use encodeURIComponent when saving svg, fixes #176 (save() bug)
+
 ## v1.0.5
 
 - feat: implement CanvasTransform Interface, see https://github.com/gliffy/canvas2svg/pull/83, fixes https://github.com/zenozeng/p5.js-svg/issues/170, 
