@@ -86,7 +86,7 @@ npm run build
 
 ### Too many child elements
 
-Since SVG is XML-based, every call of the draw function will insert elements into it, and these elements keep existing even if they are not visible. So, long-time running will result in too many child elements. We recommend to call clear() in your draw function, which will trigger internal context.__clearCanvas() to remove elements.
+Since SVG is XML-based, every call of the draw function will insert elements into it, and these elements keep existing even if they are not visible. So, long-time running will result in too many child elements. We recommend calling clear() in your draw function, which will trigger internal context.__clearCanvas() to remove elements.
 
 ```javascript
 function draw() {
