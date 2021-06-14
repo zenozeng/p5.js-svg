@@ -35,7 +35,8 @@ It's \<svg\>!
 
 ## Examples
 
-http://zenozeng.github.io/p5.js-svg/examples/
+- https://zenozeng.github.io/p5.js-svg/examples/
+- https://zenozeng.github.io/p5.js-svg/test/
 
 ## SVG Renderer vs Canvas2D Renderer
 
