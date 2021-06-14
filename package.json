@@ -3,6 +3,7 @@
   "version": "1.0.5",
   "main": "./src/index.js",
   "scripts": {
+    "start": "python3 -m http.server 3000",
     "lint": "eslint src/",
     "build": "eslint src/ && rollup --config",
     "prepublishOnly": "npm run build",
