@@ -1,3 +1,8 @@
+## v1.0.7
+
+- feat: sync element's width and height to context (svgcanvas@2.0.3)
+- test: add test for loadFont, fixes #147
+
 ## v1.0.6
 
 - fix: use encodeURIComponent when saving svg, fixes #176 (save() bug)

@@ -8,7 +8,7 @@ and manipulating existing SVG file without rasterization.
 
 ```html
 <script src="https://unpkg.com/p5@1.3.1/lib/p5.js"></script>
-<script src="https://unpkg.com/p5.js-svg@1.0.6"></script>
+<script src="https://unpkg.com/p5.js-svg@1.0.7"></script>
 ```
 
 Open your sketch.js and edit it:
@@ -71,18 +71,7 @@ p5.RendererSVG is a class which extends p5.Renderer2D.
 A mocked \<canvas\> element and a CanvasRenderingContext2D api are provided using [svgcanvas](https://github.com/zenozeng/svgcanvas),
 which is JavaScript Object that syncs proprieties and draws on \<svg\> element.
 
-## Building dist
-
-To build dist files after cloning repo, you can run:
-
-```bash
-npm install
-npm run build
-```
-
 ## Known issue
-
-### blendMode is not implemented yet.
 
 ### Too many child elements
 
@@ -96,6 +85,17 @@ function draw() {
 ```
 
 See https://github.com/zenozeng/p5.js-svg/issues/32
+
+### blendMode is not implemented yet.
+
+## Building dist
+
+To build dist files after cloning repo, you can run:
+
+```bash
+npm install
+npm run build
+```
 
 ## Tests
 
