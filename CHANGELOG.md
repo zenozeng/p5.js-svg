@@ -1,14 +1,14 @@
 ## v1.0.5
 
-- feat: Implement CanvasTransform Interface, see https://github.com/gliffy/canvas2svg/pull/83, fixes https://github.com/zenozeng/p5.js-svg/issues/170, 
-- refactor: Support p5.js@1.3.1
+- feat: implement CanvasTransform Interface, see https://github.com/gliffy/canvas2svg/pull/83, fixes https://github.com/zenozeng/p5.js-svg/issues/170, 
+- refactor: support p5.js@1.3.1
 - refactor: ESM
-- refactor: Remove loadGraphics
-- fix: Keep svgcanvas's root `<g>` when applying filter
-- fix: Call _incrementPreload & _decrementPreload in p5.prototype.loadSVG, fixes https://github.com/zenozeng/p5.js-svg/issues/168
-- test: Add test for resetMatrix, for https://github.com/zenozeng/p5.js-svg/issues/170
-- test: Diff without converting to png
-- test: Update IO/saveFrames tests
+- refactor: remove loadGraphics
+- fix: keep svgcanvas's root `<g>` when applying filter
+- fix: call _incrementPreload & _decrementPreload in p5.prototype.loadSVG, fixes https://github.com/zenozeng/p5.js-svg/issues/168
+- test: add test for resetMatrix, for https://github.com/zenozeng/p5.js-svg/issues/170
+- test: diff without converting to png
+- test: update IO/saveFrames tests
 
 ## v0.6.0-alpha.0
 
