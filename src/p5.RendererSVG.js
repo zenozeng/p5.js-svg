@@ -62,11 +62,7 @@ export default function(p5) {
     };
 
     RendererSVG.prototype.resize = function(w, h) {
-
-        // console.log({w: w, h: h, tw: this.width, th: this.height});
-
         if (!w || !h) {
-            // ignore invalid values for width and height
             return;
         }
         if (this.width !== w || this.height !== h) {
@@ -87,7 +83,7 @@ export default function(p5) {
      * @private
      */
     RendererSVG.prototype._withPixelDensity = function(fn) {
-        var pixelDensity = this._pInst._pixelDensity;
+        let pixelDensity = this._pInst._pixelDensity;
         this._pInst._pixelDensity = 1; // 1 is OK for SVG
         fn.apply(this);
         this._pInst._pixelDensity = pixelDensity;
