@@ -13,6 +13,7 @@ p5svg = new p5(function(p) {
         svgGraphics = p.createCanvas(100, 100, p.SVG);
         p.noLoop();
         p.isSVG = true;
+        p.__ready = true;
     };
 });
 
@@ -21,6 +22,7 @@ p5canvas = new p5(function(p) {
         canvasGraphics = p.createCanvas(100, 100);
         p.noLoop();
         p.isSVG = false;
+        p.__ready = true;
     };
 });
 
@@ -303,4 +305,5 @@ testRender.unlock = function() {
     testRender.wait(0);
 };
 
+export {p5canvas, p5svg};
 export default testRender;
