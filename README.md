@@ -8,7 +8,7 @@ and manipulating existing SVG file without rasterization.
 
 Uncomment the line that links to the standard p5.js in your projects index.html 
 
-For example (in the case of using the p5js.org editor):
+For example (in the case of using the p5js.org editor) uncomment:
 ```html 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
 ``` 
