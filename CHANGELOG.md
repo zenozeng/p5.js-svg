@@ -1,3 +1,7 @@
+## v1.0.8
+
+- fix: set $this for RendererSVG.prototype.parent, fixes #187
+
 ## v1.0.7
 
 - feat: sync element's width and height to context (svgcanvas@2.0.3), calling clear() in your draw function will now trigger internal context.__clearCanvas() to remove elements.
