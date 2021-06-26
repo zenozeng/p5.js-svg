@@ -44,7 +44,7 @@
   ],
   "unpkg": "dist/p5.svg.js",
   "author": "Zeno Zeng",
-  "license": "LGPL",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/zenozeng/p5.js-svg/issues"
   }
