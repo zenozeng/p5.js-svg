@@ -155,5 +155,18 @@ export default function(p5) {
         }
     };
 
+    /**
+     * @method parent
+     * @return {p5.Element}
+     *
+     * @see https://github.com/zenozeng/p5.js-svg/issues/187
+     */
+    RendererSVG.prototype.parent = function() {
+        const $this = {
+            elt: this.elt.getElement()
+        };
+        return p5.Element.prototype.parent.apply($this, arguments);
+    };
+
     p5.RendererSVG = RendererSVG;
 }
