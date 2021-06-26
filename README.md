@@ -6,7 +6,7 @@ and manipulating existing SVG file without rasterization.
 
 ## Getting Started
 
-Add this line in your projects index.html 
+Add this line in your projects index.html :
 
 ```html
 <script src="https://unpkg.com/p5.js-svg@1.0.7"></script>
