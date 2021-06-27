@@ -92,7 +92,8 @@ See https://github.com/zenozeng/p5.js-svg/issues/32
 Replace the p5.min.js script in the index.html with this standard p5.js script:
 
 
-```<script src="https://unpkg.com/p5@1.3.1/lib/p5.js"></script>
+```html
+<script src="https://unpkg.com/p5@1.3.1/lib/p5.js"></script>
 ```
 
 See https://github.com/zenozeng/p5.js-svg/issues/189
