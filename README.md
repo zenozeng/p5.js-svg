@@ -6,7 +6,7 @@ and manipulating existing SVG file without rasterization.
 
 ## Getting Started
 
-Add this line in your projects index.html :
+Add this line in your projects index.html (it has to be pasted after the line that loads the p5.js script):
 
 ```html
 <script src="https://unpkg.com/p5.js-svg@1.0.8"></script>
@@ -86,6 +86,17 @@ function draw() {
 ```
 
 See https://github.com/zenozeng/p5.js-svg/issues/32
+
+### p5.js-svg isnt supported by p5.min.js
+
+Replace the p5.min.js script in the index.html with this standard p5.js script:
+
+
+```<script src="https://unpkg.com/p5@1.3.1/lib/p5.js"></script>
+```
+
+See https://github.com/zenozeng/p5.js-svg/issues/189
+
 
 ### blendMode is not implemented yet.
 
