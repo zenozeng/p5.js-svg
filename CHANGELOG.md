@@ -1,3 +1,7 @@
+## v1.1.0
+
+- test: p5.js@1.4.0
+
 ## v1.0.8
 
 - fix: set $this for RendererSVG.prototype.parent, fixes #187
