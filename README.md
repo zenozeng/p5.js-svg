@@ -9,8 +9,10 @@ and manipulating existing SVG file without rasterization.
 Add this line in your projects index.html :
 
 ```html
-<script src="https://unpkg.com/p5.js-svg@1.0.8"></script>
+<script src="https://unpkg.com/p5.js-svg@1.1.0"></script>
 ```
+
+(p5.js-svg v1.1.0 is compatible with p5.js v1.4.0)
 
 Open your sketch.js and edit it:
 
