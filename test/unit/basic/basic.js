@@ -11,6 +11,17 @@ describe('Basic', function() {
             p.resetMatrix();
             p.rect(0, 0, 20, 20);
         },
+        push: function(p) {
+            // https://p5js.org/reference/#/p5/push
+            p.ellipse(0, 50, 33, 33);
+            p.push();
+            p.strokeWeight(10);
+            p.fill(204, 153, 0);
+            p.translate(50, 0);
+            p.ellipse(0, 50, 33, 33);
+            p.pop();
+            p.ellipse(100, 50, 33, 33);
+        }
     };
 
     Object.keys(tests).forEach(function(key) {

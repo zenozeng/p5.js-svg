@@ -29,7 +29,7 @@
     "mocha": "^8.3.2",
     "puppeteer": "^10.0.0",
     "rollup": "^2.45.2",
-    "svgcanvas": "^2.0.3"
+    "svgcanvas": "^2.0.4"
   },
   "directories": {
     "test": "test"
