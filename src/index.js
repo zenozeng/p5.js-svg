@@ -5,18 +5,24 @@ import Element from './element';
 import Filters from './filters';
 import constants from './constants';
 
-(function(p5) {
+function init(p5) {
     /**
      * @namespace p5
      */
-    RendererSVG(p5);
-    Rendering(p5);
-    IO(p5);
-    Element(p5);
-    Filters(p5);
+     RendererSVG(p5);
+     Rendering(p5);
+     IO(p5);
+     Element(p5);
+     Filters(p5);
 
-    // attach constants to p5 instance
-    Object.keys(constants).forEach(function(k) {
-        p5.prototype[k] = constants[k];
-    });
-})(window.p5);
+     // attach constants to p5 instance
+     Object.keys(constants).forEach(function(k) {
+         p5.prototype[k] = constants[k];
+     });
+}
+
+if (typeof window.p5 !== "undefined") {
+    init(window.p5);
+}
+
+export default init;
