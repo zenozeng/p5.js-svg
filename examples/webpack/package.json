@@ -1,0 +1,18 @@
+{
+  "name": "p5.js-svg-webpack-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "p5": "^1.4.0",
+    "p5.js-svg": "^1.1.2",
+    "webpack": "^5.56.1",
+    "webpack-cli": "^4.8.0"
+  }
+}
