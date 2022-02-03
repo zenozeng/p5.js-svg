@@ -1,6 +1,7 @@
 ## Pending Next
 
 - fix: _pixelDensity for drawing image created by createGraphics
+- refactor: RendererTester
 - refactor: use Renderer2D.prototype.line instead of RendererSVG.prototype.line
 - refactor: use Proxy instead of _withPixelDensity
 

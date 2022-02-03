@@ -1,4 +1,4 @@
-import {assert, p5, testRender, testRendering} from '../../lib';
+import {assert, p5, testRender, rendererTester} from '../../lib';
 
 describe('Rendering', function() {
     this.timeout(0);
@@ -20,7 +20,7 @@ describe('Rendering', function() {
     describe('createGraphics', function() {
         it('createGraphics: SVG API should draw same image as Canvas API', async function() {
             testRender.describe('createGraphics');
-            return testRendering({
+            await rendererTester.test({
                 draw: function(p) {
                     let pg = p.createGraphics(100, 100, p.isSVG ? p.SVG : p.P2D);
                     p.background('blue');
@@ -57,9 +57,8 @@ describe('Rendering', function() {
     describe('customGradient', function() {
         it('customGradient', async function() {
             testRender.describe('customGradient');
-            return testRendering({
+            await rendererTester.test({
                 draw: function(p, {renderer}) {
-                    console.log(renderer, 'p0 ctx', p.drawingContext);
                     let width = p.width;
                     let color1 = p.color('rgb(255,0,0)');
                     let color2 = p.color('rgb(0,255,0)');
@@ -67,9 +66,7 @@ describe('Rendering', function() {
                     gradient.addColorStop(0, color1);
                     gradient.addColorStop(1, color2);
                     p.drawingContext.fillStyle = gradient;
-                    console.log(renderer, 'p1', p.drawingContext.fillStyle);
                     p.ellipse(50, 50, 100);
-                    console.log(renderer, 'p2', p.drawingContext.fillStyle);
                 }
             });
         })
