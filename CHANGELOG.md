@@ -1,3 +1,7 @@
+## v1.2.1
+
+- fix: add p5.Color.prototype.indexOf, fixes https://github.com/zenozeng/p5.js-svg/issues/204
+
 ## v1.2.0
 
 - test: p5.js@1.4.1
