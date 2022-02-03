@@ -15,7 +15,6 @@ export default function(p5) {
             // do default again
             this._renderer.resize(w, h);
             this._renderer._applyDefaults();
-            this._pixelDensity = 1;
         }
         return this;
     };

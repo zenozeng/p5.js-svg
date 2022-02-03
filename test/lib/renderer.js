@@ -24,7 +24,6 @@ class RendererTester {
         this.pInstances = [this.p5svg, this.p5canvas];
         this.maxPixelDiff = 0;
         this.maxDiff = 0.05;
-        this.headless = typeof window.headless === 'undefined' || window.headless;
     }
 
     // wait until ready
@@ -169,8 +168,13 @@ class RendererTester {
         return imgData;
     }
 
+    getReportContainer() {
+        return document.querySelector('#test-graph');
+    }
+
     async report({canvasPixels, svgPixels, diffPixels, removeThinLinesPixels, svg, match, fn, diffRate}) {
-        if (!this.headless) {
+        const container = this.getReportContainer();
+        if (container) {
             // width & height
             const width = 100 * config.pixelDensity;
             const height = 100 * config.pixelDensity;
@@ -194,7 +198,7 @@ class RendererTester {
                 <hr>
                 `
 
-            document.querySelector('#test-graph').appendChild(report);
+            container.appendChild(report);
 
             report.querySelector('.svg-pixels').getContext('2d').putImageData(svgPixels, 0, 0);
             report.querySelector('.canvas-pixels').getContext('2d').putImageData(canvasPixels, 0, 0);
@@ -239,10 +243,11 @@ var testRender = async function(draw, callback) {
 };
 
 testRender.describe = function(str) {
-    if (!rendererTester.headless) {
+    const container = rendererTester.getReportContainer();
+    if (container) {
         let h2 = document.createElement('h2');
         h2.innerText = str;
-        document.querySelector('#test-graph').appendChild(h2);
+        container.appendChild(h2);
     }
 };
 
