@@ -31,7 +31,17 @@ export default function(p5) {
             }
         };
 
-        p5.Renderer2D.call(this, elt, pInst, isMainCanvas);
+        const pInstProxy = new Proxy(pInst, {
+            get: function(target, prop) {
+                if (prop === '_pixelDensity') {
+                    // 1 is OK for SVG
+                    return 1;
+                }
+                return target[prop];
+            }
+        });
+
+        p5.Renderer2D.call(this, elt, pInstProxy, isMainCanvas);
 
         this.isSVG = true;
         this.svg = svg;
@@ -46,21 +56,6 @@ export default function(p5) {
         this.drawingContext.lineWidth = 1;
     };
 
-    RendererSVG.prototype.line = function(x1, y1, x2, y2) {
-        var styleEmpty = 'rgba(0,0,0,0)';
-        var ctx = this.drawingContext;
-        if (!this._doStroke) {
-            return this;
-        } else if(ctx.strokeStyle === styleEmpty){
-            return this;
-        }
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-        return this;
-    };
-
     RendererSVG.prototype.resize = function(w, h) {
         if (!w || !h) {
             return;
@@ -71,35 +66,12 @@ export default function(p5) {
             // note that at first this.width and this.height is undefined
             this.drawingContext.__clearCanvas();
         }
-        this._withPixelDensity(function() {
-            p5.Renderer2D.prototype.resize.call(this, w, h);
-        });
+
+        p5.Renderer2D.prototype.resize.call(this, w, h);
+
         // For scale, crop
         // see also: http://sarasoueidan.com/blog/svg-coordinate-systems/
         this.svg.setAttribute('viewBox', [0, 0, w, h].join(' '));
-    };
-
-    /**
-     * @private
-     */
-    RendererSVG.prototype._withPixelDensity = function(fn) {
-        let pixelDensity = this._pInst._pixelDensity;
-        this._pInst._pixelDensity = 1; // 1 is OK for SVG
-        fn.apply(this);
-        this._pInst._pixelDensity = pixelDensity;
-    };
-
-    RendererSVG.prototype.background = function() {
-        var args = arguments;
-        this._withPixelDensity(function() {
-            p5.Renderer2D.prototype.background.apply(this, args);
-        });
-    };
-
-    RendererSVG.prototype.resetMatrix = function() {
-        this._withPixelDensity(function() {
-            p5.Renderer2D.prototype.resetMatrix.apply(this);
-        });
     };
 
     /**

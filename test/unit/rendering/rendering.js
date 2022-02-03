@@ -1,4 +1,4 @@
-import {assert, p5, testRender} from '../../lib';
+import {assert, p5, testRender, testRendering} from '../../lib';
 
 describe('Rendering', function() {
     this.timeout(0);
@@ -18,18 +18,20 @@ describe('Rendering', function() {
         });
     });
     describe('createGraphics', function() {
-        it('createGraphics: SVG API should draw same image as Canvas API', function(done) {
+        it('createGraphics: SVG API should draw same image as Canvas API', async function() {
             testRender.describe('createGraphics');
-            testRender(function(p) {
-                let pg = p.createGraphics(400, 400, p.isSVG ? p.SVG : p.P2D);
-                p.background(200);
-                pg.background(100);
-                pg.noStroke();
-                pg.ellipse(pg.width/2, pg.height/2, 50, 50);
-                p.image(pg, 50, 50);
-                p.image(pg, 0, 0, 50, 50);
-                p.ellipse(p.width/2, p.height/2, 50, 50);
-            }, done);
+            return testRendering({
+                draw: function(p) {
+                    let pg = p.createGraphics(100, 100, p.isSVG ? p.SVG : p.P2D);
+                    p.background('blue');
+                    pg.background('red');
+                    pg.fill('yellow')
+                    pg.noStroke();
+                    pg.ellipse(pg.width/2, pg.height/2, 50, 50);
+                    p.image(pg, 50, 50);
+                    p.image(pg, 0, 0, 50, 50);
+                }
+            })
         });
     });
     describe('resizeCanvas', function() {
@@ -53,18 +55,23 @@ describe('Rendering', function() {
         });
     });
     describe('customGradient', function() {
-        it('customGradient', function(done) {
+        it('customGradient', async function() {
             testRender.describe('customGradient');
-            testRender(function(p) {
-                let width = p.width;
-                let color1 = p.color('rgb(255,0,0)');
-                let color2 = p.color('rgb(0,255,0)');
-                let gradient = p.drawingContext.createLinearGradient(width/2-100, width/2-100, width/2+100, width/2+100);
-                gradient.addColorStop(0, color1);
-                gradient.addColorStop(1, color2);
-                p.drawingContext.fillStyle = gradient;
-                p.ellipse(50, 50, 100);
-            }, done);
+            return testRendering({
+                draw: function(p, {renderer}) {
+                    console.log(renderer, 'p0 ctx', p.drawingContext);
+                    let width = p.width;
+                    let color1 = p.color('rgb(255,0,0)');
+                    let color2 = p.color('rgb(0,255,0)');
+                    let gradient = p.drawingContext.createLinearGradient(width/2-100, width/2-100, width/2+100, width/2+100);
+                    gradient.addColorStop(0, color1);
+                    gradient.addColorStop(1, color2);
+                    p.drawingContext.fillStyle = gradient;
+                    console.log(renderer, 'p1', p.drawingContext.fillStyle);
+                    p.ellipse(50, 50, 100);
+                    console.log(renderer, 'p2', p.drawingContext.fillStyle);
+                }
+            });
         })
     })
 });

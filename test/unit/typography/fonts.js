@@ -1,4 +1,4 @@
-import {p5, testRendering} from '../../lib';
+import {testRendering} from '../../lib';
 
 describe('Typography', function() {
     this.timeout(0);

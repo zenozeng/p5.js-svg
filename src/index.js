@@ -4,7 +4,6 @@ import IO from './io';
 import Element from './element';
 import Filters from './filters';
 import constants from './constants';
-import Color from './color';
 
 function init(p5) {
     /**
@@ -15,7 +14,6 @@ function init(p5) {
     IO(p5);
     Element(p5);
     Filters(p5);
-    Color(p5);
 
     // attach constants to p5 instance
     Object.keys(constants).forEach(function(k) {

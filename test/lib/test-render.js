@@ -27,8 +27,11 @@ p5canvas = new p5(function(p) {
 });
 
 const resetCanvas = function(p) {
+    // clean up
     p.clear();
-
+    p.noFill();
+    p.noStroke();
+    // reset
     p.strokeWeight(3); // for using XOR with thin line removed (using 8-connected neighborhood < 5) for diff
     p.fill(200);
     p.stroke(0);
@@ -117,8 +120,10 @@ var removeThinLines = function(canvas) {
 var render = function(drawFunction) {
     [p5svg, p5canvas].forEach(function(p) {
         resetCanvas(p);
-        let isSVG = p === p5svg;
-        drawFunction(p, isSVG);
+        let info = {
+           renderer: p === p5svg ? 'svg' : 'canvas'
+        }  
+        drawFunction(p, info);
     });
 };
 
@@ -176,7 +181,7 @@ var prepareDom = function(draw) {
     fnbody = fnbody.substring(fnbody.indexOf('{') + 1, fnbody.lastIndexOf('}'));
     // re-indent
     var indent = fnbody.match(/( +)/)[0].length;
-    indent = new RegExp('^[ ]{' + indent + '}', 'gm');
+    indent = new RegExp('^[ \t]{' + indent + '}', 'gm');
     fnbody = fnbody.replace(indent, '');
     $container.append('<pre class="function">' + fnbody + '</pre>');
 

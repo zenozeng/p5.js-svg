@@ -1,3 +1,9 @@
+## Pending Next
+
+- fix: _pixelDensity for drawing image created by createGraphics
+- refactor: use Renderer2D.prototype.line instead of RendererSVG.prototype.line
+- refactor: use Proxy instead of _withPixelDensity
+
 ## v1.2.1
 
 - fix: add p5.Color.prototype.indexOf, fixes https://github.com/zenozeng/p5.js-svg/issues/204
