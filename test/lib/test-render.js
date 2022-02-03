@@ -117,7 +117,8 @@ var removeThinLines = function(canvas) {
 var render = function(drawFunction) {
     [p5svg, p5canvas].forEach(function(p) {
         resetCanvas(p);
-        drawFunction(p);
+        let isSVG = p === p5svg;
+        drawFunction(p, isSVG);
     });
 };
 

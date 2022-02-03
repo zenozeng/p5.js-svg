@@ -52,4 +52,19 @@ describe('Rendering', function() {
             }, done);
         });
     });
+    describe('customGradient', function() {
+        it('customGradient', function(done) {
+            testRender.describe('customGradient');
+            testRender(function(p) {
+                let width = p.width;
+                let color1 = p.color('rgb(255,0,0)');
+                let color2 = p.color('rgb(0,255,0)');
+                let gradient = p.drawingContext.createLinearGradient(width/2-100, width/2-100, width/2+100, width/2+100);
+                gradient.addColorStop(0, color1);
+                gradient.addColorStop(1, color2);
+                p.drawingContext.fillStyle = gradient;
+                p.ellipse(50, 50, 100);
+            }, done);
+        })
+    })
 });
