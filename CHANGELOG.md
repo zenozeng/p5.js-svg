@@ -1,3 +1,7 @@
+## v1.2.0
+
+- test: p5.js@1.4.1
+
 ## v1.1.1
 
 - fix: push/pop, fixes #191, fixes #192
