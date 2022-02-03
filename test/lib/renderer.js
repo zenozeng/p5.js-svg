@@ -24,6 +24,7 @@ class RendererTester {
         this.pInstances = [this.p5svg, this.p5canvas];
         this.maxPixelDiff = 0;
         this.maxDiff = 0.05;
+        this.headless = typeof window.headless === 'undefined' || window.headless;
     }
 
     // wait until ready
@@ -86,7 +87,6 @@ class RendererTester {
     }
 
     getPixels(image) {
-        console.log({getPixels: image})
         const canvas = document.createElement('canvas');
         const width = 100 * config.pixelDensity;
         const height = 100 * config.pixelDensity;
@@ -170,40 +170,43 @@ class RendererTester {
     }
 
     async report({canvasPixels, svgPixels, diffPixels, removeThinLinesPixels, svg, match, fn, diffRate}) {
-        // width & height
-        const width = 100 * config.pixelDensity;
-        const height = 100 * config.pixelDensity;
+        if (!this.headless) {
+            // width & height
+            const width = 100 * config.pixelDensity;
+            const height = 100 * config.pixelDensity;
 
-        const report = document.createElement('div');
-        report.innerHTML = `
-            <div class="th">
-                <div>Rendered in SVG</div>
-                <div>Rendered in Canvas</div>
-                <div>Diff Bitmap</div>
-                <div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div>
-                <div></div>
-            </div>
-            <canvas class="svg-pixels" width="${width}" height="${height}"></canvas>
-            <canvas class="canvas-pixels" width="${width}" height="${height}"></canvas>
-            <canvas class="diff-pixels" width="${width}" height="${height}"></canvas>
-            <canvas class="diff-pixels-2" width="${width}" height="${height}"></canvas>
-            <div class="match">
-                <i class="fa ${ match ? 'fa-check': 'fa-times'}"></i>
-            </div>
-            <hr>
-            `
+            const report = document.createElement('div');
+            report.innerHTML = `
+                <div class="th">
+                    <div>Rendered in SVG</div>
+                    <div>Rendered in Canvas</div>
+                    <div>Diff Bitmap</div>
+                    <div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div>
+                    <div></div>
+                </div>
+                <canvas class="svg-pixels" width="${width}" height="${height}"></canvas>
+                <canvas class="canvas-pixels" width="${width}" height="${height}"></canvas>
+                <canvas class="diff-pixels" width="${width}" height="${height}"></canvas>
+                <canvas class="diff-pixels-2" width="${width}" height="${height}"></canvas>
+                <div class="match">
+                    <i class="fa ${ match ? 'fa-check': 'fa-times'}"></i>
+                </div>
+                <hr>
+                `
 
-        document.querySelector('#test-graph').appendChild(report);
+            document.querySelector('#test-graph').appendChild(report);
+
+            report.querySelector('.svg-pixels').getContext('2d').putImageData(svgPixels, 0, 0);
+            report.querySelector('.canvas-pixels').getContext('2d').putImageData(canvasPixels, 0, 0);
+            report.querySelector('.diff-pixels').getContext('2d').putImageData(diffPixels, 0, 0);
+            report.querySelector('.diff-pixels-2').getContext('2d').putImageData(removeThinLinesPixels, 0, 0);
+        }
+
         if (!match) {
             throw new Error(JSON.stringify({
                 diffRate,
             }));
         }
-
-        report.querySelector('.svg-pixels').getContext('2d').putImageData(svgPixels, 0, 0);
-        report.querySelector('.canvas-pixels').getContext('2d').putImageData(canvasPixels, 0, 0);
-        report.querySelector('.diff-pixels').getContext('2d').putImageData(diffPixels, 0, 0);
-        report.querySelector('.diff-pixels-2').getContext('2d').putImageData(removeThinLinesPixels, 0, 0);
     }
 
     resetCanvas(p) {
@@ -212,9 +215,9 @@ class RendererTester {
         p.noFill();
         p.noStroke();
         // reset
-        p.drawingContext.fillStyle = 'rgba(255,0,0,1)'; // some tests setting fillStyle, reset here
         p.strokeWeight(3); // for using XOR with thin line removed (using 8-connected neighborhood < 5) for diff
-        p.fill(200);
+        p.fill(0);
+        p.fill(200); // fill has cache, update twice to force reset ctx.fillStyle
         p.stroke(0);
         p.ellipseMode(p.CENTER);
         p.rectMode(p.CORNER);
@@ -236,10 +239,11 @@ var testRender = async function(draw, callback) {
 };
 
 testRender.describe = function(str) {
-    $(function() {
-        var $container = $('#test-graph');
-        $container.append('<h2>' + str + '</h2>');
-    });
+    if (!rendererTester.headless) {
+        let h2 = document.createElement('h2');
+        h2.innerText = str;
+        document.querySelector('#test-graph').appendChild(h2);
+    }
 };
 
 testRender.setMaxDiff = function(max) {
