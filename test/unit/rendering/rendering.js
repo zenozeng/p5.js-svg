@@ -54,6 +54,22 @@ describe('Rendering', function() {
             }, done);
         });
     });
+
+    describe('pixels', function() {
+        it('loadPixels: should be able to get pixel colors', async function() {
+            testRender.describe('loadPixels');
+            await rendererTester.test({
+                draw: async function(p) {
+                    p.background('red');
+                    p.ellipse(50, 50, 100);
+                    await p.loadPixels();
+                    p.fill(255 - p.pixels[0], 255 - p.pixels[1], 255 - p.pixels[2]);
+                    p.ellipse(0, 0, 100, 100);
+                }
+            });
+        });
+    })
+
     describe('customGradient', function() {
         it('customGradient', async function() {
             testRender.describe('customGradient');
@@ -79,5 +95,5 @@ describe('Rendering', function() {
                 }
             });
         })
-    })
+    });
 });

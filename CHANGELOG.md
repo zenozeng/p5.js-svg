@@ -1,5 +1,6 @@
 ## v1.3.0
 
+- feat: loadPixels() for https://github.com/zenozeng/p5.js-svg/issues/203
 - fix(graphics): call RendererSVG with this instead of pInst
 - fix: _pixelDensity for drawing image created by createGraphics
 - refactor: RendererTester

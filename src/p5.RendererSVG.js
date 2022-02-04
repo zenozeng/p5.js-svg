@@ -146,5 +146,17 @@ export default function(p5) {
         return p5.Element.prototype.parent.apply($this, arguments);
     };
 
+
+    RendererSVG.prototype.loadPixels = async function() {
+        const pixelsState = this._pixelsState; // if called by p5.Image
+        const pd = pixelsState._pixelDensity;
+        const w = this.width * pd;
+        const h = this.height * pd;
+        const imageData = await this.drawingContext.getImageData(0, 0, w, h, {async: true});
+        console.log({imageData});
+        pixelsState._setProperty('imageData', imageData);
+        pixelsState._setProperty('pixels', imageData.data);
+    }
+
     p5.RendererSVG = RendererSVG;
 }

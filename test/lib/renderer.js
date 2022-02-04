@@ -37,7 +37,7 @@ class RendererTester {
     }
 
     async test(options = {
-        draw: (p, info) => {},
+        draw: async (p, info) => {},
         before: async (p, info) => {}
     }) {
         await this.ready();
@@ -57,7 +57,7 @@ class RendererTester {
                 await options.before(p, info);
             }
             // Apply draw
-            options.draw(p, info);
+            await options.draw(p, info);
         }
         // Wait
         while (Date.now() < this.waitUntil) {
