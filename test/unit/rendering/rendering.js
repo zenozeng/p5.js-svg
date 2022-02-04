@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import {assert, p5, testRender, rendererTester} from '../../lib';
 
 describe('Rendering', function() {
@@ -33,6 +34,16 @@ describe('Rendering', function() {
                 }
             })
         });
+        it('createGraphics: should be able to call querySVG on p5.Graphics instance', function() {
+            new p5(function(p) {
+                p.setup = function() {
+                    p.createCanvas(100, 100, p.SVG);
+                    let pg = p.createGraphics(100, 100, p.SVG);
+                    pg.ellipse(0, 0, 100, 100);
+                    expect(pg.querySVG('path')).to.have.lengthOf(1);
+                };
+            });
+        })
     });
     describe('resizeCanvas', function() {
         it('resizeCanvas: should be scaled', function(done) {

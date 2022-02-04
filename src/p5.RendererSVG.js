@@ -153,7 +153,6 @@ export default function(p5) {
         const w = this.width * pd;
         const h = this.height * pd;
         const imageData = await this.drawingContext.getImageData(0, 0, w, h, {async: true});
-        console.log({imageData});
         pixelsState._setProperty('imageData', imageData);
         pixelsState._setProperty('pixels', imageData.data);
     }
