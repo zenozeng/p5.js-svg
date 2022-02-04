@@ -1,4 +1,5 @@
 import {Element as SVGCanvasElement} from 'svgcanvas';
+import {DEBUG} from './config';
 
 export default function(p5) {
     /**
@@ -9,7 +10,7 @@ export default function(p5) {
      * @param {Bool} isMainCanvas
      */
     function RendererSVG(elt, pInst, isMainCanvas) {
-        var svgCanvas = new SVGCanvasElement();
+        var svgCanvas = new SVGCanvasElement({debug: DEBUG});
         var svg = svgCanvas.svg;
 
         // replace <canvas> with <svg> and copy id, className
@@ -31,10 +32,25 @@ export default function(p5) {
             }
         };
 
-        p5.Renderer2D.call(this, elt, pInst, isMainCanvas);
+        const pInstProxy = new Proxy(pInst, {
+            get: function(target, prop) {
+                if (prop === '_pixelDensity') {
+                    // 1 is OK for SVG
+                    return 1;
+                }
+                return target[prop];
+            }
+        });
+
+        p5.Renderer2D.call(this, elt, pInstProxy, isMainCanvas);
 
         this.isSVG = true;
         this.svg = svg;
+
+        if (DEBUG) {
+            console.debug({svgCanvas});
+            console.debug(this.drawingContext);
+        }
 
         return this;
     }
@@ -44,21 +60,6 @@ export default function(p5) {
     RendererSVG.prototype._applyDefaults = function() {
         p5.Renderer2D.prototype._applyDefaults.call(this);
         this.drawingContext.lineWidth = 1;
-    };
-
-    RendererSVG.prototype.line = function(x1, y1, x2, y2) {
-        var styleEmpty = 'rgba(0,0,0,0)';
-        var ctx = this.drawingContext;
-        if (!this._doStroke) {
-            return this;
-        } else if(ctx.strokeStyle === styleEmpty){
-            return this;
-        }
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-        return this;
     };
 
     RendererSVG.prototype.resize = function(w, h) {
@@ -71,35 +72,12 @@ export default function(p5) {
             // note that at first this.width and this.height is undefined
             this.drawingContext.__clearCanvas();
         }
-        this._withPixelDensity(function() {
-            p5.Renderer2D.prototype.resize.call(this, w, h);
-        });
+
+        p5.Renderer2D.prototype.resize.call(this, w, h);
+
         // For scale, crop
         // see also: http://sarasoueidan.com/blog/svg-coordinate-systems/
         this.svg.setAttribute('viewBox', [0, 0, w, h].join(' '));
-    };
-
-    /**
-     * @private
-     */
-    RendererSVG.prototype._withPixelDensity = function(fn) {
-        let pixelDensity = this._pInst._pixelDensity;
-        this._pInst._pixelDensity = 1; // 1 is OK for SVG
-        fn.apply(this);
-        this._pInst._pixelDensity = pixelDensity;
-    };
-
-    RendererSVG.prototype.background = function() {
-        var args = arguments;
-        this._withPixelDensity(function() {
-            p5.Renderer2D.prototype.background.apply(this, args);
-        });
-    };
-
-    RendererSVG.prototype.resetMatrix = function() {
-        this._withPixelDensity(function() {
-            p5.Renderer2D.prototype.resetMatrix.apply(this);
-        });
     };
 
     /**
@@ -167,6 +145,17 @@ export default function(p5) {
         };
         return p5.Element.prototype.parent.apply($this, arguments);
     };
+
+
+    RendererSVG.prototype.loadPixels = async function() {
+        const pixelsState = this._pixelsState; // if called by p5.Image
+        const pd = pixelsState._pixelDensity;
+        const w = this.width * pd;
+        const h = this.height * pd;
+        const imageData = await this.drawingContext.getImageData(0, 0, w, h, {async: true});
+        pixelsState._setProperty('imageData', imageData);
+        pixelsState._setProperty('pixels', imageData.data);
+    }
 
     p5.RendererSVG = RendererSVG;
 }

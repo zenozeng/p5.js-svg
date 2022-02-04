@@ -1,4 +1,4 @@
-import {p5, testRendering} from '../../lib';
+import {rendererTester} from '../../lib';
 
 describe('Typography', function() {
     this.timeout(0);
@@ -7,7 +7,7 @@ describe('Typography', function() {
     describe('loadFont', function() {
         it('should load font', async function() {
             let myFont;
-            return testRendering({
+            await rendererTester.test({
                 before: async function(p) {
                     myFont = await new Promise((resolve, reject) => {
                         p.loadFont('https://unpkg.com/font-awesome@4.7.0/fonts/FontAwesome.otf', resolve, reject);
