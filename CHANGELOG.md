@@ -1,3 +1,7 @@
+## v1.3.1
+
+- fix(SVGCanvasElement): addEventListener, fixes https://github.com/zenozeng/p5.js-svg/issues/202, fixes https://github.com/zenozeng/p5.js-svg/issues/196
+
 ## v1.3.0
 
 - feat: loadPixels() for https://github.com/zenozeng/p5.js-svg/issues/203
