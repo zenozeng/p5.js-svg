@@ -12,7 +12,7 @@ Add this line in your projects index.html :
 <script src="https://unpkg.com/p5.js-svg@1.3.0"></script>
 ```
 
-(p5.js-svg v1.2.x is compatible with p5.js v1.4.1)
+(p5.js-svg v1.3.x is compatible with p5.js v1.4.1)
 
 Open your sketch.js and edit it:
 
