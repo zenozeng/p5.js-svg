@@ -1,5 +1,6 @@
-## Pending Next
+## v1.3.0
 
+- fix(graphics): call RendererSVG with this instead of pInst
 - fix: _pixelDensity for drawing image created by createGraphics
 - refactor: RendererTester
 - refactor: use Renderer2D.prototype.line instead of RendererSVG.prototype.line

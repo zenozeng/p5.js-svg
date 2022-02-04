@@ -59,6 +59,14 @@ describe('Rendering', function() {
             testRender.describe('customGradient');
             await rendererTester.test({
                 draw: function(p, {renderer}) {
+                    let pg = p.createGraphics(100, 100, p.isSVG ? p.SVG : p.P2D);
+                    p.background('blue');
+                    pg.background('red');
+                    pg.noStroke();
+                    p.image(pg, 50, 50);
+                    p.image(pg, 0, 0, 50, 50);
+
+                    // customGradient
                     let width = p.width;
                     let color1 = p.color('rgb(255,0,0)');
                     let color2 = p.color('rgb(0,255,0)');
@@ -66,6 +74,7 @@ describe('Rendering', function() {
                     gradient.addColorStop(0, color1);
                     gradient.addColorStop(1, color2);
                     p.drawingContext.fillStyle = gradient;
+                    p.noStroke();
                     p.ellipse(50, 50, 100);
                 }
             });

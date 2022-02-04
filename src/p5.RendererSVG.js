@@ -1,4 +1,5 @@
 import {Element as SVGCanvasElement} from 'svgcanvas';
+import {DEBUG} from './config';
 
 export default function(p5) {
     /**
@@ -9,7 +10,7 @@ export default function(p5) {
      * @param {Bool} isMainCanvas
      */
     function RendererSVG(elt, pInst, isMainCanvas) {
-        var svgCanvas = new SVGCanvasElement();
+        var svgCanvas = new SVGCanvasElement({debug: DEBUG});
         var svg = svgCanvas.svg;
 
         // replace <canvas> with <svg> and copy id, className
@@ -45,6 +46,11 @@ export default function(p5) {
 
         this.isSVG = true;
         this.svg = svg;
+
+        if (DEBUG) {
+            console.debug({svgCanvas});
+            console.debug(this.drawingContext);
+        }
 
         return this;
     }

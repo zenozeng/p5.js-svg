@@ -9,7 +9,7 @@ export default function(p5) {
         if (isSVG) {
             // replace <canvas> with <svg>
             var c = this._renderer.elt;
-            this._renderer = new p5.RendererSVG(c, pInst, false); // replace renderer
+            this._renderer = new p5.RendererSVG(c, this, false); // replace renderer
             c = this._renderer.elt;
             this.elt = c; // replace this.elt
             // do default again
