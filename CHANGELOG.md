@@ -1,3 +1,7 @@
+## v1.3.2
+
+- update package.main to dist/p5.svg.js, fixes #213
+
 ## v1.3.1
 
 - fix(SVGCanvasElement): addEventListener, fixes https://github.com/zenozeng/p5.js-svg/issues/202, fixes https://github.com/zenozeng/p5.js-svg/issues/196
