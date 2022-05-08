@@ -1,3 +1,9 @@
+## v1.3.3
+
+- fix: add cjs output, fixes #217
+- docs: update examples/webpack
+- docs: add examples/vite
+
 ## v1.3.2
 
 - update package.main to dist/p5.svg.js, fixes #213
