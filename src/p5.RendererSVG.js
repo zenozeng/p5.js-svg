@@ -127,7 +127,11 @@ export default function(p5) {
                 sHeight /= this._pInst._pixelDensity;
                 elt.setAttribute('viewBox', [sx, sy, sWidth, sHeight].join(', '));
             }
-            this.appendChild(elt);
+
+            let g = p5.SVGElement.create('g');
+            this.drawingContext.__applyTransformation(g.elt);
+            g.elt.appendChild(elt);
+            this.appendChild(g.elt);
         } else {
             p5.Renderer2D.prototype.image.apply(this, arguments);
         }
