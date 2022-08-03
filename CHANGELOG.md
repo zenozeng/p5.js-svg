@@ -1,3 +1,7 @@
+## Pending Next Release
+
+- fix: make .image() use the transformation matrix ([Michael Elsdörfer](https://github.com/miracle2k)) (https://github.com/zenozeng/p5.js-svg/pull/227)
+
 ## v1.3.3
 
 - fix: add cjs output, fixes #217
