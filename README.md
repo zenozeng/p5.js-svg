@@ -9,7 +9,7 @@ manipulating existing SVG file without rasterization.
 Add this line in your projects index.html :
 
 ```html
-<script src="https://unpkg.com/p5.js-svg@1.5.0"></script>
+<script src="https://unpkg.com/p5.js-svg@1.5.1"></script>
 ```
 
 (p5.js-svg v1.5.x is compatible with p5.js v1.6.x)
