@@ -3,6 +3,7 @@ import RendererSVG from './p5.RendererSVG'
 import SVGFiters from './p5.SVGFilters'
 import Rendering from './rendering'
 import IO from './io'
+import Image from './image'
 import Element from './element'
 import Filters from './filters'
 import constants from './constants'
@@ -14,6 +15,7 @@ function init(p5: P5) {
     SVGFiters(p5svg)
     Rendering(p5svg)
     IO(p5svg)
+    Image(p5svg)
     Filters(p5svg)
     Element(p5svg)
 

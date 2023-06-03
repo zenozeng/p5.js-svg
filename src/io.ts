@@ -143,12 +143,15 @@ export default function (p5: P5SVG) {
      * @param {Function} callback callback
      */
     const _saveFrames = p5.prototype.saveFrames
-    p5.prototype.saveFrames = function (filename: string, extension: string, duration: number, fps: number, callback: any) {
-        const args = [filename, extension, duration, fps, callback]
+    p5.prototype.saveFrames = function (...args: any) {
+        const filename: string = args[0]
+        const extension: string = args[1]
+        let duration: number = args[2]
+        let fps: number = args[3]
+        const callback: any = args[4]
 
         if (!this._renderer.svg) {
-            _saveFrames.apply(this, args)
-            return
+            return _saveFrames.apply(this, args)
         }
 
         duration = duration || 3
@@ -211,8 +214,6 @@ export default function (p5: P5SVG) {
      */
     const _save = p5.prototype.save
     p5.prototype.save = function (...args: any[]) {
-        args = [args[0], args[1]]
-
         let svg
 
         if (args[0] instanceof p5.Graphics) {

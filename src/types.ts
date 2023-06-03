@@ -24,6 +24,7 @@ export type p5svg = p5 & {
 export type P5SVG = P5 & {
     new(sketch: (...args: any[]) => any, node?: HTMLElement): p5svg
     Renderer2D: any
+    RendererSVG: any
     Graphics: any
     SVGElement: {
         new(elt: string | Element, pInst?: p5): SVGElement
@@ -41,7 +42,7 @@ export type P5SVG = P5 & {
         erode(inGraphics: string, resultGraphics: string): SVGElement[]
         dilate(inGraphics: string, resultGraphics: string): SVGElement[]
     }
-    RendererSVG: any
+    _validateParameters: any
 }
 
 export { p5 }
