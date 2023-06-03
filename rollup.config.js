@@ -15,7 +15,7 @@ export default [
     },
     // cjs (webpack, vite)
     {
-        input: 'src/index.js',
+        input: 'src/index.ts',
         output: {
             file: 'dist/p5.svg.cjs.js',
             format: 'cjs',

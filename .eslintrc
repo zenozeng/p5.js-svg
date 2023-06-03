@@ -22,8 +22,12 @@
                 "checkLoops": false
             }
         ],
+        "semi": [
+            2,
+            "never"
+        ],
         "@typescript-eslint/no-var-requires": "off",
-        "@typesript-eslint/no-explicit-any": "off"
+        "@typescript-eslint/no-explicit-any": "off"
     },
     "env": {
         "browser": true,

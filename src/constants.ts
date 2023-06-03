@@ -1,4 +1,4 @@
-var constants = {
+const constants = {
     SVG: 'svg'
 }
 
