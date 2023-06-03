@@ -1,5 +1,6 @@
-## Pending Next Release
+## v1.5.0
 
+- feat: TypeScript type declarations
 - refactor: rewrite using TypeScript
 - fix: clear after resizing should not have unwanted white background, fixes
   #235

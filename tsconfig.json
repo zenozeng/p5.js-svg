@@ -2,6 +2,8 @@
     "compilerOptions": {
         "noImplicitAny": true,
         "esModuleInterop": true,
-        "inlineSourceMap": true
+        "inlineSourceMap": true,
+        "declarationDir": "dist",
+        "declaration": true
     }
 }
