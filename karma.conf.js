@@ -3,16 +3,16 @@
 
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
-module.exports = function(config) {
+module.exports = function (config) {
     config.set({
         basePath: '',
         frameworks: ['mocha'],
         files: [
             // note: lower index will override greater index config
-            {pattern: 'dist/*.js.map', included: false},
-            {pattern: 'src/**/*.js', included: false},
-            {pattern: 'test/unit/**/*', included: false},
-            'https://unpkg.com/p5@1.4.1/lib/p5.min.js',
+            { pattern: 'dist/*.js.map', included: false },
+            { pattern: 'src/**/*.js', included: false },
+            { pattern: 'test/unit/**/*', included: false },
+            'https://unpkg.com/p5@1.6.0/lib/p5.min.js',
             'dist/p5.svg.js',
             'dist/test.js'
         ],
@@ -22,7 +22,7 @@ module.exports = function(config) {
         reporters: ['progress', 'coverage', 'mocha'],
         coverageReporter: {
             type: 'lcovonly',
-            dir : 'test/coverage/',
+            dir: 'test/coverage/',
             subdir: '.',
             file: 'lcov.info'
         },

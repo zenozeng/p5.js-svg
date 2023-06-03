@@ -1,6 +1,10 @@
-## Pending Next Release
+## v1.4.0
 
-- fix: make .image() use the transformation matrix ([Michael Elsdörfer](https://github.com/miracle2k)) (https://github.com/zenozeng/p5.js-svg/pull/227)
+- test: p5.js@1.6.0
+- chore(deps): upgrade deps
+- fix: make .image() use the transformation matrix
+  ([Michael Elsdörfer](https://github.com/miracle2k))
+  (https://github.com/zenozeng/p5.js-svg/pull/227)
 
 ## v1.3.3
 
@@ -14,7 +18,9 @@
 
 ## v1.3.1
 
-- fix(SVGCanvasElement): addEventListener, fixes https://github.com/zenozeng/p5.js-svg/issues/202, fixes https://github.com/zenozeng/p5.js-svg/issues/196
+- fix(SVGCanvasElement): addEventListener, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/202, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/196
 
 ## v1.3.0
 
@@ -27,7 +33,8 @@
 
 ## v1.2.1
 
-- fix: add p5.Color.prototype.indexOf, fixes https://github.com/zenozeng/p5.js-svg/issues/204
+- fix: add p5.Color.prototype.indexOf, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/204
 
 ## v1.2.0
 
@@ -48,7 +55,9 @@
 
 ## v1.0.7
 
-- feat: sync element's width and height to context (svgcanvas@2.0.3), calling clear() in your draw function will now trigger internal context.__clearCanvas() to remove elements.
+- feat: sync element's width and height to context (svgcanvas@2.0.3), calling
+  clear() in your draw function will now trigger internal
+  context.__clearCanvas() to remove elements.
 - test: add test for loadFont, fixes #147
 
 ## v1.0.6
@@ -57,13 +66,18 @@
 
 ## v1.0.5
 
-- feat: implement CanvasTransform Interface, see https://github.com/gliffy/canvas2svg/pull/83, fixes https://github.com/zenozeng/p5.js-svg/issues/170, 
-- refactor: support p5.js@1.3.1, see https://github.com/zenozeng/p5.js-svg/pull/182
+- feat: implement CanvasTransform Interface, see
+  https://github.com/gliffy/canvas2svg/pull/83, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/170,
+- refactor: support p5.js@1.3.1, see
+  https://github.com/zenozeng/p5.js-svg/pull/182
 - refactor: ESM
 - refactor: remove loadGraphics
 - fix: keep svgcanvas's root `<g>` when applying filter
-- fix: call _incrementPreload & _decrementPreload in p5.prototype.loadSVG, fixes https://github.com/zenozeng/p5.js-svg/issues/168
-- test: add test for resetMatrix, for https://github.com/zenozeng/p5.js-svg/issues/170
+- fix: call _incrementPreload & _decrementPreload in p5.prototype.loadSVG, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/168
+- test: add test for resetMatrix, for
+  https://github.com/zenozeng/p5.js-svg/issues/170
 - test: diff without converting to png
 - test: update IO/saveFrames tests
 
@@ -77,7 +91,7 @@ p5.svg@0.5.2 (tests with p5.js@0.4.13)
 
 - Remove String.prototype.repeat polyfill
 
-    Since https://github.com/processing/p5.js/issues/858 already fixed.
+  Since https://github.com/processing/p5.js/issues/858 already fixed.
 
 - Replace `this._graphics` with `this._renderer` (for p5.js@0.4.13)
 
@@ -105,9 +119,11 @@ p5.svg@0.5.0 (requires p5.js@0.4.8)
 
 ## v0.4.3
 
-p5.svg@0.4.3 (requires p5.js@0.4.7 with [patch#850](https://github.com/processing/p5.js/pull/850))
+p5.svg@0.4.3 (requires p5.js@0.4.7 with
+[patch#850](https://github.com/processing/p5.js/pull/850))
 
-- Write filter attribute every time filter applied, fixes https://github.com/zenozeng/p5.js-svg/issues/137
+- Write filter attribute every time filter applied, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/137
 
 - Fix SVGElement.unfilter not work when arg not defined
 
@@ -119,11 +135,14 @@ p5.svg@0.4.3 (requires p5.js@0.4.7 with [patch#850](https://github.com/processin
 
 ## v0.4.2
 
-p5.svg@0.4.2 (requires p5.js@0.4.7, with [patch#850](https://github.com/processing/p5.js/pull/850))
+p5.svg@0.4.2 (requires p5.js@0.4.7, with
+[patch#850](https://github.com/processing/p5.js/pull/850))
 
 ### p5.SVG
 
-- add String.prototype.repeat polyfill: fixes https://github.com/zenozeng/p5.js-svg/issues/126 & https://github.com/zenozeng/p5.js-svg/issues/127
+- add String.prototype.repeat polyfill: fixes
+  https://github.com/zenozeng/p5.js-svg/issues/126 &
+  https://github.com/zenozeng/p5.js-svg/issues/127
 
 - Update Browser Compatibility Info (add Safari 8 on Mac and Safari on iOS 8)
 
@@ -133,7 +152,8 @@ p5.svg@0.4.2 (requires p5.js@0.4.7, with [patch#850](https://github.com/processi
 
 ## v0.4.1
 
-p5.svg@0.4.1 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/processing/p5.js/pull/850))
+p5.svg@0.4.1 (built on top of p5.js@0.4.7, with
+[patch#850](https://github.com/processing/p5.js/pull/850))
 
 Fix some issues in IE 10 and Safari (iOS).
 
@@ -143,17 +163,22 @@ Fix some issues in IE 10 and Safari (iOS).
 
 - Use Node.childNodes for IE
 
-- Update test/io/save/canvas's-save, fixes https://github.com/zenozeng/p5.js-svg/issues/123
+- Update test/io/save/canvas's-save, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/123
 
-- Use \<svg\> to display tests, ignore diff, workround for https://github.com/zenozeng/p5.js-svg/issues/124
+- Use \<svg\> to display tests, ignore diff, workround for
+  https://github.com/zenozeng/p5.js-svg/issues/124
 
-- use devicePixelRatio for diffCanvas in tests, fixes https://github.com/zenozeng/p5.js-svg/issues/125
+- use devicePixelRatio for diffCanvas in tests, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/125
 
 ### svgcanvas
 
-- Use parentNode.removeChild instead of childNode.remove for IE, fixes https://github.com/zenozeng/p5.js-svg/issues/120
+- Use parentNode.removeChild instead of childNode.remove for IE, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/120
 
-- Patch for IE's bug: search for a duplicate xmnls, fixes https://github.com/zenozeng/p5.js-svg/issues/121
+- Patch for IE's bug: search for a duplicate xmnls, fixes
+  https://github.com/zenozeng/p5.js-svg/issues/121
 
 - Use Node.childNodes for IE
 
@@ -161,7 +186,8 @@ Fix some issues in IE 10 and Safari (iOS).
 
 ### p5.svg
 
-p5.svg@0.4.0 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/processing/p5.js/pull/850))
+p5.svg@0.4.0 (built on top of p5.js@0.4.7, with
+[patch#850](https://github.com/processing/p5.js/pull/850))
 
 #### Filters
 
@@ -173,7 +199,7 @@ p5.svg@0.4.0 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/p
 
 - SVGElement.prototype.unfilter = function(filter, arg)
 
-    Undo the filter applied.
+  Undo the filter applied.
 
 - SVGFilters.colorMatrix = function(inGraphics, resultGraphics, matrix)
 
@@ -183,23 +209,26 @@ p5.svg@0.4.0 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/p
 
 - SVGFilters.invert using feColorMatrix
 
-- SVGFilters.threshold using feColorMatrix and feComponentTransfer (linear feFunc)
+- SVGFilters.threshold using feColorMatrix and feComponentTransfer (linear
+  feFunc)
 
 - SVGFilters.opaque using feColorMatrix
 
 - SVGFilters._discreteTableValues
 
-    Generate discrete table values based on the given color map function
+  Generate discrete table values based on the given color map function
 
 - SVGFilters.posterize using feComponentTransfer (discrete feFunc)
 
 - SVGFilters.erode using feOffset and feBlend
 
-    Will create 4 offset layer and combine them with current layer using darken blend mode.
+  Will create 4 offset layer and combine them with current layer using darken
+  blend mode.
 
 - SVGFilters.dilate using feOffset and feBlend
 
-    Will create 4 offset layer and combine them with current layer using lighten blend mode.
+  Will create 4 offset layer and combine them with current layer using lighten
+  blend mode.
 
 #### p5.SVGElement
 
@@ -217,19 +246,19 @@ p5.svg@0.4.0 (built on top of p5.js@0.4.7, with [patch#850](https://github.com/p
 
 - SVGElement.prototype.parentNode()
 
-    Get parent node
+  Get parent node
 
 - SVGElement.prototype.parentNode(selector)
 
-    Get parent node matching given selector
+  Get parent node matching given selector
 
 - SVGElement.prototype.matches = function(selector)
 
-    To tell whether a element matches certain selector
+  To tell whether a element matches certain selector
 
 - SVGElement.prototype._getDefs
 
-    Get defs element, or create one if not exists
+  Get defs element, or create one if not exists
 
 #### RendererSVG
 
@@ -289,13 +318,16 @@ p5.svg@0.3.0 (built on top of p5.js@0.4.7)
 
 - add RendererSVG.prototype._applyDefaults, fixes #95 (lineWidth issue)
 
-- Rendering functions (createCanvas(), resizeCanvas(), noCanvas(), createGraphics()) now covered with unit tests
+- Rendering functions (createCanvas(), resizeCanvas(), noCanvas(),
+  createGraphics()) now covered with unit tests
 
 - use createCanvas(w, h, SVG) instead of createSVG(w, h)
 
 - set viewBox attribute when resize, fixes scale issue
 
-- add RendererSVG.prototype._withPixelDensity (temporally set pixel density to 1), fixes window scaled issue (https://github.com/zenozeng/p5.js-svg/issues/35)
+- add RendererSVG.prototype._withPixelDensity (temporally set pixel density to
+  1), fixes window scaled issue
+  (https://github.com/zenozeng/p5.js-svg/issues/35)
 
 - Fix issues in test-render
 

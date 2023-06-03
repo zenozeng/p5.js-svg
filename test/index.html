@@ -1,10 +1,12 @@
 <!doctype html>
+
 <head>
     <meta charset="UTF-8">
     <link type="text/css" rel="stylesheet" href="https://unpkg.com/mocha/mocha.css">
     <link type="text/css" rel="stylesheet" href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.css">
     <link type="text/css" rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <h1>p5.js-svg - Unit Test</h1>
     <div id="mocha"></div>
@@ -16,14 +18,13 @@
         <div>Canvas</div>
     </div>
 
-    <script src="https://unpkg.com/p5@1.4.1/lib/p5.js"></script>
+    <script src="https://unpkg.com/p5@1.6.0/lib/p5.js"></script>
     <script src="../dist/p5.svg.js"></script>
     <script src="https://unpkg.com/chai/chai.js"></script>
     <script src="https://unpkg.com/mocha/mocha.js"></script>
     <script>
         mocha.setup('bdd');
-        mocha.setup({timeout: 10000, slow: 2000});
+        mocha.setup({ timeout: 10000, slow: 2000 });
     </script>
     <script src="../dist/test.js"></script>
 </body>
-

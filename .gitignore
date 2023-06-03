@@ -9,3 +9,4 @@ dist
 test/unit/bundle.js
 doc/reference
 test/test.html
+.DS_Store
