@@ -13,7 +13,7 @@ export type P5 = typeof p5
 
 export type SVG = 'svg'
 
-export type p5svg = p5 & {
+export type p5SVG = p5 & {
     SVG: SVG
     querySVG(selector: string): SVGElement[]
     createCanvas(w: number, h: number, renderer: Renderer | SVG): void
@@ -22,7 +22,7 @@ export type p5svg = p5 & {
 }
 
 export type P5SVG = P5 & {
-    new(sketch: (p: p5svg) => any, node?: HTMLElement): p5svg
+    new(sketch: (p: p5SVG) => any, node?: HTMLElement): p5SVG
     Renderer2D: any
     RendererSVG: any
     Graphics: any

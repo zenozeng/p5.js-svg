@@ -9,10 +9,10 @@ manipulating existing SVG file without rasterization.
 Add this line in your projects index.html :
 
 ```html
-<script src="https://unpkg.com/p5.js-svg@1.4.0"></script>
+<script src="https://unpkg.com/p5.js-svg@1.5.0"></script>
 ```
 
-(p5.js-svg v1.4.x is compatible with p5.js v1.6.x)
+(p5.js-svg v1.5.x is compatible with p5.js v1.6.x)
 
 Open your sketch.js and edit it:
 
@@ -39,6 +39,7 @@ Then you can open your html file, and view the result. It's \<svg\>!
 
 - https://zenozeng.github.io/p5.js-svg/examples/
 - https://zenozeng.github.io/p5.js-svg/test/
+- [Vite + TypeScript](https://github.com/zenozeng/p5.js-svg/tree/main/examples/vite)
 
 ## SVG Renderer vs Canvas2D Renderer
 

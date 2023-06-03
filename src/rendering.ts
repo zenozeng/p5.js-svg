@@ -1,10 +1,10 @@
 import constants from './constants'
-import { P5SVG, p5svg } from './types'
+import { P5SVG, p5SVG } from './types'
 
 export default function (p5: P5SVG) {
     // patch p5.Graphics for SVG
     const _graphics = p5.Graphics
-    p5.Graphics = function (w: number, h: number, renderer: any, pInst: p5svg) {
+    p5.Graphics = function (w: number, h: number, renderer: any, pInst: p5SVG) {
         const isSVG = renderer === constants.SVG
         _graphics.apply(this, [w, h, isSVG ? pInst.P2D : renderer, pInst])
         if (isSVG) {

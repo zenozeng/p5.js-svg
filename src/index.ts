@@ -1,4 +1,4 @@
-import { P5SVG, P5, P5Global, SVGElement, SVG, p5svg } from './types'
+import { P5SVG, P5, P5Global, SVGElement, SVG, p5SVG } from './types'
 import RendererSVG from './p5.RendererSVG'
 import SVGFiters from './p5.SVGFilters'
 import Rendering from './rendering'
@@ -32,4 +32,4 @@ if (typeof global.p5 !== 'undefined') {
 
 export default init
 
-export { SVGElement, SVG, p5svg }
+export { SVGElement, SVG, p5SVG }

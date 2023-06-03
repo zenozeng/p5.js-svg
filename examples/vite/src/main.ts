@@ -1,7 +1,10 @@
+import './style.css'
 import p5 from 'p5'
-import init, { p5svg } from '../..'
+import init, { p5SVG } from 'p5.js-svg'
 
-const sketch = (p: p5svg) => {
+init(p5)
+
+const sketch = (p: p5SVG) => {
 
     p.setup = () => {
         p.createCanvas(100, 100, p.SVG)
@@ -13,4 +16,4 @@ const sketch = (p: p5svg) => {
 
 }
 
-const p5svg = new (init(p5))(sketch, document.body)
+new p5(sketch, document.body)

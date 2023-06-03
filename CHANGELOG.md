@@ -1,3 +1,8 @@
+## v1.5.1
+
+- docs: examples/vite
+- refactor: p5svg -> p5SVG
+
 ## v1.5.0
 
 - feat: TypeScript type declarations
