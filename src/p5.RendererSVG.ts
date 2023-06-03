@@ -1,7 +1,6 @@
 import { DEBUG } from './config'
 import { P5SVG, p5 } from './types'
-
-const SVGCanvasElement = require('svgcanvas').Element
+import { Element as SVGCanvasElement } from 'svgcanvas'
 
 export default function (p5: P5SVG) {
     /**

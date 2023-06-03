@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "noImplicitAny": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "inlineSourceMap": true
     }
 }

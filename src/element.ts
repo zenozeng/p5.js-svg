@@ -81,31 +81,30 @@ export default (p5: P5SVG) => {
             return null
         }
 
+        /**
+         * Apply different attribute operation based on arguments.length
+         * <ul>
+         *     <li>setAttribute(name, value)</li>
+         *     <li>setAttributeNS(namespace, name, value)</li>
+         *     <li>getAttribute(name)</li>
+         * </ul>
+         *
+         */
+        attribute = function (...args: any[]): any {
+            if (args.length === 3) {
+                this.elt.setAttributeNS(args[0], args[1], args[2])
+                return this
+            }
+            if (args.length === 2) {
+                this.elt.setAttribute(args[0], args[1])
+                return this
+            }
+            if (args.length === 1) {
+                return this.elt.getAttribute(args[0])
+            }
+            return this
+        }
     }
 
-    /**
-     * Apply different attribute operation based on arguments.length
-     * <ul>
-     *     <li>setAttribute(name, value)</li>
-     *     <li>setAttributeNS(namespace, name, value)</li>
-     *     <li>getAttribute(name)</li>
-     * </ul>
-     *
-     */
-    p5.SVGElement.prototype = function (...args: any[]) {
-        if (args.length === 3) {
-            this.elt.setAttributeNS(args[0], args[1], args[2])
-            return this
-        }
-        if (args.length === 2) {
-            this.elt.setAttribute(args[0], args[1])
-            return this
-        }
-        if (args.length === 1) {
-            return this.elt.getAttribute(args[0])
-        }
-        return this
-    }
+
 }
-
-

@@ -1,5 +1,6 @@
 import { P5SVG, P5, P5Global } from './types'
 import RendererSVG from './p5.RendererSVG'
+import SVGFiters from './p5.SVGFilters'
 import Rendering from './rendering'
 import IO from './io'
 import Element from './element'
@@ -10,6 +11,7 @@ function init(p5: P5) {
     const p5svg = p5 as unknown as P5SVG
 
     RendererSVG(p5svg)
+    SVGFiters(p5svg)
     Rendering(p5svg)
     IO(p5svg)
     Filters(p5svg)

@@ -50,7 +50,7 @@ export default function (p5: P5SVG) {
             rootGroup.appendChild(g.elt)
 
             // apply filter
-            p5.SVGFilters.apply(this, operation, value, defs)
+            p5.SVGFilters.apply(g, operation, value, defs)
 
             // create new <g> so that new element won't be influenced by the filter
             g = p5.SVGElement.create('g')

@@ -162,7 +162,7 @@ export default function (p5: P5SVG) {
         let pending = 0
 
         const frameFactory = setInterval(() => {
-            (function (count) {
+            ((count) => {
                 pending++
                 this._makeSVGFrame({
                     filename: filename + count,
@@ -202,13 +202,13 @@ export default function (p5: P5SVG) {
     }
 
     /**
- * Extends p5's save method with SVG support
- *
- * @function save
- * @memberof p5.prototype
- * @param {Graphics|Element|SVGElement} [source] Source to save
- * @param {String} [filename] filename
- */
+     * Extends p5's save method with SVG support
+     *
+     * @function save
+     * @memberof p5.prototype
+     * @param {Graphics|Element|SVGElement} [source] Source to save
+     * @param {String} [filename] filename
+     */
     const _save = p5.prototype.save
     p5.prototype.save = function (...args: any[]) {
         args = [args[0], args[1]]
