@@ -11,7 +11,7 @@ export type SVGElement = p5.Element & {
 
 export type P5 = typeof p5
 
-type SVG = 'svg'
+export type SVG = 'svg'
 
 export type p5svg = p5 & {
     SVG: SVG
@@ -22,7 +22,7 @@ export type p5svg = p5 & {
 }
 
 export type P5SVG = P5 & {
-    new(sketch: (...args: any[]) => any, node?: HTMLElement): p5svg
+    new(sketch: (p: p5svg) => any, node?: HTMLElement): p5svg
     Renderer2D: any
     RendererSVG: any
     Graphics: any
