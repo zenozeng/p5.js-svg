@@ -1,7 +1,7 @@
-import {Element as SVGCanvasElement} from 'svgcanvas';
-import {DEBUG} from './config';
+import { Element as SVGCanvasElement } from 'svgcanvas';
+import { DEBUG } from './config';
 
-export default function(p5) {
+export default function (p5) {
     /**
      * @namespace RendererSVG
      * @constructor
@@ -10,7 +10,7 @@ export default function(p5) {
      * @param {Bool} isMainCanvas
      */
     function RendererSVG(elt, pInst, isMainCanvas) {
-        var svgCanvas = new SVGCanvasElement({debug: DEBUG});
+        var svgCanvas = new SVGCanvasElement({ debug: DEBUG });
         var svg = svgCanvas.svg;
 
         // replace <canvas> with <svg> and copy id, className
@@ -24,7 +24,7 @@ export default function(p5) {
 
         elt.parentNode = {
             // fake parentNode.removeChild so that noCanvas will work
-            removeChild: function(element) {
+            removeChild: function (element) {
                 if (element === elt) {
                     var wrapper = svgCanvas.getElement();
                     wrapper.parentNode.removeChild(wrapper);
@@ -33,7 +33,7 @@ export default function(p5) {
         };
 
         const pInstProxy = new Proxy(pInst, {
-            get: function(target, prop) {
+            get: function (target, prop) {
                 if (prop === '_pixelDensity') {
                     // 1 is OK for SVG
                     return 1;
@@ -48,7 +48,7 @@ export default function(p5) {
         this.svg = svg;
 
         if (DEBUG) {
-            console.debug({svgCanvas});
+            console.debug({ svgCanvas });
             console.debug(this.drawingContext);
         }
 
@@ -57,12 +57,12 @@ export default function(p5) {
 
     RendererSVG.prototype = Object.create(p5.Renderer2D.prototype);
 
-    RendererSVG.prototype._applyDefaults = function() {
+    RendererSVG.prototype._applyDefaults = function () {
         p5.Renderer2D.prototype._applyDefaults.call(this);
         this.drawingContext.lineWidth = 1;
     };
 
-    RendererSVG.prototype.resize = function(w, h) {
+    RendererSVG.prototype.resize = function (w, h) {
         if (!w || !h) {
             return;
         }
@@ -80,6 +80,11 @@ export default function(p5) {
         this.svg.setAttribute('viewBox', [0, 0, w, h].join(' '));
     };
 
+    RendererSVG.prototype.clear = function () {
+        p5.Renderer2D.prototype.clear.call(this);
+        this.drawingContext.__clearCanvas();
+    };
+
     /**
      * Append a element to current SVG Graphics
      *
@@ -87,7 +92,7 @@ export default function(p5) {
      * @memberof RendererSVG.prototype
      * @param {SVGElement|Element} element
      */
-    RendererSVG.prototype.appendChild = function(element) {
+    RendererSVG.prototype.appendChild = function (element) {
         if (element && element.elt) {
             element = element.elt;
         }
@@ -108,7 +113,7 @@ export default function(p5) {
      * @param {Number} width
      * @param {Number} height
      */
-    RendererSVG.prototype.image = function(img, sx, sy, sWidth, sHeight, x, y, w, h) {
+    RendererSVG.prototype.image = function (img, sx, sy, sWidth, sHeight, x, y, w, h) {
         if (!img) {
             throw new Error('Invalid image: ' + img);
         }
@@ -143,7 +148,7 @@ export default function(p5) {
      *
      * @see https://github.com/zenozeng/p5.js-svg/issues/187
      */
-    RendererSVG.prototype.parent = function() {
+    RendererSVG.prototype.parent = function () {
         const $this = {
             elt: this.elt.getElement()
         };
@@ -151,12 +156,12 @@ export default function(p5) {
     };
 
 
-    RendererSVG.prototype.loadPixels = async function() {
+    RendererSVG.prototype.loadPixels = async function () {
         const pixelsState = this._pixelsState; // if called by p5.Image
         const pd = pixelsState._pixelDensity;
         const w = this.width * pd;
         const h = this.height * pd;
-        const imageData = await this.drawingContext.getImageData(0, 0, w, h, {async: true});
+        const imageData = await this.drawingContext.getImageData(0, 0, w, h, { async: true });
         pixelsState._setProperty('imageData', imageData);
         pixelsState._setProperty('pixels', imageData.data);
     }

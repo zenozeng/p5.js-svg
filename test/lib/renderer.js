@@ -1,20 +1,20 @@
 var p5 = window.p5;
-import {Element as SVGCanvasElement} from 'svgcanvas';
+import { Element as SVGCanvasElement } from 'svgcanvas';
 import { countPixels, config } from './canvas';
 
 class RendererTester {
     // init p5 canvas instance and p5-svg instance
     constructor() {
-        this.p5svg = new p5(function(p) {
-            p.setup = function() {
+        this.p5svg = new p5(function (p) {
+            p.setup = function () {
                 p.createCanvas(100, 100, p.SVG);
                 p.noLoop();
                 p.isSVG = true;
                 p.__ready = true;
             };
         });
-        this.p5canvas = new p5(function(p) {
-            p.setup = function() {
+        this.p5canvas = new p5(function (p) {
+            p.setup = function () {
                 p.createCanvas(100, 100);
                 p.noLoop();
                 p.isSVG = false;
@@ -37,8 +37,8 @@ class RendererTester {
     }
 
     async test(options = {
-        draw: async (p, info) => {},
-        before: async (p, info) => {}
+        draw: async (p, info) => { },
+        before: async (p, info) => { }
     }) {
         await this.ready();
         // Set options
@@ -64,11 +64,11 @@ class RendererTester {
             await new Promise((resolve) => setTimeout(resolve, 100));
         }
         // Pixels
-        const svg = SVGCanvasElement.prototype.toDataURL.call({svg: this.p5svg._renderer.svg}, "image/svg+xml");
+        const svg = SVGCanvasElement.prototype.toDataURL.call({ svg: this.p5svg._renderer.svg }, "image/svg+xml");
         const svgImage = await new Promise((resolve) => {
             var svgImage = new Image();
-            svgImage.onload = function() {
-               resolve(svgImage)
+            svgImage.onload = function () {
+                resolve(svgImage)
             }
             svgImage.src = svg;
         })
@@ -79,10 +79,10 @@ class RendererTester {
         // Report
         const count = Math.max(countPixels(svgPixels), countPixels(canvasPixels));
         const diffCount = countPixels(removeThinLinesPixels);
-        const diffRate = diffCount / count;
+        const diffRate = diffCount === 0 ? 0 : diffCount / count;
         const match = diffRate <= this.maxDiff;
         const fn = options.draw.toString();
-        await this.report({canvasPixels, svgPixels, diffPixels, removeThinLinesPixels, svg, match, fn, diffRate})
+        await this.report({ canvasPixels, svgPixels, diffPixels, removeThinLinesPixels, svg, match, fn, diffRate })
     }
 
     getPixels(image) {
@@ -103,14 +103,14 @@ class RendererTester {
         const diffImgData = canvas.getContext('2d').getImageData(0, 0, width, height);
         let $this = this;
         for (var i = 0; i < imgData1.data.length; i += 4) {
-            var indexes = [i, i+1, i+2, i+3];
-            indexes.forEach(function(i) {
+            var indexes = [i, i + 1, i + 2, i + 3];
+            indexes.forEach(function (i) {
                 diffImgData.data[i] = 0;
             });
-            if(indexes.some(function(i) {
+            if (indexes.some(function (i) {
                 return Math.abs(imgData1.data[i] - imgData2.data[i]) > $this.maxPixelDiff;
             })) {
-                diffImgData.data[i+3] = 255; // set black
+                diffImgData.data[i + 3] = 255; // set black
             }
         }
         return diffImgData;
@@ -126,40 +126,40 @@ class RendererTester {
         ctx.putImageData(imageData, 0, 0);
         var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         var imgDataCopy = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    
-        var getPixelIndex = function(x, y) {
+
+        var getPixelIndex = function (x, y) {
             return (y * width + x) * 4 + 3;
         };
-    
-        var getPixel = function(x, y) {
+
+        var getPixel = function (x, y) {
             var alphaIndex = getPixelIndex(x, y);
             return imgDataCopy.data[alphaIndex];
         };
-    
-        var setPixel = function(x, y, value) {
+
+        var setPixel = function (x, y, value) {
             imgData.data[getPixelIndex(x, y)] = value;
         };
-    
+
         for (var x = 1; x < width - 1; x++) {
             for (var y = 1; y < height - 1; y++) {
                 if (getPixel(x, y) == 0) {
                     continue; // ignore transparents
                 }
                 var links = [
-                    {x: x - 1, y: y - 1},
-                    {x: x, y: y - 1},
-                    {x: x + 1, y: y - 1},
-                    {x: x - 1, y: y},
-                    {x: x + 1, y: y},
-                    {x: x - 1, y: y + 1},
-                    {x: x, y: y + 1},
-                    {x: x + 1, y: y + 1}
-                ].map(function(p) {
+                    { x: x - 1, y: y - 1 },
+                    { x: x, y: y - 1 },
+                    { x: x + 1, y: y - 1 },
+                    { x: x - 1, y: y },
+                    { x: x + 1, y: y },
+                    { x: x - 1, y: y + 1 },
+                    { x: x, y: y + 1 },
+                    { x: x + 1, y: y + 1 }
+                ].map(function (p) {
                     return getPixel(p.x, p.y);
-                }).filter(function(val) {
+                }).filter(function (val) {
                     return val > 0; // not transparent?
                 }).length;
-    
+
                 if (links < 5) { // is a thin line
                     setPixel(x, y, 0); // make it transparent
                 }
@@ -172,7 +172,7 @@ class RendererTester {
         return document.querySelector('#test-graph');
     }
 
-    async report({canvasPixels, svgPixels, diffPixels, removeThinLinesPixels, svg, match, fn, diffRate}) {
+    async report({ canvasPixels, svgPixels, diffPixels, removeThinLinesPixels, svg, match, fn, diffRate }) {
         const container = this.getReportContainer();
         if (container) {
             // width & height
@@ -193,7 +193,7 @@ class RendererTester {
                 <canvas class="diff-pixels" width="${width}" height="${height}"></canvas>
                 <canvas class="diff-pixels-2" width="${width}" height="${height}"></canvas>
                 <div class="match">
-                    <i class="fa ${ match ? 'fa-check': 'fa-times'}"></i>
+                    <i class="fa ${match ? 'fa-check' : 'fa-times'}"></i>
                 </div>
                 <hr>
                 `
@@ -226,7 +226,7 @@ class RendererTester {
         p.ellipseMode(p.CENTER);
         p.rectMode(p.CORNER);
         p.smooth();
-        p.pixelDensity(config.pixelDensity); 
+        p.pixelDensity(config.pixelDensity);
     }
 
 }
@@ -234,15 +234,15 @@ class RendererTester {
 const rendererTester = new RendererTester();
 
 
-var testRender = async function(draw, callback) {
+var testRender = async function (draw, callback) {
     try {
-        callback(await rendererTester.test({draw}));
+        callback(await rendererTester.test({ draw }));
     } catch (e) {
         callback(e);
     }
 };
 
-testRender.describe = function(str) {
+testRender.describe = function (str) {
     const container = rendererTester.getReportContainer();
     if (container) {
         let h2 = document.createElement('h2');
@@ -251,28 +251,28 @@ testRender.describe = function(str) {
     }
 };
 
-testRender.setMaxDiff = function(max) {
+testRender.setMaxDiff = function (max) {
     rendererTester.maxDiff = max;
 };
 
-testRender.setMaxPixelDiff = function(max) {
+testRender.setMaxPixelDiff = function (max) {
     rendererTester.maxPixelDiff = max;
 };
 
-testRender.wait = function(ms) {
+testRender.wait = function (ms) {
     rendererTester.waitUntil = Date.now() + ms;
 };
 
 // add lock so testRender will wait
-testRender.lock = function() {
+testRender.lock = function () {
     testRender.wait(1000 * 1000 * 1000);
 };
 
 // remove lock
-testRender.unlock = function() {
+testRender.unlock = function () {
     testRender.wait(0);
 };
 
 export default testRender;
 
-export {rendererTester}
+export { rendererTester }

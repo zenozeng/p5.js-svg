@@ -1,3 +1,7 @@
+## Pending Next Release
+
+- fix: clear after resizing should not have unwanted white background, fixes #235
+
 ## v1.4.0
 
 - test: p5.js@1.6.0
