@@ -3,15 +3,15 @@ const config = {
 }
 
 // count non transparent pixels
-var countPixels = function(imgData) {
-    var count = 0;
+var countPixels = function (imgData) {
+    var count = 0
     for (var i = 3; i < imgData.data.length; i += 4) {
         if (imgData.data[i] > 0) {
-            count++;
+            count++
         }
     }
-    return count;
-};
+    return count
+}
 
 
-export {config, countPixels};
+export { config, countPixels }

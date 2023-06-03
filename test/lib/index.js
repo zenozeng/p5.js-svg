@@ -1,6 +1,6 @@
-import {assert} from 'chai';
-import testRender, {rendererTester} from './renderer';
+import { assert } from 'chai'
+import testRender, { rendererTester } from './renderer'
 
-const p5 = window.p5;
+const p5 = window.p5
 
-export {assert, p5, testRender, rendererTester};
+export { assert, p5, testRender, rendererTester }

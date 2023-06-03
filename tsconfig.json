@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "esModuleInterop": true,
+        "inlineSourceMap": true,
+        "declarationDir": "dist",
+        "declaration": true,
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
