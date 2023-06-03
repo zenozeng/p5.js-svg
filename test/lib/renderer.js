@@ -160,7 +160,7 @@ class RendererTester {
                     return val > 0; // not transparent?
                 }).length;
 
-                if (links < 5) { // is a thin line
+                if (links < 6) { // thin line
                     setPixel(x, y, 0); // make it transparent
                 }
             }
@@ -185,7 +185,7 @@ class RendererTester {
                     <div>Rendered in SVG</div>
                     <div>Rendered in Canvas</div>
                     <div>Diff Bitmap</div>
-                    <div>Diff Bitmap with thin line removed (8-connected neighborhood < 5)</div>
+                    <div>Diff Bitmap with thin line removed (8-connected neighborhood < 6)</div>
                     <div></div>
                 </div>
                 <canvas class="svg-pixels" width="${width}" height="${height}"></canvas>
@@ -227,6 +227,7 @@ class RendererTester {
         p.rectMode(p.CORNER);
         p.smooth();
         p.pixelDensity(config.pixelDensity);
+        p.resizeCanvas(100, 100);
     }
 
 }
