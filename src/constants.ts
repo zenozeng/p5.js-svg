@@ -1,5 +1,5 @@
 var constants = {
     SVG: 'svg'
-};
+}
 
-export default constants;
+export default constants

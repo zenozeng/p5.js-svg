@@ -1,6 +1,8 @@
 ## Pending Next Release
 
-- fix: clear after resizing should not have unwanted white background, fixes #235
+- refactor: rewrite using TypeScript
+- fix: clear after resizing should not have unwanted white background, fixes
+  #235
 
 ## v1.4.0
 

@@ -1,32 +1,34 @@
-import { Element as SVGCanvasElement } from 'svgcanvas';
-import { DEBUG } from './config';
+import { DEBUG } from './config'
+import { P5, p5 } from './types'
 
-export default function (p5) {
+const SVGCanvasElement = require('svgcanvas').Element;
+
+export default function (p5: P5) {
     /**
      * @namespace RendererSVG
      * @constructor
-     * @param {Element} elt canvas element to be replaced
-     * @param {p5} pInst p5 Instance
-     * @param {Bool} isMainCanvas
+     * @param elt canvas element to be replaced
+     * @param pInst p5 Instance
+     * @param isMainCanvas
      */
-    function RendererSVG(elt, pInst, isMainCanvas) {
-        var svgCanvas = new SVGCanvasElement({ debug: DEBUG });
-        var svg = svgCanvas.svg;
+    function RendererSVG(elt: Element, pInst: p5, isMainCanvas: boolean) {
+        const svgCanvas = new SVGCanvasElement({ debug: DEBUG });
+        const svg = svgCanvas.svg;
 
         // replace <canvas> with <svg> and copy id, className
-        var parent = elt.parentNode;
-        var id = elt.id;
-        var className = elt.className;
+        const parent = elt.parentNode;
+        const id = elt.id;
+        const className = elt.className;
         parent.replaceChild(svgCanvas.getElement(), elt);
         svgCanvas.id = id;
         svgCanvas.className = className;
         elt = svgCanvas; // our fake <canvas>
 
-        elt.parentNode = {
+        (elt as any).parentNode = {
             // fake parentNode.removeChild so that noCanvas will work
-            removeChild: function (element) {
+            removeChild: function (element: Element) {
                 if (element === elt) {
-                    var wrapper = svgCanvas.getElement();
+                    const wrapper = svgCanvas.getElement();
                     wrapper.parentNode.removeChild(wrapper);
                 }
             }
@@ -62,7 +64,7 @@ export default function (p5) {
         this.drawingContext.lineWidth = 1;
     };
 
-    RendererSVG.prototype.resize = function (w, h) {
+    RendererSVG.prototype.resize = function (w: number, h: number) {
         if (!w || !h) {
             return;
         }
@@ -92,11 +94,11 @@ export default function (p5) {
      * @memberof RendererSVG.prototype
      * @param {SVGElement|Element} element
      */
-    RendererSVG.prototype.appendChild = function (element) {
-        if (element && element.elt) {
-            element = element.elt;
+    RendererSVG.prototype.appendChild = function (element: { elt: Element } | Element) {
+        if (element && (element as { elt: Element }).elt) {
+            element = (element as { elt: Element }).elt;
         }
-        var g = this.drawingContext.__closestGroupOrSvg();
+        const g = this.drawingContext.__closestGroupOrSvg();
         g.appendChild(element);
     };
 
@@ -117,7 +119,7 @@ export default function (p5) {
         if (!img) {
             throw new Error('Invalid image: ' + img);
         }
-        var elt = img._renderer && img._renderer.svg; // handle SVG Graphics
+        let elt = img._renderer && img._renderer.svg; // handle SVG Graphics
         elt = elt || (img.elt && img.elt.nodeName && (img.elt.nodeName.toLowerCase() === 'svg') && img.elt); // SVGElement
         elt = elt || (img.nodeName && (img.nodeName.toLowerCase() == 'svg') && img); // <svg>
         if (elt) {
@@ -133,7 +135,7 @@ export default function (p5) {
                 elt.setAttribute('viewBox', [sx, sy, sWidth, sHeight].join(', '));
             }
 
-            let g = p5.SVGElement.create('g');
+            const g = p5.SVGElement.create('g');
             this.drawingContext.__applyTransformation(g.elt);
             g.elt.appendChild(elt);
             this.appendChild(g.elt);
