@@ -1,0 +1,19 @@
+{
+  "name": "p5-svelte",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.0.4",
+    "p5": "^1.6.0",
+    "p5-svelte": "^3.1.2",
+    "p5.js-svg": "^1.5.1",
+    "svelte": "^3.58.0",
+    "vite": "^4.3.9"
+  }
+}
