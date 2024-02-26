@@ -55,6 +55,11 @@ export default function (p5: P5SVG) {
             // create new <g> so that new element won't be influenced by the filter
             g = p5.SVGElement.create('g')
             rootGroup.appendChild(g.elt)
+
+            if (ctx.__currentElement.isWithinUserInstanciated()) {
+                console.warn('Filter will promptly exit out of any instanciated group. Please make sure you\'ve exited them before filtering');
+            }
+
             ctx.__currentElement = g.elt
         } else {
             _filter.apply(this, [operation, value])

@@ -21,6 +21,8 @@ export default (p5: P5SVG) => {
     p5.SVGElement = class SVGElement extends p5.Element {
         public elt: Element
 
+        public isUserInstanciated: boolean
+
         /**
          * Returns an Array of children of current SVG Element matching given selector
          *
@@ -50,13 +52,27 @@ export default (p5: P5SVG) => {
          * Create SVGElement
          *
          */
-        static create(nodeName: string, attributes: { [key: string]: string }) {
+        static create(nodeName: string, attributes: { [key: string]: string }, isUserInstanciated: boolean?) {
             attributes = attributes || {}
             const elt = document.createElementNS('http://www.w3.org/2000/svg', nodeName)
             Object.keys(attributes).forEach(function (k) {
                 elt.setAttribute(k, attributes[k])
             })
-            return new SVGElement(elt as any)
+            const svgEl = new SVGElement(elt as any)
+            svgEl.isUserInstanciated = isUserInstanciated;
+            return svgEl;
+        }
+
+        /**
+         * Check if any group above is user instanciated
+         * Will also return true if oneself is user instanciated
+         * 
+         */
+        isWithinUserInstanciated() {
+            if (this.isUserInstanciated) return true;
+            if (!(this.parentNode instanceof SVGElement)) return false;
+            
+            return this.parentNode.isWithinUserInstanciated();
         }
 
         /**
