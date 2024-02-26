@@ -6,6 +6,7 @@ import IO from './io'
 import Image from './image'
 import Element from './element'
 import Filters from './filters'
+import GroupInterface from ''
 import constants from './constants'
 
 function init(p5: P5) {
@@ -18,6 +19,7 @@ function init(p5: P5) {
     Image(p5svg)
     Filters(p5svg)
     Element(p5svg)
+
 
     // attach constants to p5 instance
     p5svg.prototype['SVG'] = constants.SVG
