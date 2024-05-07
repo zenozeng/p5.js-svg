@@ -7,8 +7,9 @@ test/coverage
 .tern-project
 # Ignore everything in the dst directory
 dist/*
-# But don't ignore p5.svg.js
+# But don't ignore p5.svg.js and test.js
 !dist/p5.svg.js
+!dist/test.js
 test/unit/bundle.js
 doc/reference
 test/test.html
