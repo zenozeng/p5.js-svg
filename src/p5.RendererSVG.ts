@@ -47,7 +47,8 @@ export default function (p5: P5SVG) {
             }
         })
 
-        p5.Renderer2D.call(this, elt, pInstProxy, isMainCanvas)
+        //p5.Renderer2D.call(this, elt, pInstProxy, isMainCanvas)
+        Object.assign(this, p5.Renderer2D.call(this, elt, pInstProxy, isMainCanvas))
 
         this.isSVG = true
         this.svg = svg
