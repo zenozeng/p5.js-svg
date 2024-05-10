@@ -2046,20 +2046,37 @@
         var _graphics = p5.Graphics;
         p5.Graphics = function (w, h, renderer, pInst) {
             var isSVG = renderer === constants.SVG;
-            _graphics.apply(this, [w, h, isSVG ? pInst.P2D : renderer, pInst]);
+            var pg = new _graphics(w, h, isSVG ? pInst.P2D : renderer, pInst);
             if (isSVG) {
-                // replace <canvas> with <svg>
-                var c = this._renderer.elt;
-                this._renderer = new p5.RendererSVG(c, this, false); // replace renderer
-                c = this._renderer.elt;
-                this.elt = c; // replace this.elt
+                // replace renderer with SVG renderer
+                var svgRenderer = new p5.RendererSVG(pg.elt, pg, false);
+                pg._renderer = svgRenderer;
+                pg.elt = svgRenderer.elt;
                 // do default again
-                this._renderer.resize(w, h);
-                this._renderer._applyDefaults();
+                pg._renderer.resize(w, h);
+                pg._renderer._applyDefaults();
             }
-            return this;
+            return pg;
         };
         p5.Graphics.prototype = _graphics.prototype;
+        // // patch p5.Graphics for SVG
+        // const _graphics = p5.Graphics
+        // p5.Graphics = function (w: number, h: number, renderer: any, pInst: p5SVG) {
+        //     const isSVG = renderer === constants.SVG
+        //     _graphics.apply(this, [w, h, isSVG ? pInst.P2D : renderer, pInst])
+        //     if (isSVG) {
+        //         // replace <canvas> with <svg>
+        //         let c = this._renderer.elt
+        //         this._renderer = new p5.RendererSVG(c, this, false) // replace renderer
+        //         c = this._renderer.elt
+        //         this.elt = c // replace this.elt
+        //         // do default again
+        //         this._renderer.resize(w, h)
+        //         this._renderer._applyDefaults()
+        //     }
+        //     return this
+        // }
+        // p5.Graphics.prototype = _graphics.prototype
         /**
          * Patched version of createCanvas
          *

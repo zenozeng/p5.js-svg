@@ -5,7 +5,7 @@ test/coverage
 .idea
 .tern-port
 .tern-project
-# Ignore everything in the dst directory
+# Ignore everything in the dist directory
 dist/*
 # But don't ignore p5.svg.js and test.js
 !dist/p5.svg.js
