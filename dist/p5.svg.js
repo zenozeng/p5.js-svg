@@ -70,6 +70,10 @@
 
     var DEBUG = false;
 
+    var svgcanvas = {};
+
+    Object.defineProperty(svgcanvas, '__esModule', { value: true });
+
     function toString(obj) {
         if (!obj) {
             return obj
@@ -1658,7 +1662,9 @@
     SVGCanvasElement.prototype.setAttribute = function(prop, val) {
         this.wrapper.setAttribute(prop, val);
     };
-    var Element$1 = SVGCanvasElement;
+
+    svgcanvas.Context = Context;
+    var Element$1 = svgcanvas.Element = SVGCanvasElement;
 
     function RendererSVG (p5) {
         /**

@@ -3,9 +3,26 @@
 
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
+	function getDefaultExportFromCjs (x) {
+		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+	}
+
 	function getAugmentedNamespace(n) {
-		if (n.__esModule) return n;
-		var a = Object.defineProperty({}, '__esModule', {value: true});
+	  if (n.__esModule) return n;
+	  var f = n.default;
+		if (typeof f == "function") {
+			var a = function a () {
+				if (this instanceof a) {
+					var args = [null];
+					args.push.apply(args, arguments);
+					var Ctor = Function.bind.apply(f, args);
+					return new Ctor();
+				}
+				return f.apply(this, arguments);
+			};
+			a.prototype = f.prototype;
+	  } else a = {};
+	  Object.defineProperty(a, '__esModule', {value: true});
 		Object.keys(n).forEach(function (k) {
 			var d = Object.getOwnPropertyDescriptor(n, k);
 			Object.defineProperty(a, k, d.get ? d : {
@@ -18,16 +35,16 @@
 		return a;
 	}
 
-	function createCommonjsModule(fn) {
-	  var module = { exports: {} };
-		return fn(module, module.exports), module.exports;
-	}
+	var unit = {};
+
+	var chai$2 = {};
 
 	/*!
 	 * assertion-error
 	 * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
 	 * MIT Licensed
 	 */
+
 	/*!
 	 * Return a function that will copy properties from
 	 * one object to another excluding any originally
@@ -62,7 +79,7 @@
 	 * Primary Exports
 	 */
 
-	var assertionError = AssertionError;
+	var assertionError = AssertionError$1;
 
 	/**
 	 * ### AssertionError
@@ -75,7 +92,7 @@
 	 * @param {callee} start stack function (optional)
 	 */
 
-	function AssertionError (message, _props, ssf) {
+	function AssertionError$1 (message, _props, ssf) {
 	  var extend = exclude('name', 'message', 'stack', 'constructor', 'toJSON')
 	    , props = extend(_props || {});
 
@@ -89,7 +106,7 @@
 	  }
 
 	  // capture stack trace
-	  ssf = ssf || AssertionError;
+	  ssf = ssf || AssertionError$1;
 	  if (Error.captureStackTrace) {
 	    Error.captureStackTrace(this, ssf);
 	  } else {
@@ -105,19 +122,19 @@
 	 * Inherit from Error.prototype
 	 */
 
-	AssertionError.prototype = Object.create(Error.prototype);
+	AssertionError$1.prototype = Object.create(Error.prototype);
 
 	/*!
 	 * Statically set name
 	 */
 
-	AssertionError.prototype.name = 'AssertionError';
+	AssertionError$1.prototype.name = 'AssertionError';
 
 	/*!
 	 * Ensure correct constructor
 	 */
 
-	AssertionError.prototype.constructor = AssertionError;
+	AssertionError$1.prototype.constructor = AssertionError$1;
 
 	/**
 	 * Allow errors to be converted to JSON for static transfer.
@@ -126,7 +143,7 @@
 	 * @return {Object} object that can be `JSON.stringify`
 	 */
 
-	AssertionError.prototype.toJSON = function (stack) {
+	AssertionError$1.prototype.toJSON = function (stack) {
 	  var extend = exclude('constructor', 'toJSON', 'stack')
 	    , props = extend({ name: this.name }, this);
 
@@ -137,6 +154,8 @@
 
 	  return props;
 	};
+
+	var utils$1 = {};
 
 	/* !
 	 * Chai - pathval utility
@@ -182,7 +201,7 @@
 	 * @api public
 	 */
 
-	function hasProperty$1(obj, name) {
+	function hasProperty(obj, name) {
 	  if (typeof obj === 'undefined' || obj === null) {
 	    return false;
 	  }
@@ -340,7 +359,7 @@
 	 * @api public
 	 */
 
-	function getPathInfo$1(obj, path) {
+	function getPathInfo(obj, path) {
 	  var parsed = parsePath(path);
 	  var last = parsed[parsed.length - 1];
 	  var info = {
@@ -351,7 +370,7 @@
 	    name: last.p || last.i,
 	    value: internalGetPathValue(obj, parsed),
 	  };
-	  info.exists = hasProperty$1(info.parent, info.name);
+	  info.exists = hasProperty(info.parent, info.name);
 
 	  return info;
 	}
@@ -388,7 +407,7 @@
 	 */
 
 	function getPathValue(obj, path) {
-	  var info = getPathInfo$1(obj, path);
+	  var info = getPathInfo(obj, path);
 	  return info.value;
 	}
 
@@ -432,8 +451,8 @@
 	}
 
 	var pathval = {
-	  hasProperty: hasProperty$1,
-	  getPathInfo: getPathInfo$1,
+	  hasProperty: hasProperty,
+	  getPathInfo: getPathInfo,
 	  getPathValue: getPathValue,
 	  setPathValue: setPathValue,
 	};
@@ -443,6 +462,7 @@
 	 * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
 	/**
 	 * ### .flag(object, key, [value])
 	 *
@@ -462,7 +482,7 @@
 	 * @api private
 	 */
 
-	var flag$1 = function flag(obj, key, value) {
+	var flag$5 = function flag(obj, key, value) {
 	  var flags = obj.__flags || (obj.__flags = Object.create(null));
 	  if (arguments.length === 3) {
 	    flags[key] = value;
@@ -481,7 +501,7 @@
 	 * Module dependencies
 	 */
 
-
+	var flag$4 = flag$5;
 
 	/**
 	 * ### .test(object, expression)
@@ -494,399 +514,403 @@
 	 * @name test
 	 */
 
-	var test$2 = function test(obj, args) {
-	  var negate = flag$1(obj, 'negate')
+	var test$1 = function test(obj, args) {
+	  var negate = flag$4(obj, 'negate')
 	    , expr = args[0];
 	  return negate ? !expr : expr;
 	};
 
-	var typeDetect = createCommonjsModule(function (module, exports) {
-	(function (global, factory) {
-		module.exports = factory() ;
-	}(commonjsGlobal, (function () {
-	/* !
-	 * type-detect
-	 * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
-	 * MIT Licensed
-	 */
-	var promiseExists = typeof Promise === 'function';
+	var typeDetect = {exports: {}};
 
-	/* eslint-disable no-undef */
-	var globalObject = typeof self === 'object' ? self : commonjsGlobal; // eslint-disable-line id-blacklist
+	(function (module, exports) {
+		(function (global, factory) {
+			module.exports = factory() ;
+		}(commonjsGlobal, (function () {
+		/* !
+		 * type-detect
+		 * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
+		 * MIT Licensed
+		 */
+		var promiseExists = typeof Promise === 'function';
 
-	var symbolExists = typeof Symbol !== 'undefined';
-	var mapExists = typeof Map !== 'undefined';
-	var setExists = typeof Set !== 'undefined';
-	var weakMapExists = typeof WeakMap !== 'undefined';
-	var weakSetExists = typeof WeakSet !== 'undefined';
-	var dataViewExists = typeof DataView !== 'undefined';
-	var symbolIteratorExists = symbolExists && typeof Symbol.iterator !== 'undefined';
-	var symbolToStringTagExists = symbolExists && typeof Symbol.toStringTag !== 'undefined';
-	var setEntriesExists = setExists && typeof Set.prototype.entries === 'function';
-	var mapEntriesExists = mapExists && typeof Map.prototype.entries === 'function';
-	var setIteratorPrototype = setEntriesExists && Object.getPrototypeOf(new Set().entries());
-	var mapIteratorPrototype = mapEntriesExists && Object.getPrototypeOf(new Map().entries());
-	var arrayIteratorExists = symbolIteratorExists && typeof Array.prototype[Symbol.iterator] === 'function';
-	var arrayIteratorPrototype = arrayIteratorExists && Object.getPrototypeOf([][Symbol.iterator]());
-	var stringIteratorExists = symbolIteratorExists && typeof String.prototype[Symbol.iterator] === 'function';
-	var stringIteratorPrototype = stringIteratorExists && Object.getPrototypeOf(''[Symbol.iterator]());
-	var toStringLeftSliceLength = 8;
-	var toStringRightSliceLength = -1;
-	/**
-	 * ### typeOf (obj)
-	 *
-	 * Uses `Object.prototype.toString` to determine the type of an object,
-	 * normalising behaviour across engine versions & well optimised.
-	 *
-	 * @param {Mixed} object
-	 * @return {String} object type
-	 * @api public
-	 */
-	function typeDetect(obj) {
-	  /* ! Speed optimisation
-	   * Pre:
-	   *   string literal     x 3,039,035 ops/sec ±1.62% (78 runs sampled)
-	   *   boolean literal    x 1,424,138 ops/sec ±4.54% (75 runs sampled)
-	   *   number literal     x 1,653,153 ops/sec ±1.91% (82 runs sampled)
-	   *   undefined          x 9,978,660 ops/sec ±1.92% (75 runs sampled)
-	   *   function           x 2,556,769 ops/sec ±1.73% (77 runs sampled)
-	   * Post:
-	   *   string literal     x 38,564,796 ops/sec ±1.15% (79 runs sampled)
-	   *   boolean literal    x 31,148,940 ops/sec ±1.10% (79 runs sampled)
-	   *   number literal     x 32,679,330 ops/sec ±1.90% (78 runs sampled)
-	   *   undefined          x 32,363,368 ops/sec ±1.07% (82 runs sampled)
-	   *   function           x 31,296,870 ops/sec ±0.96% (83 runs sampled)
-	   */
-	  var typeofObj = typeof obj;
-	  if (typeofObj !== 'object') {
-	    return typeofObj;
-	  }
+		/* eslint-disable no-undef */
+		var globalObject = typeof self === 'object' ? self : commonjsGlobal; // eslint-disable-line id-blacklist
 
-	  /* ! Speed optimisation
-	   * Pre:
-	   *   null               x 28,645,765 ops/sec ±1.17% (82 runs sampled)
-	   * Post:
-	   *   null               x 36,428,962 ops/sec ±1.37% (84 runs sampled)
-	   */
-	  if (obj === null) {
-	    return 'null';
-	  }
+		var symbolExists = typeof Symbol !== 'undefined';
+		var mapExists = typeof Map !== 'undefined';
+		var setExists = typeof Set !== 'undefined';
+		var weakMapExists = typeof WeakMap !== 'undefined';
+		var weakSetExists = typeof WeakSet !== 'undefined';
+		var dataViewExists = typeof DataView !== 'undefined';
+		var symbolIteratorExists = symbolExists && typeof Symbol.iterator !== 'undefined';
+		var symbolToStringTagExists = symbolExists && typeof Symbol.toStringTag !== 'undefined';
+		var setEntriesExists = setExists && typeof Set.prototype.entries === 'function';
+		var mapEntriesExists = mapExists && typeof Map.prototype.entries === 'function';
+		var setIteratorPrototype = setEntriesExists && Object.getPrototypeOf(new Set().entries());
+		var mapIteratorPrototype = mapEntriesExists && Object.getPrototypeOf(new Map().entries());
+		var arrayIteratorExists = symbolIteratorExists && typeof Array.prototype[Symbol.iterator] === 'function';
+		var arrayIteratorPrototype = arrayIteratorExists && Object.getPrototypeOf([][Symbol.iterator]());
+		var stringIteratorExists = symbolIteratorExists && typeof String.prototype[Symbol.iterator] === 'function';
+		var stringIteratorPrototype = stringIteratorExists && Object.getPrototypeOf(''[Symbol.iterator]());
+		var toStringLeftSliceLength = 8;
+		var toStringRightSliceLength = -1;
+		/**
+		 * ### typeOf (obj)
+		 *
+		 * Uses `Object.prototype.toString` to determine the type of an object,
+		 * normalising behaviour across engine versions & well optimised.
+		 *
+		 * @param {Mixed} object
+		 * @return {String} object type
+		 * @api public
+		 */
+		function typeDetect(obj) {
+		  /* ! Speed optimisation
+		   * Pre:
+		   *   string literal     x 3,039,035 ops/sec ±1.62% (78 runs sampled)
+		   *   boolean literal    x 1,424,138 ops/sec ±4.54% (75 runs sampled)
+		   *   number literal     x 1,653,153 ops/sec ±1.91% (82 runs sampled)
+		   *   undefined          x 9,978,660 ops/sec ±1.92% (75 runs sampled)
+		   *   function           x 2,556,769 ops/sec ±1.73% (77 runs sampled)
+		   * Post:
+		   *   string literal     x 38,564,796 ops/sec ±1.15% (79 runs sampled)
+		   *   boolean literal    x 31,148,940 ops/sec ±1.10% (79 runs sampled)
+		   *   number literal     x 32,679,330 ops/sec ±1.90% (78 runs sampled)
+		   *   undefined          x 32,363,368 ops/sec ±1.07% (82 runs sampled)
+		   *   function           x 31,296,870 ops/sec ±0.96% (83 runs sampled)
+		   */
+		  var typeofObj = typeof obj;
+		  if (typeofObj !== 'object') {
+		    return typeofObj;
+		  }
 
-	  /* ! Spec Conformance
-	   * Test: `Object.prototype.toString.call(window)``
-	   *  - Node === "[object global]"
-	   *  - Chrome === "[object global]"
-	   *  - Firefox === "[object Window]"
-	   *  - PhantomJS === "[object Window]"
-	   *  - Safari === "[object Window]"
-	   *  - IE 11 === "[object Window]"
-	   *  - IE Edge === "[object Window]"
-	   * Test: `Object.prototype.toString.call(this)``
-	   *  - Chrome Worker === "[object global]"
-	   *  - Firefox Worker === "[object DedicatedWorkerGlobalScope]"
-	   *  - Safari Worker === "[object DedicatedWorkerGlobalScope]"
-	   *  - IE 11 Worker === "[object WorkerGlobalScope]"
-	   *  - IE Edge Worker === "[object WorkerGlobalScope]"
-	   */
-	  if (obj === globalObject) {
-	    return 'global';
-	  }
+		  /* ! Speed optimisation
+		   * Pre:
+		   *   null               x 28,645,765 ops/sec ±1.17% (82 runs sampled)
+		   * Post:
+		   *   null               x 36,428,962 ops/sec ±1.37% (84 runs sampled)
+		   */
+		  if (obj === null) {
+		    return 'null';
+		  }
 
-	  /* ! Speed optimisation
-	   * Pre:
-	   *   array literal      x 2,888,352 ops/sec ±0.67% (82 runs sampled)
-	   * Post:
-	   *   array literal      x 22,479,650 ops/sec ±0.96% (81 runs sampled)
-	   */
-	  if (
-	    Array.isArray(obj) &&
-	    (symbolToStringTagExists === false || !(Symbol.toStringTag in obj))
-	  ) {
-	    return 'Array';
-	  }
+		  /* ! Spec Conformance
+		   * Test: `Object.prototype.toString.call(window)``
+		   *  - Node === "[object global]"
+		   *  - Chrome === "[object global]"
+		   *  - Firefox === "[object Window]"
+		   *  - PhantomJS === "[object Window]"
+		   *  - Safari === "[object Window]"
+		   *  - IE 11 === "[object Window]"
+		   *  - IE Edge === "[object Window]"
+		   * Test: `Object.prototype.toString.call(this)``
+		   *  - Chrome Worker === "[object global]"
+		   *  - Firefox Worker === "[object DedicatedWorkerGlobalScope]"
+		   *  - Safari Worker === "[object DedicatedWorkerGlobalScope]"
+		   *  - IE 11 Worker === "[object WorkerGlobalScope]"
+		   *  - IE Edge Worker === "[object WorkerGlobalScope]"
+		   */
+		  if (obj === globalObject) {
+		    return 'global';
+		  }
 
-	  // Not caching existence of `window` and related properties due to potential
-	  // for `window` to be unset before tests in quasi-browser environments.
-	  if (typeof window === 'object' && window !== null) {
-	    /* ! Spec Conformance
-	     * (https://html.spec.whatwg.org/multipage/browsers.html#location)
-	     * WhatWG HTML$7.7.3 - The `Location` interface
-	     * Test: `Object.prototype.toString.call(window.location)``
-	     *  - IE <=11 === "[object Object]"
-	     *  - IE Edge <=13 === "[object Object]"
-	     */
-	    if (typeof window.location === 'object' && obj === window.location) {
-	      return 'Location';
-	    }
+		  /* ! Speed optimisation
+		   * Pre:
+		   *   array literal      x 2,888,352 ops/sec ±0.67% (82 runs sampled)
+		   * Post:
+		   *   array literal      x 22,479,650 ops/sec ±0.96% (81 runs sampled)
+		   */
+		  if (
+		    Array.isArray(obj) &&
+		    (symbolToStringTagExists === false || !(Symbol.toStringTag in obj))
+		  ) {
+		    return 'Array';
+		  }
 
-	    /* ! Spec Conformance
-	     * (https://html.spec.whatwg.org/#document)
-	     * WhatWG HTML$3.1.1 - The `Document` object
-	     * Note: Most browsers currently adher to the W3C DOM Level 2 spec
-	     *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-26809268)
-	     *       which suggests that browsers should use HTMLTableCellElement for
-	     *       both TD and TH elements. WhatWG separates these.
-	     *       WhatWG HTML states:
-	     *         > For historical reasons, Window objects must also have a
-	     *         > writable, configurable, non-enumerable property named
-	     *         > HTMLDocument whose value is the Document interface object.
-	     * Test: `Object.prototype.toString.call(document)``
-	     *  - Chrome === "[object HTMLDocument]"
-	     *  - Firefox === "[object HTMLDocument]"
-	     *  - Safari === "[object HTMLDocument]"
-	     *  - IE <=10 === "[object Document]"
-	     *  - IE 11 === "[object HTMLDocument]"
-	     *  - IE Edge <=13 === "[object HTMLDocument]"
-	     */
-	    if (typeof window.document === 'object' && obj === window.document) {
-	      return 'Document';
-	    }
+		  // Not caching existence of `window` and related properties due to potential
+		  // for `window` to be unset before tests in quasi-browser environments.
+		  if (typeof window === 'object' && window !== null) {
+		    /* ! Spec Conformance
+		     * (https://html.spec.whatwg.org/multipage/browsers.html#location)
+		     * WhatWG HTML$7.7.3 - The `Location` interface
+		     * Test: `Object.prototype.toString.call(window.location)``
+		     *  - IE <=11 === "[object Object]"
+		     *  - IE Edge <=13 === "[object Object]"
+		     */
+		    if (typeof window.location === 'object' && obj === window.location) {
+		      return 'Location';
+		    }
 
-	    if (typeof window.navigator === 'object') {
-	      /* ! Spec Conformance
-	       * (https://html.spec.whatwg.org/multipage/webappapis.html#mimetypearray)
-	       * WhatWG HTML$8.6.1.5 - Plugins - Interface MimeTypeArray
-	       * Test: `Object.prototype.toString.call(navigator.mimeTypes)``
-	       *  - IE <=10 === "[object MSMimeTypesCollection]"
-	       */
-	      if (typeof window.navigator.mimeTypes === 'object' &&
-	          obj === window.navigator.mimeTypes) {
-	        return 'MimeTypeArray';
-	      }
+		    /* ! Spec Conformance
+		     * (https://html.spec.whatwg.org/#document)
+		     * WhatWG HTML$3.1.1 - The `Document` object
+		     * Note: Most browsers currently adher to the W3C DOM Level 2 spec
+		     *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-26809268)
+		     *       which suggests that browsers should use HTMLTableCellElement for
+		     *       both TD and TH elements. WhatWG separates these.
+		     *       WhatWG HTML states:
+		     *         > For historical reasons, Window objects must also have a
+		     *         > writable, configurable, non-enumerable property named
+		     *         > HTMLDocument whose value is the Document interface object.
+		     * Test: `Object.prototype.toString.call(document)``
+		     *  - Chrome === "[object HTMLDocument]"
+		     *  - Firefox === "[object HTMLDocument]"
+		     *  - Safari === "[object HTMLDocument]"
+		     *  - IE <=10 === "[object Document]"
+		     *  - IE 11 === "[object HTMLDocument]"
+		     *  - IE Edge <=13 === "[object HTMLDocument]"
+		     */
+		    if (typeof window.document === 'object' && obj === window.document) {
+		      return 'Document';
+		    }
 
-	      /* ! Spec Conformance
-	       * (https://html.spec.whatwg.org/multipage/webappapis.html#pluginarray)
-	       * WhatWG HTML$8.6.1.5 - Plugins - Interface PluginArray
-	       * Test: `Object.prototype.toString.call(navigator.plugins)``
-	       *  - IE <=10 === "[object MSPluginsCollection]"
-	       */
-	      if (typeof window.navigator.plugins === 'object' &&
-	          obj === window.navigator.plugins) {
-	        return 'PluginArray';
-	      }
-	    }
+		    if (typeof window.navigator === 'object') {
+		      /* ! Spec Conformance
+		       * (https://html.spec.whatwg.org/multipage/webappapis.html#mimetypearray)
+		       * WhatWG HTML$8.6.1.5 - Plugins - Interface MimeTypeArray
+		       * Test: `Object.prototype.toString.call(navigator.mimeTypes)``
+		       *  - IE <=10 === "[object MSMimeTypesCollection]"
+		       */
+		      if (typeof window.navigator.mimeTypes === 'object' &&
+		          obj === window.navigator.mimeTypes) {
+		        return 'MimeTypeArray';
+		      }
 
-	    if ((typeof window.HTMLElement === 'function' ||
-	        typeof window.HTMLElement === 'object') &&
-	        obj instanceof window.HTMLElement) {
-	      /* ! Spec Conformance
-	      * (https://html.spec.whatwg.org/multipage/webappapis.html#pluginarray)
-	      * WhatWG HTML$4.4.4 - The `blockquote` element - Interface `HTMLQuoteElement`
-	      * Test: `Object.prototype.toString.call(document.createElement('blockquote'))``
-	      *  - IE <=10 === "[object HTMLBlockElement]"
-	      */
-	      if (obj.tagName === 'BLOCKQUOTE') {
-	        return 'HTMLQuoteElement';
-	      }
+		      /* ! Spec Conformance
+		       * (https://html.spec.whatwg.org/multipage/webappapis.html#pluginarray)
+		       * WhatWG HTML$8.6.1.5 - Plugins - Interface PluginArray
+		       * Test: `Object.prototype.toString.call(navigator.plugins)``
+		       *  - IE <=10 === "[object MSPluginsCollection]"
+		       */
+		      if (typeof window.navigator.plugins === 'object' &&
+		          obj === window.navigator.plugins) {
+		        return 'PluginArray';
+		      }
+		    }
 
-	      /* ! Spec Conformance
-	       * (https://html.spec.whatwg.org/#htmltabledatacellelement)
-	       * WhatWG HTML$4.9.9 - The `td` element - Interface `HTMLTableDataCellElement`
-	       * Note: Most browsers currently adher to the W3C DOM Level 2 spec
-	       *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-82915075)
-	       *       which suggests that browsers should use HTMLTableCellElement for
-	       *       both TD and TH elements. WhatWG separates these.
-	       * Test: Object.prototype.toString.call(document.createElement('td'))
-	       *  - Chrome === "[object HTMLTableCellElement]"
-	       *  - Firefox === "[object HTMLTableCellElement]"
-	       *  - Safari === "[object HTMLTableCellElement]"
-	       */
-	      if (obj.tagName === 'TD') {
-	        return 'HTMLTableDataCellElement';
-	      }
+		    if ((typeof window.HTMLElement === 'function' ||
+		        typeof window.HTMLElement === 'object') &&
+		        obj instanceof window.HTMLElement) {
+		      /* ! Spec Conformance
+		      * (https://html.spec.whatwg.org/multipage/webappapis.html#pluginarray)
+		      * WhatWG HTML$4.4.4 - The `blockquote` element - Interface `HTMLQuoteElement`
+		      * Test: `Object.prototype.toString.call(document.createElement('blockquote'))``
+		      *  - IE <=10 === "[object HTMLBlockElement]"
+		      */
+		      if (obj.tagName === 'BLOCKQUOTE') {
+		        return 'HTMLQuoteElement';
+		      }
 
-	      /* ! Spec Conformance
-	       * (https://html.spec.whatwg.org/#htmltableheadercellelement)
-	       * WhatWG HTML$4.9.9 - The `td` element - Interface `HTMLTableHeaderCellElement`
-	       * Note: Most browsers currently adher to the W3C DOM Level 2 spec
-	       *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-82915075)
-	       *       which suggests that browsers should use HTMLTableCellElement for
-	       *       both TD and TH elements. WhatWG separates these.
-	       * Test: Object.prototype.toString.call(document.createElement('th'))
-	       *  - Chrome === "[object HTMLTableCellElement]"
-	       *  - Firefox === "[object HTMLTableCellElement]"
-	       *  - Safari === "[object HTMLTableCellElement]"
-	       */
-	      if (obj.tagName === 'TH') {
-	        return 'HTMLTableHeaderCellElement';
-	      }
-	    }
-	  }
+		      /* ! Spec Conformance
+		       * (https://html.spec.whatwg.org/#htmltabledatacellelement)
+		       * WhatWG HTML$4.9.9 - The `td` element - Interface `HTMLTableDataCellElement`
+		       * Note: Most browsers currently adher to the W3C DOM Level 2 spec
+		       *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-82915075)
+		       *       which suggests that browsers should use HTMLTableCellElement for
+		       *       both TD and TH elements. WhatWG separates these.
+		       * Test: Object.prototype.toString.call(document.createElement('td'))
+		       *  - Chrome === "[object HTMLTableCellElement]"
+		       *  - Firefox === "[object HTMLTableCellElement]"
+		       *  - Safari === "[object HTMLTableCellElement]"
+		       */
+		      if (obj.tagName === 'TD') {
+		        return 'HTMLTableDataCellElement';
+		      }
 
-	  /* ! Speed optimisation
-	  * Pre:
-	  *   Float64Array       x 625,644 ops/sec ±1.58% (80 runs sampled)
-	  *   Float32Array       x 1,279,852 ops/sec ±2.91% (77 runs sampled)
-	  *   Uint32Array        x 1,178,185 ops/sec ±1.95% (83 runs sampled)
-	  *   Uint16Array        x 1,008,380 ops/sec ±2.25% (80 runs sampled)
-	  *   Uint8Array         x 1,128,040 ops/sec ±2.11% (81 runs sampled)
-	  *   Int32Array         x 1,170,119 ops/sec ±2.88% (80 runs sampled)
-	  *   Int16Array         x 1,176,348 ops/sec ±5.79% (86 runs sampled)
-	  *   Int8Array          x 1,058,707 ops/sec ±4.94% (77 runs sampled)
-	  *   Uint8ClampedArray  x 1,110,633 ops/sec ±4.20% (80 runs sampled)
-	  * Post:
-	  *   Float64Array       x 7,105,671 ops/sec ±13.47% (64 runs sampled)
-	  *   Float32Array       x 5,887,912 ops/sec ±1.46% (82 runs sampled)
-	  *   Uint32Array        x 6,491,661 ops/sec ±1.76% (79 runs sampled)
-	  *   Uint16Array        x 6,559,795 ops/sec ±1.67% (82 runs sampled)
-	  *   Uint8Array         x 6,463,966 ops/sec ±1.43% (85 runs sampled)
-	  *   Int32Array         x 5,641,841 ops/sec ±3.49% (81 runs sampled)
-	  *   Int16Array         x 6,583,511 ops/sec ±1.98% (80 runs sampled)
-	  *   Int8Array          x 6,606,078 ops/sec ±1.74% (81 runs sampled)
-	  *   Uint8ClampedArray  x 6,602,224 ops/sec ±1.77% (83 runs sampled)
-	  */
-	  var stringTag = (symbolToStringTagExists && obj[Symbol.toStringTag]);
-	  if (typeof stringTag === 'string') {
-	    return stringTag;
-	  }
+		      /* ! Spec Conformance
+		       * (https://html.spec.whatwg.org/#htmltableheadercellelement)
+		       * WhatWG HTML$4.9.9 - The `td` element - Interface `HTMLTableHeaderCellElement`
+		       * Note: Most browsers currently adher to the W3C DOM Level 2 spec
+		       *       (https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-82915075)
+		       *       which suggests that browsers should use HTMLTableCellElement for
+		       *       both TD and TH elements. WhatWG separates these.
+		       * Test: Object.prototype.toString.call(document.createElement('th'))
+		       *  - Chrome === "[object HTMLTableCellElement]"
+		       *  - Firefox === "[object HTMLTableCellElement]"
+		       *  - Safari === "[object HTMLTableCellElement]"
+		       */
+		      if (obj.tagName === 'TH') {
+		        return 'HTMLTableHeaderCellElement';
+		      }
+		    }
+		  }
 
-	  var objPrototype = Object.getPrototypeOf(obj);
-	  /* ! Speed optimisation
-	  * Pre:
-	  *   regex literal      x 1,772,385 ops/sec ±1.85% (77 runs sampled)
-	  *   regex constructor  x 2,143,634 ops/sec ±2.46% (78 runs sampled)
-	  * Post:
-	  *   regex literal      x 3,928,009 ops/sec ±0.65% (78 runs sampled)
-	  *   regex constructor  x 3,931,108 ops/sec ±0.58% (84 runs sampled)
-	  */
-	  if (objPrototype === RegExp.prototype) {
-	    return 'RegExp';
-	  }
+		  /* ! Speed optimisation
+		  * Pre:
+		  *   Float64Array       x 625,644 ops/sec ±1.58% (80 runs sampled)
+		  *   Float32Array       x 1,279,852 ops/sec ±2.91% (77 runs sampled)
+		  *   Uint32Array        x 1,178,185 ops/sec ±1.95% (83 runs sampled)
+		  *   Uint16Array        x 1,008,380 ops/sec ±2.25% (80 runs sampled)
+		  *   Uint8Array         x 1,128,040 ops/sec ±2.11% (81 runs sampled)
+		  *   Int32Array         x 1,170,119 ops/sec ±2.88% (80 runs sampled)
+		  *   Int16Array         x 1,176,348 ops/sec ±5.79% (86 runs sampled)
+		  *   Int8Array          x 1,058,707 ops/sec ±4.94% (77 runs sampled)
+		  *   Uint8ClampedArray  x 1,110,633 ops/sec ±4.20% (80 runs sampled)
+		  * Post:
+		  *   Float64Array       x 7,105,671 ops/sec ±13.47% (64 runs sampled)
+		  *   Float32Array       x 5,887,912 ops/sec ±1.46% (82 runs sampled)
+		  *   Uint32Array        x 6,491,661 ops/sec ±1.76% (79 runs sampled)
+		  *   Uint16Array        x 6,559,795 ops/sec ±1.67% (82 runs sampled)
+		  *   Uint8Array         x 6,463,966 ops/sec ±1.43% (85 runs sampled)
+		  *   Int32Array         x 5,641,841 ops/sec ±3.49% (81 runs sampled)
+		  *   Int16Array         x 6,583,511 ops/sec ±1.98% (80 runs sampled)
+		  *   Int8Array          x 6,606,078 ops/sec ±1.74% (81 runs sampled)
+		  *   Uint8ClampedArray  x 6,602,224 ops/sec ±1.77% (83 runs sampled)
+		  */
+		  var stringTag = (symbolToStringTagExists && obj[Symbol.toStringTag]);
+		  if (typeof stringTag === 'string') {
+		    return stringTag;
+		  }
 
-	  /* ! Speed optimisation
-	  * Pre:
-	  *   date               x 2,130,074 ops/sec ±4.42% (68 runs sampled)
-	  * Post:
-	  *   date               x 3,953,779 ops/sec ±1.35% (77 runs sampled)
-	  */
-	  if (objPrototype === Date.prototype) {
-	    return 'Date';
-	  }
+		  var objPrototype = Object.getPrototypeOf(obj);
+		  /* ! Speed optimisation
+		  * Pre:
+		  *   regex literal      x 1,772,385 ops/sec ±1.85% (77 runs sampled)
+		  *   regex constructor  x 2,143,634 ops/sec ±2.46% (78 runs sampled)
+		  * Post:
+		  *   regex literal      x 3,928,009 ops/sec ±0.65% (78 runs sampled)
+		  *   regex constructor  x 3,931,108 ops/sec ±0.58% (84 runs sampled)
+		  */
+		  if (objPrototype === RegExp.prototype) {
+		    return 'RegExp';
+		  }
 
-	  /* ! Spec Conformance
-	   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-promise.prototype-@@tostringtag)
-	   * ES6$25.4.5.4 - Promise.prototype[@@toStringTag] should be "Promise":
-	   * Test: `Object.prototype.toString.call(Promise.resolve())``
-	   *  - Chrome <=47 === "[object Object]"
-	   *  - Edge <=20 === "[object Object]"
-	   *  - Firefox 29-Latest === "[object Promise]"
-	   *  - Safari 7.1-Latest === "[object Promise]"
-	   */
-	  if (promiseExists && objPrototype === Promise.prototype) {
-	    return 'Promise';
-	  }
+		  /* ! Speed optimisation
+		  * Pre:
+		  *   date               x 2,130,074 ops/sec ±4.42% (68 runs sampled)
+		  * Post:
+		  *   date               x 3,953,779 ops/sec ±1.35% (77 runs sampled)
+		  */
+		  if (objPrototype === Date.prototype) {
+		    return 'Date';
+		  }
 
-	  /* ! Speed optimisation
-	  * Pre:
-	  *   set                x 2,222,186 ops/sec ±1.31% (82 runs sampled)
-	  * Post:
-	  *   set                x 4,545,879 ops/sec ±1.13% (83 runs sampled)
-	  */
-	  if (setExists && objPrototype === Set.prototype) {
-	    return 'Set';
-	  }
+		  /* ! Spec Conformance
+		   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-promise.prototype-@@tostringtag)
+		   * ES6$25.4.5.4 - Promise.prototype[@@toStringTag] should be "Promise":
+		   * Test: `Object.prototype.toString.call(Promise.resolve())``
+		   *  - Chrome <=47 === "[object Object]"
+		   *  - Edge <=20 === "[object Object]"
+		   *  - Firefox 29-Latest === "[object Promise]"
+		   *  - Safari 7.1-Latest === "[object Promise]"
+		   */
+		  if (promiseExists && objPrototype === Promise.prototype) {
+		    return 'Promise';
+		  }
 
-	  /* ! Speed optimisation
-	  * Pre:
-	  *   map                x 2,396,842 ops/sec ±1.59% (81 runs sampled)
-	  * Post:
-	  *   map                x 4,183,945 ops/sec ±6.59% (82 runs sampled)
-	  */
-	  if (mapExists && objPrototype === Map.prototype) {
-	    return 'Map';
-	  }
+		  /* ! Speed optimisation
+		  * Pre:
+		  *   set                x 2,222,186 ops/sec ±1.31% (82 runs sampled)
+		  * Post:
+		  *   set                x 4,545,879 ops/sec ±1.13% (83 runs sampled)
+		  */
+		  if (setExists && objPrototype === Set.prototype) {
+		    return 'Set';
+		  }
 
-	  /* ! Speed optimisation
-	  * Pre:
-	  *   weakset            x 1,323,220 ops/sec ±2.17% (76 runs sampled)
-	  * Post:
-	  *   weakset            x 4,237,510 ops/sec ±2.01% (77 runs sampled)
-	  */
-	  if (weakSetExists && objPrototype === WeakSet.prototype) {
-	    return 'WeakSet';
-	  }
+		  /* ! Speed optimisation
+		  * Pre:
+		  *   map                x 2,396,842 ops/sec ±1.59% (81 runs sampled)
+		  * Post:
+		  *   map                x 4,183,945 ops/sec ±6.59% (82 runs sampled)
+		  */
+		  if (mapExists && objPrototype === Map.prototype) {
+		    return 'Map';
+		  }
 
-	  /* ! Speed optimisation
-	  * Pre:
-	  *   weakmap            x 1,500,260 ops/sec ±2.02% (78 runs sampled)
-	  * Post:
-	  *   weakmap            x 3,881,384 ops/sec ±1.45% (82 runs sampled)
-	  */
-	  if (weakMapExists && objPrototype === WeakMap.prototype) {
-	    return 'WeakMap';
-	  }
+		  /* ! Speed optimisation
+		  * Pre:
+		  *   weakset            x 1,323,220 ops/sec ±2.17% (76 runs sampled)
+		  * Post:
+		  *   weakset            x 4,237,510 ops/sec ±2.01% (77 runs sampled)
+		  */
+		  if (weakSetExists && objPrototype === WeakSet.prototype) {
+		    return 'WeakSet';
+		  }
 
-	  /* ! Spec Conformance
-	   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-dataview.prototype-@@tostringtag)
-	   * ES6$24.2.4.21 - DataView.prototype[@@toStringTag] should be "DataView":
-	   * Test: `Object.prototype.toString.call(new DataView(new ArrayBuffer(1)))``
-	   *  - Edge <=13 === "[object Object]"
-	   */
-	  if (dataViewExists && objPrototype === DataView.prototype) {
-	    return 'DataView';
-	  }
+		  /* ! Speed optimisation
+		  * Pre:
+		  *   weakmap            x 1,500,260 ops/sec ±2.02% (78 runs sampled)
+		  * Post:
+		  *   weakmap            x 3,881,384 ops/sec ±1.45% (82 runs sampled)
+		  */
+		  if (weakMapExists && objPrototype === WeakMap.prototype) {
+		    return 'WeakMap';
+		  }
 
-	  /* ! Spec Conformance
-	   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%mapiteratorprototype%-@@tostringtag)
-	   * ES6$23.1.5.2.2 - %MapIteratorPrototype%[@@toStringTag] should be "Map Iterator":
-	   * Test: `Object.prototype.toString.call(new Map().entries())``
-	   *  - Edge <=13 === "[object Object]"
-	   */
-	  if (mapExists && objPrototype === mapIteratorPrototype) {
-	    return 'Map Iterator';
-	  }
+		  /* ! Spec Conformance
+		   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-dataview.prototype-@@tostringtag)
+		   * ES6$24.2.4.21 - DataView.prototype[@@toStringTag] should be "DataView":
+		   * Test: `Object.prototype.toString.call(new DataView(new ArrayBuffer(1)))``
+		   *  - Edge <=13 === "[object Object]"
+		   */
+		  if (dataViewExists && objPrototype === DataView.prototype) {
+		    return 'DataView';
+		  }
 
-	  /* ! Spec Conformance
-	   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%setiteratorprototype%-@@tostringtag)
-	   * ES6$23.2.5.2.2 - %SetIteratorPrototype%[@@toStringTag] should be "Set Iterator":
-	   * Test: `Object.prototype.toString.call(new Set().entries())``
-	   *  - Edge <=13 === "[object Object]"
-	   */
-	  if (setExists && objPrototype === setIteratorPrototype) {
-	    return 'Set Iterator';
-	  }
+		  /* ! Spec Conformance
+		   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%mapiteratorprototype%-@@tostringtag)
+		   * ES6$23.1.5.2.2 - %MapIteratorPrototype%[@@toStringTag] should be "Map Iterator":
+		   * Test: `Object.prototype.toString.call(new Map().entries())``
+		   *  - Edge <=13 === "[object Object]"
+		   */
+		  if (mapExists && objPrototype === mapIteratorPrototype) {
+		    return 'Map Iterator';
+		  }
 
-	  /* ! Spec Conformance
-	   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%arrayiteratorprototype%-@@tostringtag)
-	   * ES6$22.1.5.2.2 - %ArrayIteratorPrototype%[@@toStringTag] should be "Array Iterator":
-	   * Test: `Object.prototype.toString.call([][Symbol.iterator]())``
-	   *  - Edge <=13 === "[object Object]"
-	   */
-	  if (arrayIteratorExists && objPrototype === arrayIteratorPrototype) {
-	    return 'Array Iterator';
-	  }
+		  /* ! Spec Conformance
+		   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%setiteratorprototype%-@@tostringtag)
+		   * ES6$23.2.5.2.2 - %SetIteratorPrototype%[@@toStringTag] should be "Set Iterator":
+		   * Test: `Object.prototype.toString.call(new Set().entries())``
+		   *  - Edge <=13 === "[object Object]"
+		   */
+		  if (setExists && objPrototype === setIteratorPrototype) {
+		    return 'Set Iterator';
+		  }
 
-	  /* ! Spec Conformance
-	   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%stringiteratorprototype%-@@tostringtag)
-	   * ES6$21.1.5.2.2 - %StringIteratorPrototype%[@@toStringTag] should be "String Iterator":
-	   * Test: `Object.prototype.toString.call(''[Symbol.iterator]())``
-	   *  - Edge <=13 === "[object Object]"
-	   */
-	  if (stringIteratorExists && objPrototype === stringIteratorPrototype) {
-	    return 'String Iterator';
-	  }
+		  /* ! Spec Conformance
+		   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%arrayiteratorprototype%-@@tostringtag)
+		   * ES6$22.1.5.2.2 - %ArrayIteratorPrototype%[@@toStringTag] should be "Array Iterator":
+		   * Test: `Object.prototype.toString.call([][Symbol.iterator]())``
+		   *  - Edge <=13 === "[object Object]"
+		   */
+		  if (arrayIteratorExists && objPrototype === arrayIteratorPrototype) {
+		    return 'Array Iterator';
+		  }
 
-	  /* ! Speed optimisation
-	  * Pre:
-	  *   object from null   x 2,424,320 ops/sec ±1.67% (76 runs sampled)
-	  * Post:
-	  *   object from null   x 5,838,000 ops/sec ±0.99% (84 runs sampled)
-	  */
-	  if (objPrototype === null) {
-	    return 'Object';
-	  }
+		  /* ! Spec Conformance
+		   * (http://www.ecma-international.org/ecma-262/6.0/index.html#sec-%stringiteratorprototype%-@@tostringtag)
+		   * ES6$21.1.5.2.2 - %StringIteratorPrototype%[@@toStringTag] should be "String Iterator":
+		   * Test: `Object.prototype.toString.call(''[Symbol.iterator]())``
+		   *  - Edge <=13 === "[object Object]"
+		   */
+		  if (stringIteratorExists && objPrototype === stringIteratorPrototype) {
+		    return 'String Iterator';
+		  }
 
-	  return Object
-	    .prototype
-	    .toString
-	    .call(obj)
-	    .slice(toStringLeftSliceLength, toStringRightSliceLength);
-	}
+		  /* ! Speed optimisation
+		  * Pre:
+		  *   object from null   x 2,424,320 ops/sec ±1.67% (76 runs sampled)
+		  * Post:
+		  *   object from null   x 5,838,000 ops/sec ±0.99% (84 runs sampled)
+		  */
+		  if (objPrototype === null) {
+		    return 'Object';
+		  }
 
-	return typeDetect;
+		  return Object
+		    .prototype
+		    .toString
+		    .call(obj)
+		    .slice(toStringLeftSliceLength, toStringRightSliceLength);
+		}
 
-	})));
-	});
+		return typeDetect;
+
+		}))); 
+	} (typeDetect));
+
+	var typeDetectExports = typeDetect.exports;
 
 	/*!
 	 * Chai - expectTypes utility
@@ -908,17 +932,17 @@
 	 * @api public
 	 */
 
+	var AssertionError = assertionError;
+	var flag$3 = flag$5;
+	var type$2 = typeDetectExports;
 
-
-
-
-	var expectTypes$1 = function expectTypes(obj, types) {
-	  var flagMsg = flag$1(obj, 'message');
-	  var ssfi = flag$1(obj, 'ssfi');
+	var expectTypes = function expectTypes(obj, types) {
+	  var flagMsg = flag$3(obj, 'message');
+	  var ssfi = flag$3(obj, 'ssfi');
 
 	  flagMsg = flagMsg ? flagMsg + ': ' : '';
 
-	  obj = flag$1(obj, 'object');
+	  obj = flag$3(obj, 'object');
 	  types = types.map(function (t) { return t.toLowerCase(); });
 	  types.sort();
 
@@ -929,10 +953,10 @@
 	    return or + art + ' ' + t;
 	  }).join(', ');
 
-	  var objType = typeDetect(obj).toLowerCase();
+	  var objType = type$2(obj).toLowerCase();
 
 	  if (!types.some(function (expected) { return objType === expected; })) {
-	    throw new assertionError(
+	    throw new AssertionError(
 	      flagMsg + 'object tested must be ' + str + ', but ' + objType + ' given',
 	      undefined,
 	      ssfi
@@ -945,6 +969,7 @@
 	 * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
 	/**
 	 * ### .getActual(object, [actual])
 	 *
@@ -1010,6 +1035,8 @@
 	}
 
 	var getFuncName_1 = getFuncName;
+
+	var getFuncName$1 = /*@__PURE__*/getDefaultExportFromCjs(getFuncName_1);
 
 	const ansiColors = {
 	  bold: ['1', '22'],
@@ -1216,7 +1243,7 @@
 	  if (array[Symbol.toStringTag]) {
 	    return array[Symbol.toStringTag]
 	  }
-	  return getFuncName_1(array.constructor)
+	  return getFuncName$1(array.constructor)
 	};
 
 	function inspectTypedArray(array, options) {
@@ -1265,7 +1292,7 @@
 	}
 
 	function inspectFunction(func, options) {
-	  const name = getFuncName_1(func);
+	  const name = getFuncName$1(func);
 	  if (!name) {
 	    return options.stylize('[Function]', 'special')
 	  }
@@ -1432,7 +1459,7 @@
 	  if (toStringTag && toStringTag in value) {
 	    name = value[toStringTag];
 	  }
-	  name = name || getFuncName_1(value.constructor);
+	  name = name || getFuncName$1(value.constructor);
 	  // Babel transforms anonymous classes to the name `_class`
 	  if (!name || name === '_class') {
 	    name = '<Anonymous Class>';
@@ -1646,9 +1673,9 @@
 	const toString$1 = Object.prototype.toString;
 
 	// eslint-disable-next-line complexity
-	function inspect$2(value, options) {
+	function inspect$3(value, options) {
 	  options = normaliseOptions(options);
-	  options.inspect = inspect$2;
+	  options.inspect = inspect$3;
 	  const { customInspect } = options;
 	  let type = value === null ? 'null' : typeof value;
 	  if (type === 'object') {
@@ -1665,7 +1692,7 @@
 	    const output = inspectCustom(value, options, type);
 	    if (output) {
 	      if (typeof output === 'string') return output
-	      return inspect$2(output, options)
+	      return inspect$3(output, options)
 	    }
 	  }
 
@@ -1721,13 +1748,15 @@
 	var loupe$1 = /*#__PURE__*/Object.freeze({
 		__proto__: null,
 		custom: custom,
-		default: inspect$2,
-		inspect: inspect$2,
+		default: inspect$3,
+		inspect: inspect$3,
 		registerConstructor: registerConstructor,
 		registerStringTag: registerStringTag
 	});
 
-	var config$1 = {
+	var require$$1 = /*@__PURE__*/getAugmentedNamespace(loupe$1);
+
+	var config$6 = {
 
 	  /**
 	   * ### config.includeStack
@@ -1848,16 +1877,10 @@
 
 	};
 
-	var loupe = /*@__PURE__*/getAugmentedNamespace(loupe$1);
+	var loupe = require$$1;
+	var config$5 = config$6;
 
-	// This is (almost) directly from Node.js utils
-	// https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
-
-
-
-
-
-	var inspect_1 = inspect$1;
+	var inspect_1 = inspect$2;
 
 	/**
 	 * ### .inspect(obj, [showHidden], [depth], [colors])
@@ -1874,12 +1897,12 @@
 	 * @namespace Utils
 	 * @name inspect
 	 */
-	function inspect$1(obj, showHidden, depth, colors) {
+	function inspect$2(obj, showHidden, depth, colors) {
 	  var options = {
 	    colors: colors,
 	    depth: (typeof depth === 'undefined' ? 2 : depth),
 	    showHidden: showHidden,
-	    truncate: config$1.truncateThreshold ? config$1.truncateThreshold : Infinity,
+	    truncate: config$5.truncateThreshold ? config$5.truncateThreshold : Infinity,
 	  };
 	  return loupe.inspect(obj, options);
 	}
@@ -1894,8 +1917,8 @@
 	 * Module dependencies
 	 */
 
-
-
+	var inspect$1 = inspect_1;
+	var config$4 = config$6;
 
 	/**
 	 * ### .objDisplay(object)
@@ -1912,10 +1935,10 @@
 	 */
 
 	var objDisplay$1 = function objDisplay(obj) {
-	  var str = inspect_1(obj)
+	  var str = inspect$1(obj)
 	    , type = Object.prototype.toString.call(obj);
 
-	  if (config$1.truncateThreshold && str.length >= config$1.truncateThreshold) {
+	  if (config$4.truncateThreshold && str.length >= config$4.truncateThreshold) {
 	    if (type === '[object Function]') {
 	      return !obj.name || obj.name === ''
 	        ? '[Function]'
@@ -1946,7 +1969,9 @@
 	 * Module dependencies
 	 */
 
-
+	var flag$2 = flag$5
+	  , getActual = getActual$1
+	  , objDisplay = objDisplay$1;
 
 	/**
 	 * ### .getMessage(object, message, negateMessage)
@@ -1967,20 +1992,20 @@
 	 * @api public
 	 */
 
-	var getMessage$2 = function getMessage(obj, args) {
-	  var negate = flag$1(obj, 'negate')
-	    , val = flag$1(obj, 'object')
+	var getMessage$1 = function getMessage(obj, args) {
+	  var negate = flag$2(obj, 'negate')
+	    , val = flag$2(obj, 'object')
 	    , expected = args[3]
-	    , actual = getActual$1(obj, args)
+	    , actual = getActual(obj, args)
 	    , msg = negate ? args[2] : args[1]
-	    , flagMsg = flag$1(obj, 'message');
+	    , flagMsg = flag$2(obj, 'message');
 
 	  if(typeof msg === "function") msg = msg();
 	  msg = msg || '';
 	  msg = msg
-	    .replace(/#\{this\}/g, function () { return objDisplay$1(val); })
-	    .replace(/#\{act\}/g, function () { return objDisplay$1(actual); })
-	    .replace(/#\{exp\}/g, function () { return objDisplay$1(expected); });
+	    .replace(/#\{this\}/g, function () { return objDisplay(val); })
+	    .replace(/#\{act\}/g, function () { return objDisplay(actual); })
+	    .replace(/#\{exp\}/g, function () { return objDisplay(expected); });
 
 	  return flagMsg ? flagMsg + ': ' + msg : msg;
 	};
@@ -1990,6 +2015,7 @@
 	 * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
 	/**
 	 * ### .transferFlags(assertion, object, includeAll = true)
 	 *
@@ -2013,7 +2039,7 @@
 	 * @api private
 	 */
 
-	var transferFlags$1 = function transferFlags(assertion, object, includeAll) {
+	var transferFlags = function transferFlags(assertion, object, includeAll) {
 	  var flags = assertion.__flags || (assertion.__flags = Object.create(null));
 
 	  if (!object.__flags) {
@@ -2030,6 +2056,8 @@
 	  }
 	};
 
+	var deepEql = {exports: {}};
+
 	/* globals Symbol: false, Uint8Array: false, WeakMap: false */
 	/*!
 	 * deep-eql
@@ -2037,7 +2065,7 @@
 	 * MIT Licensed
 	 */
 
-
+	var type$1 = typeDetectExports;
 	function FakeMap() {
 	  this._key = 'chai/deep-eql__' + Math.random() + Date.now();
 	}
@@ -2107,8 +2135,8 @@
 	 * Primary Export
 	 */
 
-	var deepEql = deepEqual;
-	var MemoizeMap_1 = MemoizeMap;
+	deepEql.exports = deepEqual;
+	deepEql.exports.MemoizeMap = MemoizeMap;
 
 	/**
 	 * Assert deeply nested sameValue equality between two objects of any type.
@@ -2211,8 +2239,8 @@
 	    }
 	  }
 
-	  var leftHandType = typeDetect(leftHandOperand);
-	  if (leftHandType !== typeDetect(rightHandOperand)) {
+	  var leftHandType = type$1(leftHandOperand);
+	  if (leftHandType !== type$1(rightHandOperand)) {
 	    memoizeSet(leftHandOperand, rightHandOperand, options.memoize, false);
 	    return false;
 	  }
@@ -2522,7 +2550,10 @@
 	    return entry;
 	  });
 	}
-	deepEql.MemoizeMap = MemoizeMap_1;
+
+	var deepEqlExports = deepEql.exports;
+
+	var config$3 = config$6;
 
 	/*!
 	 * Chai - isProxyEnabled helper
@@ -2542,7 +2573,7 @@
 	 */
 
 	var isProxyEnabled$1 = function isProxyEnabled() {
-	  return config$1.useProxy &&
+	  return config$3.useProxy &&
 	    typeof Proxy !== 'undefined' &&
 	    typeof Reflect !== 'undefined';
 	};
@@ -2553,67 +2584,80 @@
 	 * MIT Licensed
 	 */
 
-	/**
-	 * ### .addProperty(ctx, name, getter)
-	 *
-	 * Adds a property to the prototype of an object.
-	 *
-	 *     utils.addProperty(chai.Assertion.prototype, 'foo', function () {
-	 *       var obj = utils.flag(this, 'object');
-	 *       new chai.Assertion(obj).to.be.instanceof(Foo);
-	 *     });
-	 *
-	 * Can also be accessed directly from `chai.Assertion`.
-	 *
-	 *     chai.Assertion.addProperty('foo', fn);
-	 *
-	 * Then can be used as any other assertion.
-	 *
-	 *     expect(myFoo).to.be.foo;
-	 *
-	 * @param {Object} ctx object to which the property is added
-	 * @param {String} name of property to add
-	 * @param {Function} getter function to be used for name
-	 * @namespace Utils
-	 * @name addProperty
-	 * @api public
-	 */
+	var addProperty;
+	var hasRequiredAddProperty;
 
-	var addProperty$1 = function addProperty(ctx, name, getter) {
-	  getter = getter === undefined ? function () {} : getter;
+	function requireAddProperty () {
+		if (hasRequiredAddProperty) return addProperty;
+		hasRequiredAddProperty = 1;
+		var chai = requireChai();
+		var flag = flag$5;
+		var isProxyEnabled = isProxyEnabled$1;
+		var transferFlags$1 = transferFlags;
 
-	  Object.defineProperty(ctx, name,
-	    { get: function propertyGetter() {
-	        // Setting the `ssfi` flag to `propertyGetter` causes this function to
-	        // be the starting point for removing implementation frames from the
-	        // stack trace of a failed assertion.
-	        //
-	        // However, we only want to use this function as the starting point if
-	        // the `lockSsfi` flag isn't set and proxy protection is disabled.
-	        //
-	        // If the `lockSsfi` flag is set, then either this assertion has been
-	        // overwritten by another assertion, or this assertion is being invoked
-	        // from inside of another assertion. In the first case, the `ssfi` flag
-	        // has already been set by the overwriting assertion. In the second
-	        // case, the `ssfi` flag has already been set by the outer assertion.
-	        //
-	        // If proxy protection is enabled, then the `ssfi` flag has already been
-	        // set by the proxy getter.
-	        if (!isProxyEnabled$1() && !flag$1(this, 'lockSsfi')) {
-	          flag$1(this, 'ssfi', propertyGetter);
-	        }
+		/**
+		 * ### .addProperty(ctx, name, getter)
+		 *
+		 * Adds a property to the prototype of an object.
+		 *
+		 *     utils.addProperty(chai.Assertion.prototype, 'foo', function () {
+		 *       var obj = utils.flag(this, 'object');
+		 *       new chai.Assertion(obj).to.be.instanceof(Foo);
+		 *     });
+		 *
+		 * Can also be accessed directly from `chai.Assertion`.
+		 *
+		 *     chai.Assertion.addProperty('foo', fn);
+		 *
+		 * Then can be used as any other assertion.
+		 *
+		 *     expect(myFoo).to.be.foo;
+		 *
+		 * @param {Object} ctx object to which the property is added
+		 * @param {String} name of property to add
+		 * @param {Function} getter function to be used for name
+		 * @namespace Utils
+		 * @name addProperty
+		 * @api public
+		 */
 
-	        var result = getter.call(this);
-	        if (result !== undefined)
-	          return result;
+		addProperty = function addProperty(ctx, name, getter) {
+		  getter = getter === undefined ? function () {} : getter;
 
-	        var newAssertion = new chai$1.Assertion();
-	        transferFlags$1(this, newAssertion);
-	        return newAssertion;
-	      }
-	    , configurable: true
-	  });
-	};
+		  Object.defineProperty(ctx, name,
+		    { get: function propertyGetter() {
+		        // Setting the `ssfi` flag to `propertyGetter` causes this function to
+		        // be the starting point for removing implementation frames from the
+		        // stack trace of a failed assertion.
+		        //
+		        // However, we only want to use this function as the starting point if
+		        // the `lockSsfi` flag isn't set and proxy protection is disabled.
+		        //
+		        // If the `lockSsfi` flag is set, then either this assertion has been
+		        // overwritten by another assertion, or this assertion is being invoked
+		        // from inside of another assertion. In the first case, the `ssfi` flag
+		        // has already been set by the overwriting assertion. In the second
+		        // case, the `ssfi` flag has already been set by the outer assertion.
+		        //
+		        // If proxy protection is enabled, then the `ssfi` flag has already been
+		        // set by the proxy getter.
+		        if (!isProxyEnabled() && !flag(this, 'lockSsfi')) {
+		          flag(this, 'ssfi', propertyGetter);
+		        }
+
+		        var result = getter.call(this);
+		        if (result !== undefined)
+		          return result;
+
+		        var newAssertion = new chai.Assertion();
+		        transferFlags$1(this, newAssertion);
+		        return newAssertion;
+		      }
+		    , configurable: true
+		  });
+		};
+		return addProperty;
+	}
 
 	var fnLengthDesc = Object.getOwnPropertyDescriptor(function () {}, 'length');
 
@@ -2657,7 +2701,7 @@
 	 * @name addLengthGuard
 	 */
 
-	var addLengthGuard$1 = function addLengthGuard (fn, assertionName, isChainable) {
+	var addLengthGuard = function addLengthGuard (fn, assertionName, isChainable) {
 	  if (!fnLengthDesc.configurable) return fn;
 
 	  Object.defineProperty(fn, 'length', {
@@ -2681,6 +2725,7 @@
 	 * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
 	/**
 	 * ### .getProperties(object)
 	 *
@@ -2694,7 +2739,7 @@
 	 * @api public
 	 */
 
-	var getProperties = function getProperties(object) {
+	var getProperties$1 = function getProperties(object) {
 	  var result = Object.getOwnPropertyNames(object);
 
 	  function addProperty(property) {
@@ -2711,6 +2756,11 @@
 
 	  return result;
 	};
+
+	var config$2 = config$6;
+	var flag$1 = flag$5;
+	var getProperties = getProperties$1;
+	var isProxyEnabled = isProxyEnabled$1;
 
 	/*!
 	 * Chai - proxify utility
@@ -2739,8 +2789,8 @@
 
 	var builtins = ['__flags', '__methods', '_obj', 'assert'];
 
-	var proxify$1 = function proxify(obj, nonChainableMethodName) {
-	  if (!isProxyEnabled$1()) return obj;
+	var proxify = function proxify(obj, nonChainableMethodName) {
+	  if (!isProxyEnabled()) return obj;
 
 	  return new Proxy(obj, {
 	    get: function proxyGetter(target, property) {
@@ -2749,7 +2799,7 @@
 	      // The values for which an error should be thrown can be configured using
 	      // the `config.proxyExcludedKeys` setting.
 	      if (typeof property === 'string' &&
-	          config$1.proxyExcludedKeys.indexOf(property) === -1 &&
+	          config$2.proxyExcludedKeys.indexOf(property) === -1 &&
 	          !Reflect.has(target, property)) {
 	        // Special message for invalid property access of non-chainable methods.
 	        if (nonChainableMethodName) {
@@ -2861,62 +2911,76 @@
 	 * MIT Licensed
 	 */
 
-	/**
-	 * ### .addMethod(ctx, name, method)
-	 *
-	 * Adds a method to the prototype of an object.
-	 *
-	 *     utils.addMethod(chai.Assertion.prototype, 'foo', function (str) {
-	 *       var obj = utils.flag(this, 'object');
-	 *       new chai.Assertion(obj).to.be.equal(str);
-	 *     });
-	 *
-	 * Can also be accessed directly from `chai.Assertion`.
-	 *
-	 *     chai.Assertion.addMethod('foo', fn);
-	 *
-	 * Then can be used as any other assertion.
-	 *
-	 *     expect(fooStr).to.be.foo('bar');
-	 *
-	 * @param {Object} ctx object to which the method is added
-	 * @param {String} name of method to add
-	 * @param {Function} method function to be used for name
-	 * @namespace Utils
-	 * @name addMethod
-	 * @api public
-	 */
+	var addMethod;
+	var hasRequiredAddMethod;
 
-	var addMethod$1 = function addMethod(ctx, name, method) {
-	  var methodWrapper = function () {
-	    // Setting the `ssfi` flag to `methodWrapper` causes this function to be the
-	    // starting point for removing implementation frames from the stack trace of
-	    // a failed assertion.
-	    //
-	    // However, we only want to use this function as the starting point if the
-	    // `lockSsfi` flag isn't set.
-	    //
-	    // If the `lockSsfi` flag is set, then either this assertion has been
-	    // overwritten by another assertion, or this assertion is being invoked from
-	    // inside of another assertion. In the first case, the `ssfi` flag has
-	    // already been set by the overwriting assertion. In the second case, the
-	    // `ssfi` flag has already been set by the outer assertion.
-	    if (!flag$1(this, 'lockSsfi')) {
-	      flag$1(this, 'ssfi', methodWrapper);
-	    }
+	function requireAddMethod () {
+		if (hasRequiredAddMethod) return addMethod;
+		hasRequiredAddMethod = 1;
+		var addLengthGuard$1 = addLengthGuard;
+		var chai = requireChai();
+		var flag = flag$5;
+		var proxify$1 = proxify;
+		var transferFlags$1 = transferFlags;
 
-	    var result = method.apply(this, arguments);
-	    if (result !== undefined)
-	      return result;
+		/**
+		 * ### .addMethod(ctx, name, method)
+		 *
+		 * Adds a method to the prototype of an object.
+		 *
+		 *     utils.addMethod(chai.Assertion.prototype, 'foo', function (str) {
+		 *       var obj = utils.flag(this, 'object');
+		 *       new chai.Assertion(obj).to.be.equal(str);
+		 *     });
+		 *
+		 * Can also be accessed directly from `chai.Assertion`.
+		 *
+		 *     chai.Assertion.addMethod('foo', fn);
+		 *
+		 * Then can be used as any other assertion.
+		 *
+		 *     expect(fooStr).to.be.foo('bar');
+		 *
+		 * @param {Object} ctx object to which the method is added
+		 * @param {String} name of method to add
+		 * @param {Function} method function to be used for name
+		 * @namespace Utils
+		 * @name addMethod
+		 * @api public
+		 */
 
-	    var newAssertion = new chai$1.Assertion();
-	    transferFlags$1(this, newAssertion);
-	    return newAssertion;
-	  };
+		addMethod = function addMethod(ctx, name, method) {
+		  var methodWrapper = function () {
+		    // Setting the `ssfi` flag to `methodWrapper` causes this function to be the
+		    // starting point for removing implementation frames from the stack trace of
+		    // a failed assertion.
+		    //
+		    // However, we only want to use this function as the starting point if the
+		    // `lockSsfi` flag isn't set.
+		    //
+		    // If the `lockSsfi` flag is set, then either this assertion has been
+		    // overwritten by another assertion, or this assertion is being invoked from
+		    // inside of another assertion. In the first case, the `ssfi` flag has
+		    // already been set by the overwriting assertion. In the second case, the
+		    // `ssfi` flag has already been set by the outer assertion.
+		    if (!flag(this, 'lockSsfi')) {
+		      flag(this, 'ssfi', methodWrapper);
+		    }
 
-	  addLengthGuard$1(methodWrapper, name, false);
-	  ctx[name] = proxify$1(methodWrapper, name);
-	};
+		    var result = method.apply(this, arguments);
+		    if (result !== undefined)
+		      return result;
+
+		    var newAssertion = new chai.Assertion();
+		    transferFlags$1(this, newAssertion);
+		    return newAssertion;
+		  };
+
+		  addLengthGuard$1(methodWrapper, name, false);
+		  ctx[name] = proxify$1(methodWrapper, name);
+		};
+		return addMethod;
+	}
 
 	/*!
 	 * Chai - overwriteProperty utility
@@ -2924,87 +2988,100 @@
 	 * MIT Licensed
 	 */
 
-	/**
-	 * ### .overwriteProperty(ctx, name, fn)
-	 *
-	 * Overwrites an already existing property getter and provides
-	 * access to previous value. Must return function to use as getter.
-	 *
-	 *     utils.overwriteProperty(chai.Assertion.prototype, 'ok', function (_super) {
-	 *       return function () {
-	 *         var obj = utils.flag(this, 'object');
-	 *         if (obj instanceof Foo) {
-	 *           new chai.Assertion(obj.name).to.equal('bar');
-	 *         } else {
-	 *           _super.call(this);
-	 *         }
-	 *       }
-	 *     });
-	 *
-	 *
-	 * Can also be accessed directly from `chai.Assertion`.
-	 *
-	 *     chai.Assertion.overwriteProperty('foo', fn);
-	 *
-	 * Then can be used as any other assertion.
-	 *
-	 *     expect(myFoo).to.be.ok;
-	 *
-	 * @param {Object} ctx object whose property is to be overwritten
-	 * @param {String} name of property to overwrite
-	 * @param {Function} getter function that returns a getter function to be used for name
-	 * @namespace Utils
-	 * @name overwriteProperty
-	 * @api public
-	 */
+	var overwriteProperty;
+	var hasRequiredOverwriteProperty;
 
-	var overwriteProperty$1 = function overwriteProperty(ctx, name, getter) {
-	  var _get = Object.getOwnPropertyDescriptor(ctx, name)
-	    , _super = function () {};
+	function requireOverwriteProperty () {
+		if (hasRequiredOverwriteProperty) return overwriteProperty;
+		hasRequiredOverwriteProperty = 1;
+		var chai = requireChai();
+		var flag = flag$5;
+		var isProxyEnabled = isProxyEnabled$1;
+		var transferFlags$1 = transferFlags;
 
-	  if (_get && 'function' === typeof _get.get)
-	    _super = _get.get;
+		/**
+		 * ### .overwriteProperty(ctx, name, fn)
+		 *
+		 * Overwrites an already existing property getter and provides
+		 * access to previous value. Must return function to use as getter.
+		 *
+		 *     utils.overwriteProperty(chai.Assertion.prototype, 'ok', function (_super) {
+		 *       return function () {
+		 *         var obj = utils.flag(this, 'object');
+		 *         if (obj instanceof Foo) {
+		 *           new chai.Assertion(obj.name).to.equal('bar');
+		 *         } else {
+		 *           _super.call(this);
+		 *         }
+		 *       }
+		 *     });
+		 *
+		 *
+		 * Can also be accessed directly from `chai.Assertion`.
+		 *
+		 *     chai.Assertion.overwriteProperty('foo', fn);
+		 *
+		 * Then can be used as any other assertion.
+		 *
+		 *     expect(myFoo).to.be.ok;
+		 *
+		 * @param {Object} ctx object whose property is to be overwritten
+		 * @param {String} name of property to overwrite
+		 * @param {Function} getter function that returns a getter function to be used for name
+		 * @namespace Utils
+		 * @name overwriteProperty
+		 * @api public
+		 */
 
-	  Object.defineProperty(ctx, name,
-	    { get: function overwritingPropertyGetter() {
-	        // Setting the `ssfi` flag to `overwritingPropertyGetter` causes this
-	        // function to be the starting point for removing implementation frames
-	        // from the stack trace of a failed assertion.
-	        //
-	        // However, we only want to use this function as the starting point if
-	        // the `lockSsfi` flag isn't set and proxy protection is disabled.
-	        //
-	        // If the `lockSsfi` flag is set, then either this assertion has been
-	        // overwritten by another assertion, or this assertion is being invoked
-	        // from inside of another assertion. In the first case, the `ssfi` flag
-	        // has already been set by the overwriting assertion. In the second
-	        // case, the `ssfi` flag has already been set by the outer assertion.
-	        //
-	        // If proxy protection is enabled, then the `ssfi` flag has already been
-	        // set by the proxy getter.
-	        if (!isProxyEnabled$1() && !flag$1(this, 'lockSsfi')) {
-	          flag$1(this, 'ssfi', overwritingPropertyGetter);
-	        }
+		overwriteProperty = function overwriteProperty(ctx, name, getter) {
+		  var _get = Object.getOwnPropertyDescriptor(ctx, name)
+		    , _super = function () {};
 
-	        // Setting the `lockSsfi` flag to `true` prevents the overwritten
-	        // assertion from changing the `ssfi` flag. By this point, the `ssfi`
-	        // flag is already set to the correct starting point for this assertion.
-	        var origLockSsfi = flag$1(this, 'lockSsfi');
-	        flag$1(this, 'lockSsfi', true);
-	        var result = getter(_super).call(this);
-	        flag$1(this, 'lockSsfi', origLockSsfi);
+		  if (_get && 'function' === typeof _get.get)
+		    _super = _get.get;
 
-	        if (result !== undefined) {
-	          return result;
-	        }
+		  Object.defineProperty(ctx, name,
+		    { get: function overwritingPropertyGetter() {
+		        // Setting the `ssfi` flag to `overwritingPropertyGetter` causes this
+		        // function to be the starting point for removing implementation frames
+		        // from the stack trace of a failed assertion.
+		        //
+		        // However, we only want to use this function as the starting point if
+		        // the `lockSsfi` flag isn't set and proxy protection is disabled.
+		        //
+		        // If the `lockSsfi` flag is set, then either this assertion has been
+		        // overwritten by another assertion, or this assertion is being invoked
+		        // from inside of another assertion. In the first case, the `ssfi` flag
+		        // has already been set by the overwriting assertion. In the second
+		        // case, the `ssfi` flag has already been set by the outer assertion.
+		        //
+		        // If proxy protection is enabled, then the `ssfi` flag has already been
+		        // set by the proxy getter.
+		        if (!isProxyEnabled() && !flag(this, 'lockSsfi')) {
+		          flag(this, 'ssfi', overwritingPropertyGetter);
+		        }
 
-	        var newAssertion = new chai$1.Assertion();
-	        transferFlags$1(this, newAssertion);
-	        return newAssertion;
-	      }
-	    , configurable: true
-	  });
-	};
+		        // Setting the `lockSsfi` flag to `true` prevents the overwritten
+		        // assertion from changing the `ssfi` flag. By this point, the `ssfi`
+		        // flag is already set to the correct starting point for this assertion.
+		        var origLockSsfi = flag(this, 'lockSsfi');
+		        flag(this, 'lockSsfi', true);
+		        var result = getter(_super).call(this);
+		        flag(this, 'lockSsfi', origLockSsfi);
+
+		        if (result !== undefined) {
+		          return result;
+		        }
+
+		        var newAssertion = new chai.Assertion();
+		        transferFlags$1(this, newAssertion);
+		        return newAssertion;
+		      }
+		    , configurable: true
+		  });
+		};
+		return overwriteProperty;
+	}
 
 	/*!
 	 * Chai - overwriteMethod utility
@@ -3012,86 +3089,100 @@
 	 * MIT Licensed
 	 */
 
-	/**
-	 * ### .overwriteMethod(ctx, name, fn)
-	 *
-	 * Overwrites an already existing method and provides
-	 * access to previous function. Must return function
-	 * to be used for name.
-	 *
-	 *     utils.overwriteMethod(chai.Assertion.prototype, 'equal', function (_super) {
-	 *       return function (str) {
-	 *         var obj = utils.flag(this, 'object');
-	 *         if (obj instanceof Foo) {
-	 *           new chai.Assertion(obj.value).to.equal(str);
-	 *         } else {
-	 *           _super.apply(this, arguments);
-	 *         }
-	 *       }
-	 *     });
-	 *
-	 * Can also be accessed directly from `chai.Assertion`.
-	 *
-	 *     chai.Assertion.overwriteMethod('foo', fn);
-	 *
-	 * Then can be used as any other assertion.
-	 *
-	 *     expect(myFoo).to.equal('bar');
-	 *
-	 * @param {Object} ctx object whose method is to be overwritten
-	 * @param {String} name of method to overwrite
-	 * @param {Function} method function that returns a function to be used for name
-	 * @namespace Utils
-	 * @name overwriteMethod
-	 * @api public
-	 */
+	var overwriteMethod;
+	var hasRequiredOverwriteMethod;
 
-	var overwriteMethod$1 = function overwriteMethod(ctx, name, method) {
-	  var _method = ctx[name]
-	    , _super = function () {
-	      throw new Error(name + ' is not a function');
-	    };
+	function requireOverwriteMethod () {
+		if (hasRequiredOverwriteMethod) return overwriteMethod;
+		hasRequiredOverwriteMethod = 1;
+		var addLengthGuard$1 = addLengthGuard;
+		var chai = requireChai();
+		var flag = flag$5;
+		var proxify$1 = proxify;
+		var transferFlags$1 = transferFlags;
 
-	  if (_method && 'function' === typeof _method)
-	    _super = _method;
+		/**
+		 * ### .overwriteMethod(ctx, name, fn)
+		 *
+		 * Overwrites an already existing method and provides
+		 * access to previous function. Must return function
+		 * to be used for name.
+		 *
+		 *     utils.overwriteMethod(chai.Assertion.prototype, 'equal', function (_super) {
+		 *       return function (str) {
+		 *         var obj = utils.flag(this, 'object');
+		 *         if (obj instanceof Foo) {
+		 *           new chai.Assertion(obj.value).to.equal(str);
+		 *         } else {
+		 *           _super.apply(this, arguments);
+		 *         }
+		 *       }
+		 *     });
+		 *
+		 * Can also be accessed directly from `chai.Assertion`.
+		 *
+		 *     chai.Assertion.overwriteMethod('foo', fn);
+		 *
+		 * Then can be used as any other assertion.
+		 *
+		 *     expect(myFoo).to.equal('bar');
+		 *
+		 * @param {Object} ctx object whose method is to be overwritten
+		 * @param {String} name of method to overwrite
+		 * @param {Function} method function that returns a function to be used for name
+		 * @namespace Utils
+		 * @name overwriteMethod
+		 * @api public
+		 */
 
-	  var overwritingMethodWrapper = function () {
-	    // Setting the `ssfi` flag to `overwritingMethodWrapper` causes this
-	    // function to be the starting point for removing implementation frames from
-	    // the stack trace of a failed assertion.
-	    //
-	    // However, we only want to use this function as the starting point if the
-	    // `lockSsfi` flag isn't set.
-	    //
-	    // If the `lockSsfi` flag is set, then either this assertion has been
-	    // overwritten by another assertion, or this assertion is being invoked from
-	    // inside of another assertion. In the first case, the `ssfi` flag has
-	    // already been set by the overwriting assertion. In the second case, the
-	    // `ssfi` flag has already been set by the outer assertion.
-	    if (!flag$1(this, 'lockSsfi')) {
-	      flag$1(this, 'ssfi', overwritingMethodWrapper);
-	    }
+		overwriteMethod = function overwriteMethod(ctx, name, method) {
+		  var _method = ctx[name]
+		    , _super = function () {
+		      throw new Error(name + ' is not a function');
+		    };
 
-	    // Setting the `lockSsfi` flag to `true` prevents the overwritten assertion
-	    // from changing the `ssfi` flag. By this point, the `ssfi` flag is already
-	    // set to the correct starting point for this assertion.
-	    var origLockSsfi = flag$1(this, 'lockSsfi');
-	    flag$1(this, 'lockSsfi', true);
-	    var result = method(_super).apply(this, arguments);
-	    flag$1(this, 'lockSsfi', origLockSsfi);
+		  if (_method && 'function' === typeof _method)
+		    _super = _method;
 
-	    if (result !== undefined) {
-	      return result;
-	    }
+		  var overwritingMethodWrapper = function () {
+		    // Setting the `ssfi` flag to `overwritingMethodWrapper` causes this
+		    // function to be the starting point for removing implementation frames from
+		    // the stack trace of a failed assertion.
+		    //
+		    // However, we only want to use this function as the starting point if the
+		    // `lockSsfi` flag isn't set.
+		    //
+		    // If the `lockSsfi` flag is set, then either this assertion has been
+		    // overwritten by another assertion, or this assertion is being invoked from
+		    // inside of another assertion. In the first case, the `ssfi` flag has
+		    // already been set by the overwriting assertion. In the second case, the
+		    // `ssfi` flag has already been set by the outer assertion.
+		    if (!flag(this, 'lockSsfi')) {
+		      flag(this, 'ssfi', overwritingMethodWrapper);
+		    }
 
-	    var newAssertion = new chai$1.Assertion();
-	    transferFlags$1(this, newAssertion);
-	    return newAssertion;
-	  };
+		    // Setting the `lockSsfi` flag to `true` prevents the overwritten assertion
+		    // from changing the `ssfi` flag. By this point, the `ssfi` flag is already
+		    // set to the correct starting point for this assertion.
+		    var origLockSsfi = flag(this, 'lockSsfi');
+		    flag(this, 'lockSsfi', true);
+		    var result = method(_super).apply(this, arguments);
+		    flag(this, 'lockSsfi', origLockSsfi);
 
-	  addLengthGuard$1(overwritingMethodWrapper, name, false);
-	  ctx[name] = proxify$1(overwritingMethodWrapper, name);
-	};
+		    if (result !== undefined) {
+		      return result;
+		    }
+
+		    var newAssertion = new chai.Assertion();
+		    transferFlags$1(this, newAssertion);
+		    return newAssertion;
+		  };
+
+		  addLengthGuard$1(overwritingMethodWrapper, name, false);
+		  ctx[name] = proxify$1(overwritingMethodWrapper, name);
+		};
+		return overwriteMethod;
+	}
 
 	/*!
 	 * Chai - addChainingMethod utility
@@ -3099,152 +3190,160 @@
 	 * MIT Licensed
 	 */
 
-	/*!
-	 * Module dependencies
-	 */
+	var addChainableMethod;
+	var hasRequiredAddChainableMethod;
 
+	function requireAddChainableMethod () {
+		if (hasRequiredAddChainableMethod) return addChainableMethod;
+		hasRequiredAddChainableMethod = 1;
+		/*!
+		 * Module dependencies
+		 */
 
+		var addLengthGuard$1 = addLengthGuard;
+		var chai = requireChai();
+		var flag = flag$5;
+		var proxify$1 = proxify;
+		var transferFlags$1 = transferFlags;
 
+		/*!
+		 * Module variables
+		 */
 
+		// Check whether `Object.setPrototypeOf` is supported
+		var canSetPrototype = typeof Object.setPrototypeOf === 'function';
 
+		// Without `Object.setPrototypeOf` support, this module will need to add properties to a function.
+		// However, some of functions' own props are not configurable and should be skipped.
+		var testFn = function() {};
+		var excludeNames = Object.getOwnPropertyNames(testFn).filter(function(name) {
+		  var propDesc = Object.getOwnPropertyDescriptor(testFn, name);
 
+		  // Note: PhantomJS 1.x includes `callee` as one of `testFn`'s own properties,
+		  // but then returns `undefined` as the property descriptor for `callee`. As a
+		  // workaround, we perform an otherwise unnecessary type-check for `propDesc`,
+		  // and then filter it out if it's not an object as it should be.
+		  if (typeof propDesc !== 'object')
+		    return true;
 
-	/*!
-	 * Module variables
-	 */
+		  return !propDesc.configurable;
+		});
 
-	// Check whether `Object.setPrototypeOf` is supported
-	var canSetPrototype = typeof Object.setPrototypeOf === 'function';
+		// Cache `Function` properties
+		var call  = Function.prototype.call,
+		    apply = Function.prototype.apply;
 
-	// Without `Object.setPrototypeOf` support, this module will need to add properties to a function.
-	// However, some of functions' own props are not configurable and should be skipped.
-	var testFn = function() {};
-	var excludeNames = Object.getOwnPropertyNames(testFn).filter(function(name) {
-	  var propDesc = Object.getOwnPropertyDescriptor(testFn, name);
+		/**
+		 * ### .addChainableMethod(ctx, name, method, chainingBehavior)
+		 *
+		 * Adds a method to an object, such that the method can also be chained.
+		 *
+		 *     utils.addChainableMethod(chai.Assertion.prototype, 'foo', function (str) {
+		 *       var obj = utils.flag(this, 'object');
+		 *       new chai.Assertion(obj).to.be.equal(str);
+		 *     });
+		 *
+		 * Can also be accessed directly from `chai.Assertion`.
+		 *
+		 *     chai.Assertion.addChainableMethod('foo', fn, chainingBehavior);
+		 *
+		 * The result can then be used as both a method assertion, executing both `method` and
+		 * `chainingBehavior`, or as a language chain, which only executes `chainingBehavior`.
+		 *
+		 *     expect(fooStr).to.be.foo('bar');
+		 *     expect(fooStr).to.be.foo.equal('foo');
+		 *
+		 * @param {Object} ctx object to which the method is added
+		 * @param {String} name of method to add
+		 * @param {Function} method function to be used for `name`, when called
+		 * @param {Function} chainingBehavior function to be called every time the property is accessed
+		 * @namespace Utils
+		 * @name addChainableMethod
+		 * @api public
+		 */
 
-	  // Note: PhantomJS 1.x includes `callee` as one of `testFn`'s own properties,
-	  // but then returns `undefined` as the property descriptor for `callee`. As a
-	  // workaround, we perform an otherwise unnecessary type-check for `propDesc`,
-	  // and then filter it out if it's not an object as it should be.
-	  if (typeof propDesc !== 'object')
-	    return true;
+		addChainableMethod = function addChainableMethod(ctx, name, method, chainingBehavior) {
+		  if (typeof chainingBehavior !== 'function') {
+		    chainingBehavior = function () { };
+		  }
 
-	  return !propDesc.configurable;
-	});
+		  var chainableBehavior = {
+		      method: method
+		    , chainingBehavior: chainingBehavior
+		  };
 
-	// Cache `Function` properties
-	var call  = Function.prototype.call,
-	    apply = Function.prototype.apply;
+		  // save the methods so we can overwrite them later, if we need to.
+		  if (!ctx.__methods) {
+		    ctx.__methods = {};
+		  }
+		  ctx.__methods[name] = chainableBehavior;
 
-	/**
-	 * ### .addChainableMethod(ctx, name, method, chainingBehavior)
-	 *
-	 * Adds a method to an object, such that the method can also be chained.
-	 *
-	 *     utils.addChainableMethod(chai.Assertion.prototype, 'foo', function (str) {
-	 *       var obj = utils.flag(this, 'object');
-	 *       new chai.Assertion(obj).to.be.equal(str);
-	 *     });
-	 *
-	 * Can also be accessed directly from `chai.Assertion`.
-	 *
-	 *     chai.Assertion.addChainableMethod('foo', fn, chainingBehavior);
-	 *
-	 * The result can then be used as both a method assertion, executing both `method` and
-	 * `chainingBehavior`, or as a language chain, which only executes `chainingBehavior`.
-	 *
-	 *     expect(fooStr).to.be.foo('bar');
-	 *     expect(fooStr).to.be.foo.equal('foo');
-	 *
-	 * @param {Object} ctx object to which the method is added
-	 * @param {String} name of method to add
-	 * @param {Function} method function to be used for `name`, when called
-	 * @param {Function} chainingBehavior function to be called every time the property is accessed
-	 * @namespace Utils
-	 * @name addChainableMethod
-	 * @api public
-	 */
+		  Object.defineProperty(ctx, name,
+		    { get: function chainableMethodGetter() {
+		        chainableBehavior.chainingBehavior.call(this);
 
-	var addChainableMethod$1 = function addChainableMethod(ctx, name, method, chainingBehavior) {
-	  if (typeof chainingBehavior !== 'function') {
-	    chainingBehavior = function () { };
-	  }
+		        var chainableMethodWrapper = function () {
+		          // Setting the `ssfi` flag to `chainableMethodWrapper` causes this
+		          // function to be the starting point for removing implementation
+		          // frames from the stack trace of a failed assertion.
+		          //
+		          // However, we only want to use this function as the starting point if
+		          // the `lockSsfi` flag isn't set.
+		          //
+		          // If the `lockSsfi` flag is set, then this assertion is being
+		          // invoked from inside of another assertion. In this case, the `ssfi`
+		          // flag has already been set by the outer assertion.
+		          //
+		          // Note that overwriting a chainable method merely replaces the saved
+		          // methods in `ctx.__methods` instead of completely replacing the
+		          // overwritten assertion. Therefore, an overwriting assertion won't
+		          // set the `ssfi` or `lockSsfi` flags.
+		          if (!flag(this, 'lockSsfi')) {
+		            flag(this, 'ssfi', chainableMethodWrapper);
+		          }
 
-	  var chainableBehavior = {
-	      method: method
-	    , chainingBehavior: chainingBehavior
-	  };
+		          var result = chainableBehavior.method.apply(this, arguments);
+		          if (result !== undefined) {
+		            return result;
+		          }
 
-	  // save the methods so we can overwrite them later, if we need to.
-	  if (!ctx.__methods) {
-	    ctx.__methods = {};
-	  }
-	  ctx.__methods[name] = chainableBehavior;
+		          var newAssertion = new chai.Assertion();
+		          transferFlags$1(this, newAssertion);
+		          return newAssertion;
+		        };
 
-	  Object.defineProperty(ctx, name,
-	    { get: function chainableMethodGetter() {
-	        chainableBehavior.chainingBehavior.call(this);
+		        addLengthGuard$1(chainableMethodWrapper, name, true);
 
-	        var chainableMethodWrapper = function () {
-	          // Setting the `ssfi` flag to `chainableMethodWrapper` causes this
-	          // function to be the starting point for removing implementation
-	          // frames from the stack trace of a failed assertion.
-	          //
-	          // However, we only want to use this function as the starting point if
-	          // the `lockSsfi` flag isn't set.
-	          //
-	          // If the `lockSsfi` flag is set, then this assertion is being
-	          // invoked from inside of another assertion. In this case, the `ssfi`
-	          // flag has already been set by the outer assertion.
-	          //
-	          // Note that overwriting a chainable method merely replaces the saved
-	          // methods in `ctx.__methods` instead of completely replacing the
-	          // overwritten assertion. Therefore, an overwriting assertion won't
-	          // set the `ssfi` or `lockSsfi` flags.
-	          if (!flag$1(this, 'lockSsfi')) {
-	            flag$1(this, 'ssfi', chainableMethodWrapper);
-	          }
+		        // Use `Object.setPrototypeOf` if available
+		        if (canSetPrototype) {
+		          // Inherit all properties from the object by replacing the `Function` prototype
+		          var prototype = Object.create(this);
+		          // Restore the `call` and `apply` methods from `Function`
+		          prototype.call = call;
+		          prototype.apply = apply;
+		          Object.setPrototypeOf(chainableMethodWrapper, prototype);
+		        }
+		        // Otherwise, redefine all properties (slow!)
+		        else {
+		          var asserterNames = Object.getOwnPropertyNames(ctx);
+		          asserterNames.forEach(function (asserterName) {
+		            if (excludeNames.indexOf(asserterName) !== -1) {
+		              return;
+		            }
 
-	          var result = chainableBehavior.method.apply(this, arguments);
-	          if (result !== undefined) {
-	            return result;
-	          }
+		            var pd = Object.getOwnPropertyDescriptor(ctx, asserterName);
+		            Object.defineProperty(chainableMethodWrapper, asserterName, pd);
+		          });
+		        }
 
-	          var newAssertion = new chai$1.Assertion();
-	          transferFlags$1(this, newAssertion);
-	          return newAssertion;
-	        };
-
-	        addLengthGuard$1(chainableMethodWrapper, name, true);
-
-	        // Use `Object.setPrototypeOf` if available
-	        if (canSetPrototype) {
-	          // Inherit all properties from the object by replacing the `Function` prototype
-	          var prototype = Object.create(this);
-	          // Restore the `call` and `apply` methods from `Function`
-	          prototype.call = call;
-	          prototype.apply = apply;
-	          Object.setPrototypeOf(chainableMethodWrapper, prototype);
-	        }
-	        // Otherwise, redefine all properties (slow!)
-	        else {
-	          var asserterNames = Object.getOwnPropertyNames(ctx);
-	          asserterNames.forEach(function (asserterName) {
-	            if (excludeNames.indexOf(asserterName) !== -1) {
-	              return;
-	            }
-
-	            var pd = Object.getOwnPropertyDescriptor(ctx, asserterName);
-	            Object.defineProperty(chainableMethodWrapper, asserterName, pd);
-	          });
-	        }
-
-	        transferFlags$1(this, chainableMethodWrapper);
-	        return proxify$1(chainableMethodWrapper);
-	      }
-	    , configurable: true
-	  });
-	};
+		        transferFlags$1(this, chainableMethodWrapper);
+		        return proxify$1(chainableMethodWrapper);
+		      }
+		    , configurable: true
+		  });
+		};
+		return addChainableMethod;
+	}
 
 	/*!
 	 * Chai - overwriteChainableMethod utility
@@ -3252,66 +3351,77 @@
 	 * MIT Licensed
 	 */
 
-	/**
-	 * ### .overwriteChainableMethod(ctx, name, method, chainingBehavior)
-	 *
-	 * Overwrites an already existing chainable method
-	 * and provides access to the previous function or
-	 * property.  Must return functions to be used for
-	 * name.
-	 *
-	 *     utils.overwriteChainableMethod(chai.Assertion.prototype, 'lengthOf',
-	 *       function (_super) {
-	 *       }
-	 *     , function (_super) {
-	 *       }
-	 *     );
-	 *
-	 * Can also be accessed directly from `chai.Assertion`.
-	 *
-	 *     chai.Assertion.overwriteChainableMethod('foo', fn, fn);
-	 *
-	 * Then can be used as any other assertion.
-	 *
-	 *     expect(myFoo).to.have.lengthOf(3);
-	 *     expect(myFoo).to.have.lengthOf.above(3);
-	 *
-	 * @param {Object} ctx object whose method / property is to be overwritten
-	 * @param {String} name of method / property to overwrite
-	 * @param {Function} method function that returns a function to be used for name
-	 * @param {Function} chainingBehavior function that returns a function to be used for property
-	 * @namespace Utils
-	 * @name overwriteChainableMethod
-	 * @api public
-	 */
+	var overwriteChainableMethod;
+	var hasRequiredOverwriteChainableMethod;
 
-	var overwriteChainableMethod$1 = function overwriteChainableMethod(ctx, name, method, chainingBehavior) {
-	  var chainableBehavior = ctx.__methods[name];
+	function requireOverwriteChainableMethod () {
+		if (hasRequiredOverwriteChainableMethod) return overwriteChainableMethod;
+		hasRequiredOverwriteChainableMethod = 1;
+		var chai = requireChai();
+		var transferFlags$1 = transferFlags;
 
-	  var _chainingBehavior = chainableBehavior.chainingBehavior;
-	  chainableBehavior.chainingBehavior = function overwritingChainableMethodGetter() {
-	    var result = chainingBehavior(_chainingBehavior).call(this);
-	    if (result !== undefined) {
-	      return result;
-	    }
+		/**
+		 * ### .overwriteChainableMethod(ctx, name, method, chainingBehavior)
+		 *
+		 * Overwrites an already existing chainable method
+		 * and provides access to the previous function or
+		 * property.  Must return functions to be used for
+		 * name.
+		 *
+		 *     utils.overwriteChainableMethod(chai.Assertion.prototype, 'lengthOf',
+		 *       function (_super) {
+		 *       }
+		 *     , function (_super) {
+		 *       }
+		 *     );
+		 *
+		 * Can also be accessed directly from `chai.Assertion`.
+		 *
+		 *     chai.Assertion.overwriteChainableMethod('foo', fn, fn);
+		 *
+		 * Then can be used as any other assertion.
+		 *
+		 *     expect(myFoo).to.have.lengthOf(3);
+		 *     expect(myFoo).to.have.lengthOf.above(3);
+		 *
+		 * @param {Object} ctx object whose method / property is to be overwritten
+		 * @param {String} name of method / property to overwrite
+		 * @param {Function} method function that returns a function to be used for name
+		 * @param {Function} chainingBehavior function that returns a function to be used for property
+		 * @namespace Utils
+		 * @name overwriteChainableMethod
+		 * @api public
+		 */
 
-	    var newAssertion = new chai$1.Assertion();
-	    transferFlags$1(this, newAssertion);
-	    return newAssertion;
-	  };
+		overwriteChainableMethod = function overwriteChainableMethod(ctx, name, method, chainingBehavior) {
+		  var chainableBehavior = ctx.__methods[name];
 
-	  var _method = chainableBehavior.method;
-	  chainableBehavior.method = function overwritingChainableMethodWrapper() {
-	    var result = method(_method).apply(this, arguments);
-	    if (result !== undefined) {
-	      return result;
-	    }
+		  var _chainingBehavior = chainableBehavior.chainingBehavior;
+		  chainableBehavior.chainingBehavior = function overwritingChainableMethodGetter() {
+		    var result = chainingBehavior(_chainingBehavior).call(this);
+		    if (result !== undefined) {
+		      return result;
+		    }
 
-	    var newAssertion = new chai$1.Assertion();
-	    transferFlags$1(this, newAssertion);
-	    return newAssertion;
-	  };
-	};
+		    var newAssertion = new chai.Assertion();
+		    transferFlags$1(this, newAssertion);
+		    return newAssertion;
+		  };
+
+		  var _method = chainableBehavior.method;
+		  chainableBehavior.method = function overwritingChainableMethodWrapper() {
+		    var result = method(_method).apply(this, arguments);
+		    if (result !== undefined) {
+		      return result;
+		    }
+
+		    var newAssertion = new chai.Assertion();
+		    transferFlags$1(this, newAssertion);
+		    return newAssertion;
+		  };
+		};
+		return overwriteChainableMethod;
+	}
 
 	/*!
 	 * Chai - compareByInspect utility
@@ -3323,7 +3433,7 @@
 	 * Module dependencies
 	 */
 
-
+	var inspect = inspect_1;
 
 	/**
 	 * ### .compareByInspect(mixed, mixed)
@@ -3341,8 +3451,8 @@
 	 * @api public
 	 */
 
-	var compareByInspect$1 = function compareByInspect(a, b) {
-	  return inspect_1(a) < inspect_1(b) ? -1 : 1;
+	var compareByInspect = function compareByInspect(a, b) {
+	  return inspect(a) < inspect(b) ? -1 : 1;
 	};
 
 	/*!
@@ -3350,6 +3460,7 @@
 	 * Copyright(c) 2011-2016 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
 	/**
 	 * ### .getOwnEnumerablePropertySymbols(object)
 	 *
@@ -3382,7 +3493,7 @@
 	 * Module dependencies
 	 */
 
-
+	var getOwnEnumerablePropertySymbols = getOwnEnumerablePropertySymbols$1;
 
 	/**
 	 * ### .getOwnEnumerableProperties(object)
@@ -3398,8 +3509,8 @@
 	 * @api public
 	 */
 
-	var getOwnEnumerableProperties$1 = function getOwnEnumerableProperties(obj) {
-	  return Object.keys(obj).concat(getOwnEnumerablePropertySymbols$1(obj));
+	var getOwnEnumerableProperties = function getOwnEnumerableProperties(obj) {
+	  return Object.keys(obj).concat(getOwnEnumerablePropertySymbols(obj));
 	};
 
 	/* !
@@ -3408,7 +3519,7 @@
 	 * MIT Licensed
 	 */
 
-
+	var getFunctionName = getFuncName_1;
 	/**
 	 * ### .checkError
 	 *
@@ -3502,14 +3613,14 @@
 	function getConstructorName(errorLike) {
 	  var constructorName = errorLike;
 	  if (errorLike instanceof Error) {
-	    constructorName = getFuncName_1(errorLike.constructor);
+	    constructorName = getFunctionName(errorLike.constructor);
 	  } else if (typeof errorLike === 'function') {
 	    // If `err` is not an instance of Error it is an error constructor itself or another function.
 	    // If we've got a common function we get its name, otherwise we may need to create a new instance
 	    // of the error just in case it's a poorly-constructed error. Please see chaijs/chai/issues/45 to know more.
-	    constructorName = getFuncName_1(errorLike);
+	    constructorName = getFunctionName(errorLike);
 	    if (constructorName === '') {
-	      var newConstructorName = getFuncName_1(new errorLike()); // eslint-disable-line new-cap
+	      var newConstructorName = getFunctionName(new errorLike()); // eslint-disable-line new-cap
 	      constructorName = newConstructorName || constructorName;
 	    }
 	  }
@@ -3530,7 +3641,7 @@
 	 * @api public
 	 */
 
-	function getMessage$1(errorLike) {
+	function getMessage(errorLike) {
 	  var msg = '';
 	  if (errorLike && errorLike.message) {
 	    msg = errorLike.message;
@@ -3541,11 +3652,11 @@
 	  return msg;
 	}
 
-	var checkError$1 = {
+	var checkError = {
 	  compatibleInstance: compatibleInstance,
 	  compatibleConstructor: compatibleConstructor,
 	  compatibleMessage: compatibleMessage,
-	  getMessage: getMessage$1,
+	  getMessage: getMessage,
 	  getConstructorName: getConstructorName,
 	};
 
@@ -3554,6 +3665,7 @@
 	 * Copyright(c) 2012-2015 Sakthipriyan Vairamani <thechargingvolcano@gmail.com>
 	 * MIT Licensed
 	 */
+
 	/**
 	 * ### .isNaN(value)
 	 *
@@ -3573,10 +3685,14 @@
 	}
 
 	// If ECMAScript 6's Number.isNaN is present, prefer that.
-	var _isNaN$1 = Number.isNaN || isNaN$1;
+	var _isNaN = Number.isNaN || isNaN$1;
+
+	var type = typeDetectExports;
+
+	var flag = flag$5;
 
 	function isObjectType(obj) {
-	  var objectType = typeDetect(obj);
+	  var objectType = type(obj);
 	  var objectTypes = ['Array', 'Object', 'function'];
 
 	  return objectTypes.indexOf(objectType) !== -1;
@@ -3598,9 +3714,9 @@
 	 * @api public
 	 */
 
-	var getOperator$1 = function getOperator(obj, args) {
-	  var operator = flag$1(obj, 'operator');
-	  var negate = flag$1(obj, 'negate');
+	var getOperator = function getOperator(obj, args) {
+	  var operator = flag(obj, 'operator');
+	  var negate = flag(obj, 'negate');
 	  var expected = args[3];
 	  var msg = negate ? args[2] : args[1];
 
@@ -3633,209 +3749,185 @@
 	 * MIT Licensed
 	 */
 
-	/*!
-	 * Dependencies that are used for multiple exports are required here only once
-	 */
+	var hasRequiredUtils;
 
+	function requireUtils () {
+		if (hasRequiredUtils) return utils$1;
+		hasRequiredUtils = 1;
+		/*!
+		 * Dependencies that are used for multiple exports are required here only once
+		 */
 
+		var pathval$1 = pathval;
 
-	/*!
-	 * test utility
-	 */
+		/*!
+		 * test utility
+		 */
 
-	var test$1 = test$2;
+		utils$1.test = test$1;
 
-	/*!
-	 * type utility
-	 */
+		/*!
+		 * type utility
+		 */
 
-	var type = typeDetect;
+		utils$1.type = typeDetectExports;
 
-	/*!
-	 * expectTypes utility
-	 */
-	var expectTypes = expectTypes$1;
+		/*!
+		 * expectTypes utility
+		 */
+		utils$1.expectTypes = expectTypes;
 
-	/*!
-	 * message utility
-	 */
+		/*!
+		 * message utility
+		 */
 
-	var getMessage = getMessage$2;
+		utils$1.getMessage = getMessage$1;
 
-	/*!
-	 * actual utility
-	 */
+		/*!
+		 * actual utility
+		 */
 
-	var getActual = getActual$1;
+		utils$1.getActual = getActual$1;
 
-	/*!
-	 * Inspect util
-	 */
+		/*!
+		 * Inspect util
+		 */
 
-	var inspect = inspect_1;
+		utils$1.inspect = inspect_1;
 
-	/*!
-	 * Object Display util
-	 */
+		/*!
+		 * Object Display util
+		 */
 
-	var objDisplay = objDisplay$1;
+		utils$1.objDisplay = objDisplay$1;
 
-	/*!
-	 * Flag utility
-	 */
+		/*!
+		 * Flag utility
+		 */
 
-	var flag = flag$1;
+		utils$1.flag = flag$5;
 
-	/*!
-	 * Flag transferring utility
-	 */
+		/*!
+		 * Flag transferring utility
+		 */
 
-	var transferFlags = transferFlags$1;
+		utils$1.transferFlags = transferFlags;
 
-	/*!
-	 * Deep equal utility
-	 */
+		/*!
+		 * Deep equal utility
+		 */
 
-	var eql = deepEql;
+		utils$1.eql = deepEqlExports;
 
-	/*!
-	 * Deep path info
-	 */
+		/*!
+		 * Deep path info
+		 */
 
-	var getPathInfo = pathval.getPathInfo;
+		utils$1.getPathInfo = pathval$1.getPathInfo;
 
-	/*!
-	 * Check if a property exists
-	 */
+		/*!
+		 * Check if a property exists
+		 */
 
-	var hasProperty = pathval.hasProperty;
+		utils$1.hasProperty = pathval$1.hasProperty;
 
-	/*!
-	 * Function name
-	 */
+		/*!
+		 * Function name
+		 */
 
-	var getName = getFuncName_1;
+		utils$1.getName = getFuncName_1;
 
-	/*!
-	 * add Property
-	 */
+		/*!
+		 * add Property
+		 */
 
-	var addProperty = addProperty$1;
+		utils$1.addProperty = requireAddProperty();
 
-	/*!
-	 * add Method
-	 */
+		/*!
+		 * add Method
+		 */
 
-	var addMethod = addMethod$1;
+		utils$1.addMethod = requireAddMethod();
 
-	/*!
-	 * overwrite Property
-	 */
+		/*!
+		 * overwrite Property
+		 */
 
-	var overwriteProperty = overwriteProperty$1;
+		utils$1.overwriteProperty = requireOverwriteProperty();
 
-	/*!
-	 * overwrite Method
-	 */
+		/*!
+		 * overwrite Method
+		 */
 
-	var overwriteMethod = overwriteMethod$1;
+		utils$1.overwriteMethod = requireOverwriteMethod();
 
-	/*!
-	 * Add a chainable method
-	 */
+		/*!
+		 * Add a chainable method
+		 */
 
-	var addChainableMethod = addChainableMethod$1;
+		utils$1.addChainableMethod = requireAddChainableMethod();
 
-	/*!
-	 * Overwrite chainable method
-	 */
+		/*!
+		 * Overwrite chainable method
+		 */
 
-	var overwriteChainableMethod = overwriteChainableMethod$1;
+		utils$1.overwriteChainableMethod = requireOverwriteChainableMethod();
 
-	/*!
-	 * Compare by inspect method
-	 */
+		/*!
+		 * Compare by inspect method
+		 */
 
-	var compareByInspect = compareByInspect$1;
+		utils$1.compareByInspect = compareByInspect;
 
-	/*!
-	 * Get own enumerable property symbols method
-	 */
+		/*!
+		 * Get own enumerable property symbols method
+		 */
 
-	var getOwnEnumerablePropertySymbols = getOwnEnumerablePropertySymbols$1;
+		utils$1.getOwnEnumerablePropertySymbols = getOwnEnumerablePropertySymbols$1;
 
-	/*!
-	 * Get own enumerable properties method
-	 */
+		/*!
+		 * Get own enumerable properties method
+		 */
 
-	var getOwnEnumerableProperties = getOwnEnumerableProperties$1;
+		utils$1.getOwnEnumerableProperties = getOwnEnumerableProperties;
 
-	/*!
-	 * Checks error against a given set of criteria
-	 */
+		/*!
+		 * Checks error against a given set of criteria
+		 */
 
-	var checkError = checkError$1;
+		utils$1.checkError = checkError;
 
-	/*!
-	 * Proxify util
-	 */
+		/*!
+		 * Proxify util
+		 */
 
-	var proxify = proxify$1;
+		utils$1.proxify = proxify;
 
-	/*!
-	 * addLengthGuard util
-	 */
+		/*!
+		 * addLengthGuard util
+		 */
 
-	var addLengthGuard = addLengthGuard$1;
+		utils$1.addLengthGuard = addLengthGuard;
 
-	/*!
-	 * isProxyEnabled helper
-	 */
+		/*!
+		 * isProxyEnabled helper
+		 */
 
-	var isProxyEnabled = isProxyEnabled$1;
+		utils$1.isProxyEnabled = isProxyEnabled$1;
 
-	/*!
-	 * isNaN method
-	 */
+		/*!
+		 * isNaN method
+		 */
 
-	var _isNaN = _isNaN$1;
+		utils$1.isNaN = _isNaN;
 
-	/*!
-	 * getOperator method
-	 */
+		/*!
+		 * getOperator method
+		 */
 
-	var getOperator = getOperator$1;
-
-	var utils$1 = {
-		test: test$1,
-		type: type,
-		expectTypes: expectTypes,
-		getMessage: getMessage,
-		getActual: getActual,
-		inspect: inspect,
-		objDisplay: objDisplay,
-		flag: flag,
-		transferFlags: transferFlags,
-		eql: eql,
-		getPathInfo: getPathInfo,
-		hasProperty: hasProperty,
-		getName: getName,
-		addProperty: addProperty,
-		addMethod: addMethod,
-		overwriteProperty: overwriteProperty,
-		overwriteMethod: overwriteMethod,
-		addChainableMethod: addChainableMethod,
-		overwriteChainableMethod: overwriteChainableMethod,
-		compareByInspect: compareByInspect,
-		getOwnEnumerablePropertySymbols: getOwnEnumerablePropertySymbols,
-		getOwnEnumerableProperties: getOwnEnumerableProperties,
-		checkError: checkError,
-		proxify: proxify,
-		addLengthGuard: addLengthGuard,
-		isProxyEnabled: isProxyEnabled,
-		isNaN: _isNaN,
-		getOperator: getOperator
-	};
+		utils$1.getOperator = getOperator;
+		return utils$1;
+	}
 
 	/*!
 	 * chai
@@ -3843,6 +3935,8 @@
 	 * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
+	var config$1 = config$6;
 
 	var assertion = function (_chai, util) {
 	  /*!
@@ -4020,6 +4114,7 @@
 	 * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
 	var assertions = function (chai, _) {
 	  var Assertion = chai.Assertion
 	    , AssertionError = chai.AssertionError
@@ -7866,6 +7961,7 @@
 	 * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
 	var expect$1 = function (chai, util) {
 	  chai.expect = function (val, message) {
 	    return new chai.Assertion(val, message);
@@ -7913,6 +8009,7 @@
 	 * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
 	var should = function (chai, util) {
 	  var Assertion = chai.Assertion;
 
@@ -8131,6 +8228,7 @@
 	 * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
 	 * MIT Licensed
 	 */
+
 	var assert$1 = function (chai, util) {
 	  /*!
 	   * Chai dependencies.
@@ -11245,107 +11343,120 @@
 	 * MIT Licensed
 	 */
 
-	var chai$1 = createCommonjsModule(function (module, exports) {
-	var used = [];
+	var hasRequiredChai;
 
-	/*!
-	 * Chai version
-	 */
+	function requireChai () {
+		if (hasRequiredChai) return chai$2;
+		hasRequiredChai = 1;
+		(function (exports) {
+			var used = [];
 
-	exports.version = '4.3.8';
+			/*!
+			 * Chai version
+			 */
 
-	/*!
-	 * Assertion Error
-	 */
+			exports.version = '4.3.8';
 
-	exports.AssertionError = assertionError;
+			/*!
+			 * Assertion Error
+			 */
 
-	/*!
-	 * Utils for plugins (not exported)
-	 */
+			exports.AssertionError = assertionError;
 
+			/*!
+			 * Utils for plugins (not exported)
+			 */
 
+			var util = requireUtils();
 
-	/**
-	 * # .use(function)
-	 *
-	 * Provides a way to extend the internals of Chai.
-	 *
-	 * @param {Function}
-	 * @returns {this} for chaining
-	 * @api public
-	 */
+			/**
+			 * # .use(function)
+			 *
+			 * Provides a way to extend the internals of Chai.
+			 *
+			 * @param {Function}
+			 * @returns {this} for chaining
+			 * @api public
+			 */
 
-	exports.use = function (fn) {
-	  if (!~used.indexOf(fn)) {
-	    fn(exports, utils$1);
-	    used.push(fn);
-	  }
+			exports.use = function (fn) {
+			  if (!~used.indexOf(fn)) {
+			    fn(exports, util);
+			    used.push(fn);
+			  }
 
-	  return exports;
-	};
+			  return exports;
+			};
 
-	/*!
-	 * Utility Functions
-	 */
+			/*!
+			 * Utility Functions
+			 */
 
-	exports.util = utils$1;
+			exports.util = util;
 
-	/*!
-	 * Configuration
-	 */
+			/*!
+			 * Configuration
+			 */
 
+			var config = config$6;
+			exports.config = config;
 
-	exports.config = config$1;
+			/*!
+			 * Primary `Assertion` prototype
+			 */
 
-	/*!
-	 * Primary `Assertion` prototype
-	 */
+			var assertion$1 = assertion;
+			exports.use(assertion$1);
 
+			/*!
+			 * Core Assertions
+			 */
 
-	exports.use(assertion);
+			var core = assertions;
+			exports.use(core);
 
-	/*!
-	 * Core Assertions
-	 */
+			/*!
+			 * Expect interface
+			 */
 
+			var expect = expect$1;
+			exports.use(expect);
 
-	exports.use(assertions);
+			/*!
+			 * Should interface
+			 */
 
-	/*!
-	 * Expect interface
-	 */
+			var should$1 = should;
+			exports.use(should$1);
 
+			/*!
+			 * Assert interface
+			 */
 
-	exports.use(expect$1);
+			var assert = assert$1;
+			exports.use(assert); 
+		} (chai$2));
+		return chai$2;
+	}
 
-	/*!
-	 * Should interface
-	 */
+	var chai = requireChai();
 
+	var chai$1 = /*@__PURE__*/getDefaultExportFromCjs(chai);
 
-	exports.use(should);
+	const expect = chai$1.expect;
+	chai$1.version;
+	chai$1.Assertion;
+	chai$1.AssertionError;
+	chai$1.util;
+	chai$1.config;
+	chai$1.use;
+	chai$1.should;
+	const assert = chai$1.assert;
+	chai$1.core;
 
-	/*!
-	 * Assert interface
-	 */
+	var svgcanvas = {};
 
-
-	exports.use(assert$1);
-	});
-
-	var chai = chai$1;
-
-	const expect = chai.expect;
-	chai.version;
-	chai.Assertion;
-	chai.AssertionError;
-	chai.util;
-	chai.config;
-	chai.use;
-	chai.should;
-	const assert = chai.assert;
-	chai.core;
+	Object.defineProperty(svgcanvas, '__esModule', { value: true });
 
 	function toString(obj) {
 	    if (!obj) {
@@ -12935,7 +13046,9 @@
 	SVGCanvasElement.prototype.setAttribute = function(prop, val) {
 	    this.wrapper.setAttribute(prop, val);
 	};
-	var Element = SVGCanvasElement;
+
+	svgcanvas.Context = Context;
+	var Element = svgcanvas.Element = SVGCanvasElement;
 
 	const config = {
 	    pixelDensity: 3 // for 200% and 150%
@@ -14185,10 +14298,6 @@
 	};
 
 	test();
-
-	var unit = {
-
-	};
 
 	return unit;
 
