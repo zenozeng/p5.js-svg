@@ -59,8 +59,8 @@ export default (p5: P5SVG) => {
                 elt.setAttribute(k, attributes[k])
             })
             const svgEl = new SVGElement(elt as any)
-            svgEl.isUserInstanciated = isUserInstanciated;
-            return svgEl;
+            svgEl.isUserInstanciated = isUserInstanciated
+            return svgEl
         }
 
         /**
@@ -69,10 +69,10 @@ export default (p5: P5SVG) => {
          * 
          */
         isWithinUserInstanciated() {
-            if (this.isUserInstanciated) return true;
-            if (!(this.parentNode instanceof SVGElement)) return false;
+            if (this.isUserInstanciated) return true
+            if (!(this.parentNode instanceof SVGElement)) return false
             
-            return this.parentNode.isWithinUserInstanciated();
+            return this.parentNode.isWithinUserInstanciated()
         }
 
         /**
