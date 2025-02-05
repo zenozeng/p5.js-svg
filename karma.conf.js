@@ -12,7 +12,7 @@ module.exports = function (config) {
             { pattern: 'dist/*.js.map', included: false },
             { pattern: 'src/**/*.js', included: false },
             { pattern: 'test/unit/**/*', included: false },
-            'https://unpkg.com/p5@1.6.0/lib/p5.min.js',
+            'https://unpkg.com/p5@1.9.0/lib/p5.min.js',
             'dist/p5.svg.js',
             'dist/test.js'
         ],
@@ -37,5 +37,5 @@ module.exports = function (config) {
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
         singleRun: true // output all logs to stdout instead of click debug button
-    });
-};
+    })
+}
