@@ -9,7 +9,7 @@
     "build": "eslint src/ && rollup --config",
     "prepublishOnly": "npm run build",
     "build-doc": "jsdoc src doc/reference.md -c jsdoc.json -d doc/reference/",
-    "test": "karma start --browsers ChromeHeadless",
+    "test": "karma start --browsers ChromeHeadlessNoSandbox",
     "ci-test": "./node_modules/.bin/karma start --browsers Firefox --single-run"
   },
   "devDependencies": {

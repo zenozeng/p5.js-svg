@@ -32,7 +32,13 @@ module.exports = function (config) {
         // logLevel: config.LOG_DEBUG,
         logLevel: config.LOG_INFO,
         autoWatch: false,
-        browsers: ['ChromeHeadless', 'Firefox'],
+        browsers: ['ChromeHeadlessNoSandbox', 'Firefox'],
+        customLaunchers: {
+            ChromeHeadlessNoSandbox: {
+              base: 'ChromeHeadless',
+              flags: ['--no-sandbox']
+            }
+          },
         // browsers: ['Chrome'],
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
