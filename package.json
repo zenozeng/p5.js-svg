@@ -32,7 +32,7 @@
     "karma-sourcemap-loader": "^0.3.8",
     "mocha": "^11.1.0",
     "puppeteer": "^24.2.0",
-    "rollup": "^3.23.0",
+    "rollup": "^3.29.5",
     "svgcanvas": "^2.2.1",
     "typescript": "^5.1.3"
   },
