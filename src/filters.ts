@@ -57,7 +57,7 @@ export default function (p5: P5SVG) {
             rootGroup.appendChild(g.elt)
 
             if (ctx.__currentElement.isWithinUserInstanciated()) {
-                console.warn('Filter will promptly exit out of any instanciated group. Please make sure you\'ve exited them before filtering');
+                console.warn('Filter will promptly exit out of any instanciated group. Please make sure you\'ve exited them before filtering')
             }
 
             ctx.__currentElement = g.elt
