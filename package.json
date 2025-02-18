@@ -30,7 +30,7 @@
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.1.1",
     "karma-sourcemap-loader": "^0.3.8",
-    "mocha": "^9.2.0",
+    "mocha": "^11.1.0",
     "puppeteer": "^24.2.0",
     "rollup": "^3.29.5",
     "svgcanvas": "^2.2.1",
