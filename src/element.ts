@@ -10,7 +10,7 @@ export default (p5: P5SVG) => {
      * 
      * @param selector CSS selector for query
      */
-    p5.prototype.querySVG = function (selector: string) {
+    (p5.prototype as any).querySVG = function (selector: string) {
         const svg = this._renderer && this._renderer.svg
         if (!svg) {
             return null
@@ -52,7 +52,7 @@ export default (p5: P5SVG) => {
          * Create SVGElement
          *
          */
-        static create(nodeName: string, attributes: { [key: string]: string }, isUserInstanciated: boolean?) {
+        static create(nodeName: string, attributes: { [key: string]: string }, isUserInstanciated?: boolean) {
             attributes = attributes || {}
             const elt = document.createElementNS('http://www.w3.org/2000/svg', nodeName)
             Object.keys(attributes).forEach(function (k) {
@@ -68,11 +68,16 @@ export default (p5: P5SVG) => {
          * Will also return true if oneself is user instanciated
          * 
          */
-        isWithinUserInstanciated() {
-            if (this.isUserInstanciated) return true
-            if (!(this.parentNode instanceof SVGElement)) return false
+        isWithinUserInstanciated() : boolean {
+            if (this.isUserInstanciated) {
+                return true
+            }
+
+            if (!(this.parentNode() instanceof SVGElement)) {
+                return false
+            }
             
-            return this.parentNode.isWithinUserInstanciated()
+            return this.parentNode().isWithinUserInstanciated()
         }
 
         /**

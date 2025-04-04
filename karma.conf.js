@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Mon May 25 2015 17:53:42 GMT+0800 (CST)
 
-process.env.CHROME_BIN = require('puppeteer').executablePath();
+process.env.CHROME_BIN = require('puppeteer').executablePath()
 
 module.exports = function (config) {
     config.set({
@@ -12,7 +12,7 @@ module.exports = function (config) {
             { pattern: 'dist/*.js.map', included: false },
             { pattern: 'src/**/*.js', included: false },
             { pattern: 'test/unit/**/*', included: false },
-            'https://unpkg.com/p5@1.9.0/lib/p5.min.js',
+            'https://unpkg.com/p5@1.11.3/lib/p5.min.js',
             'dist/p5.svg.js',
             'dist/test.js'
         ],
@@ -35,10 +35,10 @@ module.exports = function (config) {
         browsers: ['ChromeHeadlessNoSandbox', 'Firefox'],
         customLaunchers: {
             ChromeHeadlessNoSandbox: {
-              base: 'ChromeHeadless',
-              flags: ['--no-sandbox']
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox']
             }
-          },
+        },
         // browsers: ['Chrome'],
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits

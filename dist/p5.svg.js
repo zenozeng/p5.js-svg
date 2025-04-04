@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    /*! *****************************************************************************
+    /******************************************************************************
     Copyright (c) Microsoft Corporation.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -15,16 +15,18 @@
     OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
     PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
-    /* global Reflect, Promise */
+    /* global Reflect, Promise, SuppressedError, Symbol, Iterator */
 
     var extendStatics = function(d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
 
     function __extends(d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -41,12 +43,12 @@
     }
 
     function __generator(thisArg, body) {
-        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+        return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
         function verb(n) { return function (v) { return step([n, v]); }; }
         function step(op) {
             if (f) throw new TypeError("Generator is already executing.");
-            while (_) try {
+            while (g && (g = 0, op[0] && (_ = 0)), _) try {
                 if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
                 if (y = 0, t) op = [op[0] & 2, t.value];
                 switch (op[0]) {
@@ -67,6 +69,11 @@
             if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
         }
     }
+
+    typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+        var e = new Error(message);
+        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+    };
 
     var DEBUG = false;
 
@@ -2474,13 +2481,29 @@
              * Create SVGElement
              *
              */
-            SVGElement.create = function (nodeName, attributes) {
+            SVGElement.create = function (nodeName, attributes, isUserInstanciated) {
                 attributes = attributes || {};
                 var elt = document.createElementNS('http://www.w3.org/2000/svg', nodeName);
                 Object.keys(attributes).forEach(function (k) {
                     elt.setAttribute(k, attributes[k]);
                 });
-                return new SVGElement(elt);
+                var svgEl = new SVGElement(elt);
+                svgEl.isUserInstanciated = isUserInstanciated;
+                return svgEl;
+            };
+            /**
+             * Check if any group above is user instanciated
+             * Will also return true if oneself is user instanciated
+             *
+             */
+            SVGElement.prototype.isWithinUserInstanciated = function () {
+                if (this.isUserInstanciated) {
+                    return true;
+                }
+                if (!(this.parentNode() instanceof SVGElement)) {
+                    return false;
+                }
+                return this.parentNode().isWithinUserInstanciated();
             };
             /**
              * Get parentNode.
@@ -2510,6 +2533,7 @@
     // SVG Filter
     function Filters (p5) {
         var _filter = p5.prototype.filter;
+        var p5proto = p5.prototype;
         /**
          * Register a custom SVG Filter
          *
@@ -2529,7 +2553,7 @@
          * });
          * filter('myblur', 5);
          */
-        p5.prototype.registerSVGFilter = function (name, fn) {
+        p5proto.registerSVGFilter = function (name, fn) {
             p5.SVGFilters[name] = fn;
         };
         /**
@@ -2557,11 +2581,44 @@
                 // create new <g> so that new element won't be influenced by the filter
                 g = p5.SVGElement.create('g');
                 rootGroup.appendChild(g.elt);
+                if (ctx.__currentElement.isWithinUserInstanciated && ctx.__currentElement.isWithinUserInstanciated()) {
+                    console.warn('Filter will promptly exit out of any instanciated group. Please make sure you\'ve exited them before filtering');
+                }
                 ctx.__currentElement = g.elt;
             }
             else {
                 _filter.apply(this, [operation, value]);
             }
+        };
+    }
+
+    function GroupInterface (p5) {
+        p5.prototype.pushSVGGroup = function () {
+            if (!(this._renderer instanceof RendererSVG)) {
+                console.warn('Attempted to push SVG group in non-svg canvas');
+                return null;
+            }
+            var group = p5.SVGElement.create('g', {}, true);
+            var currEl = this._renderer.drawingContext.__currentElement;
+            if (currEl.tagName !== 'g' && currEl.tagName) {
+                console.warn('Attempted to pop SVG group whilst not in g, svg');
+                return;
+            }
+            currEl.append(group);
+            this._renderer.drawingContext.__currentElement = group;
+            return group;
+        };
+        p5.prototype.popSVGGroup = function (group) {
+            if (!(this._renderer instanceof RendererSVG)) {
+                console.warn('Attempted to pop SVG group in non-svg canvas');
+                return null;
+            }
+            var currEl = this._renderer.drawingContext.__currentElement;
+            if (currEl !== group) {
+                return; // Silently fail: the warning has already been given by filter
+            }
+            this._renderer.drawingContext.__currentElement = currEl.parentNode();
+            return;
         };
     }
 
@@ -2574,6 +2631,7 @@
         Image$1(p5svg);
         Filters(p5svg);
         Element(p5svg);
+        GroupInterface(p5svg);
         // attach constants to p5 instance
         p5svg.prototype['SVG'] = constants.SVG;
         return p5svg;

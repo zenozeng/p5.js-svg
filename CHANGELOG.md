@@ -1,3 +1,12 @@
+## v1.6.0
+
+- test: p5.js v1.11.3
+- fix: compatibility with p5js 1.11.x (roundRect issue)
+- fix: compatibility with p5js 1.7.0+ ([BL451](https://github.com/BL451)) (https://github.com/zenozeng/p5.js-svg/pull/258)
+- fix: compatibility with p5js 1.7.0+ & Examples and Tests ([nkymut](https://github.com/nkymut)) (https://github.com/zenozeng/p5.js-svg/pull/260)
+- fix: examples ([spencerflem](https://github.com/spencerflem)) (https://github.com/zenozeng/p5.js-svg/pull/264)
+- feat: public interface for groups ([immjs](https://github.com/immjs)) (https://github.com/zenozeng/p5.js-svg/pull/256)
+
 ## v1.5.1
 
 - docs: examples/vite

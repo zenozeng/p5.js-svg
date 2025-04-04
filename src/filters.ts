@@ -5,6 +5,8 @@ import { P5SVG } from './types'
 export default function (p5: P5SVG) {
     const _filter = p5.prototype.filter
 
+    const p5proto = p5.prototype as any
+
     /**
      * Register a custom SVG Filter
      *
@@ -24,7 +26,7 @@ export default function (p5: P5SVG) {
      * });
      * filter('myblur', 5);
      */
-    p5.prototype.registerSVGFilter = function (name: string, fn: any) {
+    p5proto.registerSVGFilter = function (name: string, fn: any) {
         (p5.SVGFilters as any)[name] = fn
     }
 
@@ -56,7 +58,7 @@ export default function (p5: P5SVG) {
             g = p5.SVGElement.create('g')
             rootGroup.appendChild(g.elt)
 
-            if (ctx.__currentElement.isWithinUserInstanciated()) {
+            if (ctx.__currentElement.isWithinUserInstanciated && ctx.__currentElement.isWithinUserInstanciated()) {
                 console.warn('Filter will promptly exit out of any instanciated group. Please make sure you\'ve exited them before filtering')
             }
 
