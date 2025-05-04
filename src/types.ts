@@ -1,4 +1,5 @@
 import p5, { Renderer, Element } from 'p5'
+export { Element }
 
 export type SVGElement = Element & {
     query(selector: string): SVGElement[]
