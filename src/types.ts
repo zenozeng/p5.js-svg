@@ -1,6 +1,6 @@
-import p5, { Renderer } from 'p5'
+import p5, { Renderer, Element } from 'p5'
 
-export type SVGElement = p5.Element & {
+export type SVGElement = Element & {
     query(selector: string): SVGElement[]
     append(element: SVGElement | Element): SVGElement
     attribute(name: string): any
@@ -13,7 +13,7 @@ export type P5 = typeof p5
 
 export type SVG = 'svg'
 
-export type p5SVG = p5 & {
+export type p5SVG = typeof p5 & {
     SVG: SVG
     querySVG(selector: string): SVGElement[]
     createCanvas(w: number, h: number, renderer: Renderer | SVG): void
@@ -27,7 +27,7 @@ export type P5SVG = P5 & {
     RendererSVG: any
     Graphics: any
     SVGElement: {
-        new(elt: string | Element, pInst?: p5): SVGElement
+        new(elt: string | Element, pInst?: typeof p5): SVGElement
         create(nodeName: string, attributes?: { [key: string]: string | number }): SVGElement
     }
     SVGFilters: {
