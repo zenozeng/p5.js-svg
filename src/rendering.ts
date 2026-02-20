@@ -40,14 +40,15 @@ export default function (p5: P5SVG) {
      */
     const _createCanvas = p5.prototype.createCanvas
     p5.prototype.createCanvas = function (w: number, h: number, renderer: any) {
-        const graphics = _createCanvas.apply(this, [w, h, renderer])
-        if (renderer === constants.SVG) {
-            const c = graphics.canvas
-            this._setProperty('_renderer', new p5.RendererSVG(c, this, true))
-            this._isdefaultGraphics = true
-            this._renderer.resize(w, h)
-            this._renderer._applyDefaults()
+        if (renderer !== constants.SVG) {
+            return _createCanvas.apply(this, [w, h, renderer])
         }
+        const graphics = _createCanvas.apply(this, [w, h, 'p2d'])
+        const c = graphics.canvas
+        this._setProperty('_renderer', new p5.RendererSVG(c, this, true))
+        this._isdefaultGraphics = true
+        this._renderer.resize(w, h)
+        this._renderer._applyDefaults()
         return this._renderer
     }
 

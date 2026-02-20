@@ -12,7 +12,7 @@ module.exports = function (config) {
             { pattern: 'dist/*.js.map', included: false },
             { pattern: 'src/**/*.js', included: false },
             { pattern: 'test/unit/**/*', included: false },
-            'https://unpkg.com/p5@1.11.3/lib/p5.min.js',
+            'https://unpkg.com/p5@2.0.0-beta.5/lib/p5.js',
             'dist/p5.svg.js',
             'dist/test.js'
         ],
