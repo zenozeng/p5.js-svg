@@ -10,9 +10,9 @@ module.exports = function (config) {
         files: [
             // note: lower index will override greater index config
             { pattern: 'dist/*.js.map', included: false },
-            { pattern: 'src/**/*.js', included: false },
+            { pattern: 'src/**/*.ts', included: false },
             { pattern: 'test/unit/**/*', included: false },
-            'https://unpkg.com/p5@2.0.0-beta.5/lib/p5.js',
+            'https://unpkg.com/p5@2.0.1/lib/p5.js',
             'dist/p5.svg.js',
             'dist/test.js'
         ],

@@ -7,6 +7,7 @@
     "start": "python3 -m http.server 3000",
     "lint": "eslint src/",
     "build": "eslint src/ && rollup --config",
+    "test:smoke": "node scripts/smoke-test.cjs",
     "prepublishOnly": "npm run build",
     "build-doc": "jsdoc src doc/reference.md -c jsdoc.json -d doc/reference/",
     "test": "karma start --browsers ChromeHeadlessNoSandbox",
@@ -35,6 +36,9 @@
     "rollup": "^3.29.5",
     "svgcanvas": "^2.6.0",
     "typescript": "^5.1.3"
+  },
+  "peerDependencies": {
+    "p5": "^1.11.0 || ^2.0.0"
   },
   "directories": {
     "test": "test"
