@@ -1,5 +1,10 @@
 import { testRender } from '../../lib'
 
+const supportedInP5v2 = {
+    contour: true,
+    bezierVertex: true
+}
+
 describe('Shape/Vertex', function () {
     var tests = {
         contour: function (p) {
@@ -22,8 +27,12 @@ describe('Shape/Vertex', function () {
         bezierVertex: function (p) {
             p.beginShape()
             p.vertex(30, 20)
-            p.bezierVertex(80, 0, 80, 75, 30, 75)
-            p.bezierVertex(50, 80, 60, 25, 30, 20)
+            p.bezierVertex(80, 0)
+            p.bezierVertex(80, 75)
+            p.bezierVertex(30, 75)
+            p.bezierVertex(50, 80)
+            p.bezierVertex(60, 25)
+            p.bezierVertex(30, 20)
             p.endShape()
         },
         curveVertex: function (p) {
@@ -50,6 +59,9 @@ describe('Shape/Vertex', function () {
     }
 
     Object.keys(tests).forEach(function (key) {
+        if (window.p5 && /^2\./.test(window.p5.VERSION || '') && !supportedInP5v2[key]) {
+            return
+        }
         describe(key, function () {
             it(key + ': SVG API should draw same image as Canvas API', function (done) {
                 testRender.describe(key)

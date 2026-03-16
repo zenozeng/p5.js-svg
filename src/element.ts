@@ -4,12 +4,17 @@ import { P5SVG } from './types'
  * https://github.com/processing/p5.js/blob/dev-2.0/src/dom/p5.Element.js
  */
 export default function (p5: P5SVG) {
-    p5.prototype.querySVG = function (selector: string) {
+    const querySVG = function (this: { _renderer?: { svg?: SVGElement } }, selector: string) {
         const svg = this._renderer && this._renderer.svg
         if (!svg) {
             return null
         }
         return p5.SVGElement.prototype.query.call({ elt: svg }, selector)
+    }
+
+    p5.prototype.querySVG = querySVG
+    if (p5.Graphics && p5.Graphics.prototype) {
+        p5.Graphics.prototype.querySVG = querySVG
     }
 
     p5.SVGElement = class SVGElement extends p5.Element {

@@ -2,6 +2,7 @@
     "compilerOptions": {
         "noImplicitAny": true,
         "esModuleInterop": true,
+        "target": "ES2017",
         "inlineSourceMap": true,
         "declarationDir": "dist",
         "declaration": true,
