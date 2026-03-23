@@ -23,7 +23,7 @@ function init(p5: P5) {
 
 
     // attach constants to p5 instance
-    p5svg.prototype['SVG'] = constants.SVG
+    p5svg.prototype.SVG = constants.SVG as SVG
 
     return p5svg
 }

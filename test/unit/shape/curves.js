@@ -1,5 +1,11 @@
 import { testRender } from '../../lib'
 
+const supportedInP5v2 = {
+    bezier: true,
+    bezierPoint: true,
+    bezierTangent: true
+}
+
 describe('Shape/Curves', function () {
 
     var tests = {
@@ -97,6 +103,9 @@ describe('Shape/Curves', function () {
     }
 
     Object.keys(tests).forEach(function (key) {
+        if (window.p5 && /^2\./.test(window.p5.VERSION || '') && !supportedInP5v2[key]) {
+            return
+        }
         describe(key, function () {
             it(key + ': SVG API should draw same image as Canvas API', function (done) {
                 testRender.describe(key)
