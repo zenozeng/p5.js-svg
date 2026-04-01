@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Mon May 25 2015 17:53:42 GMT+0800 (CST)
 
-process.env.CHROME_BIN = require('puppeteer').executablePath()
+process.env.CHROME_BIN = process.env.CHROME_BIN || process.env.PUPPETEER_EXECUTABLE_PATH || require('puppeteer').executablePath()
 
 module.exports = function (config) {
     config.set({
@@ -10,9 +10,9 @@ module.exports = function (config) {
         files: [
             // note: lower index will override greater index config
             { pattern: 'dist/*.js.map', included: false },
-            { pattern: 'src/**/*.js', included: false },
+            { pattern: 'src/**/*.ts', included: false },
             { pattern: 'test/unit/**/*', included: false },
-            'https://unpkg.com/p5@1.11.3/lib/p5.min.js',
+            'https://unpkg.com/p5@2.0.1/lib/p5.js',
             'dist/p5.svg.js',
             'dist/test.js'
         ],
@@ -36,7 +36,23 @@ module.exports = function (config) {
         customLaunchers: {
             ChromeHeadlessNoSandbox: {
                 base: 'ChromeHeadless',
-                flags: ['--no-sandbox']
+                flags: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-background-networking',
+                    '--disable-component-update',
+                    '--disable-default-apps',
+                    '--disable-crash-reporter',
+                    '--disable-breakpad',
+                    '--no-first-run',
+                    '--no-default-browser-check',
+                    '--password-store=basic',
+                    '--use-mock-keychain',
+                    '--enable-webgl',
+                    '--ignore-gpu-blocklist',
+                    '--use-angle=swiftshader-webgl'
+                ]
             }
         },
         // browsers: ['Chrome'],

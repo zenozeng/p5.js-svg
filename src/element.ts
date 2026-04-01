@@ -1,16 +1,10 @@
 import { P5SVG } from './types'
 
 /**
- * https://github.com/processing/p5.js/blob/main/src/core/p5.Element.js
+ * https://github.com/processing/p5.js/blob/dev-2.0/src/dom/p5.Element.js
  */
-export default (p5: P5SVG) => {
-
-    /**
-     * Returns an Array of SVGElements of current SVG Graphics matching given selector
-     * 
-     * @param selector CSS selector for query
-     */
-    (p5.prototype as any).querySVG = function (selector: string) {
+export default function (p5: P5SVG) {
+    const querySVG = function (this: { _renderer?: { svg?: SVGElement } }, selector: string) {
         const svg = this._renderer && this._renderer.svg
         if (!svg) {
             return null
@@ -18,8 +12,14 @@ export default (p5: P5SVG) => {
         return p5.SVGElement.prototype.query.call({ elt: svg }, selector)
     }
 
+    p5.prototype.querySVG = querySVG
+    if (p5.Graphics && p5.Graphics.prototype) {
+        p5.Graphics.prototype.querySVG = querySVG
+    }
+
     p5.SVGElement = class SVGElement extends p5.Element {
-        public elt: Element
+
+        public elt: globalThis.Element
 
         public isUserInstanciated: boolean
 
@@ -32,18 +32,18 @@ export default (p5: P5SVG) => {
             const elements = this.elt.querySelectorAll(selector)
             const objects = []
             for (let i = 0; i < elements.length; i++) {
-                objects[i] = new SVGElement(elements[i] as any)
+                objects[i] = new p5.SVGElement(elements[i] as any)
             }
             return objects
         }
 
         /**
          * Append a new child to current element.
-         * @param element 
-         * @returns 
+         * @param element
+         * @returns
          */
-        append(element: SVGElement | Element) {
-            const elt = (element as SVGElement).elt || element as Element
+        append(element: { elt?: globalThis.Element } | globalThis.Element) {
+            const elt = (element as { elt?: globalThis.Element }).elt || element as globalThis.Element
             this.elt.appendChild(elt)
             return this
         }
@@ -52,32 +52,32 @@ export default (p5: P5SVG) => {
          * Create SVGElement
          *
          */
-        static create(nodeName: string, attributes: { [key: string]: string }, isUserInstanciated?: boolean) {
-            attributes = attributes || {}
+        static create(nodeName: string, attributes: { [key: string]: string | number } = {}, isUserInstanciated?: boolean) {
             const elt = document.createElementNS('http://www.w3.org/2000/svg', nodeName)
             Object.keys(attributes).forEach(function (k) {
-                elt.setAttribute(k, attributes[k])
+                elt.setAttribute(k, String(attributes[k]))
             })
-            const svgEl = new SVGElement(elt as any)
-            svgEl.isUserInstanciated = isUserInstanciated
+            const svgEl = new p5.SVGElement(elt as any)
+            svgEl.isUserInstanciated = !!isUserInstanciated
             return svgEl
         }
 
         /**
          * Check if any group above is user instanciated
          * Will also return true if oneself is user instanciated
-         * 
+         *
          */
-        isWithinUserInstanciated() : boolean {
+        isWithinUserInstanciated(): boolean {
             if (this.isUserInstanciated) {
                 return true
             }
 
-            if (!(this.parentNode() instanceof SVGElement)) {
+            const parent = this.parentNode()
+            if (!(parent instanceof p5.SVGElement)) {
                 return false
             }
-            
-            return this.parentNode().isWithinUserInstanciated()
+
+            return parent.isWithinUserInstanciated()
         }
 
         /**
@@ -88,16 +88,17 @@ export default (p5: P5SVG) => {
          * or return null if not found.
          *
          */
-        parentNode(selector?: string) {
+        parentNode(selector?: string): InstanceType<P5SVG['SVGElement']> | null {
             if (!selector) {
-                return new SVGElement(this.elt.parentNode as any)
+                return this.elt.parentNode ? new p5.SVGElement(this.elt.parentNode as any) : null
             }
-            let elt: SVGElement = this as SVGElement
-            while (elt) {
-                elt = this.parentNode()
-                if (elt && elt.elt.matches(selector)) {
-                    return elt
+
+            let parent: InstanceType<P5SVG['SVGElement']> | null = this.parentNode()
+            while (parent) {
+                if ((parent.elt as globalThis.Element).matches(selector)) {
+                    return parent
                 }
+                parent = parent.parentNode()
             }
             return null
         }
@@ -125,7 +126,5 @@ export default (p5: P5SVG) => {
             }
             return this
         }
-    }
-
-
+    } as unknown as P5SVG['SVGElement']
 }
