@@ -8,9 +8,11 @@ export default function (p5: P5SVG) {
             return null
         }
 
+        const renderer = this._renderer as any
+
         const group = p5.SVGElement.create('g', {}, true)
 
-        const currEl = this._renderer.drawingContext.__currentElement
+        const currEl = renderer.drawingContext.__currentElement
 
         if (currEl.tagName !== 'g' && currEl.tagName) {
             console.warn('Attempted to pop SVG group whilst not in g, svg')
@@ -19,7 +21,7 @@ export default function (p5: P5SVG) {
 
         currEl.append(group)
 
-        this._renderer.drawingContext.__currentElement = group
+        renderer.drawingContext.__currentElement = group
 
         return group
     }
@@ -30,13 +32,15 @@ export default function (p5: P5SVG) {
             return null
         }
 
-        const currEl = this._renderer.drawingContext.__currentElement
+        const renderer = this._renderer as any
+
+        const currEl = renderer.drawingContext.__currentElement
 
         if (currEl !== group) {
             return // Silently fail: the warning has already been given by filter
         }
 
-        this._renderer.drawingContext.__currentElement = currEl.parentNode()
+        renderer.drawingContext.__currentElement = currEl.parentNode()
 
         return
     }

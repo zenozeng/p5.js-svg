@@ -270,7 +270,14 @@ export default function (p5: P5SVG) {
             }, 1)
             return svg
         } else {
-            this.httpGet(path, successCallback)
+            fetch(path)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Fail to fetch svg: ' + path)
+                    }
+                    return response.text()
+                })
+                .then(successCallback, failureCallback)
             return null
         }
     }
@@ -285,8 +292,11 @@ export default function (p5: P5SVG) {
     p5.prototype.loadSVG = function (path: string, successCallback: any, failureCallback: any) {
         const div = document.createElement('div')
         const element = new p5.SVGElement(div)
-        this._incrementPreload()
-        new Promise((resolve, reject) => {
+        const hasPreloadHooks = typeof this._incrementPreload === 'function' && typeof this._decrementPreload === 'function'
+        if (hasPreloadHooks) {
+            this._incrementPreload()
+        }
+        const request = new Promise((resolve, reject) => {
             this._svg_get(path, function (svg: string) {
                 div.innerHTML = svg
                 const svgEl = div.querySelector('svg')
@@ -299,11 +309,20 @@ export default function (p5: P5SVG) {
             }, reject)
         }).then((v) => {
             successCallback && successCallback(v)
+            return v
         }).catch((e) => {
             failureCallback && failureCallback(e)
+            if (!failureCallback) {
+                throw e
+            }
         }).finally(() => {
-            this._decrementPreload()
+            if (hasPreloadHooks) {
+                this._decrementPreload()
+            }
         })
+        if (!successCallback && !failureCallback) {
+            return request
+        }
         return element
     }
 

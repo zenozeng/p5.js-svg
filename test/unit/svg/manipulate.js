@@ -9,11 +9,9 @@ describe('SVG Manipulating API', function () {
         new p5(function (p) {
             var svg
             var svg2
-            p.preload = function () {
-                svg = p.loadSVG(SVGDataURL)
-                svg2 = p.loadSVG(SVGHTTPURL)
-            }
-            p.setup = function () {
+            p.setup = async function () {
+                svg = await p.loadSVG(SVGDataURL)
+                svg2 = await p.loadSVG(SVGHTTPURL)
                 svg2.query('path')[0].attribute('stroke-width', 100)
                 var pg = p.createGraphics(400, 400, p.SVG)
                 pg.image(svg, 0, 0, 400, 400)

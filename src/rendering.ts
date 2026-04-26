@@ -2,6 +2,50 @@ import constants from './constants'
 import { P5SVG, p5SVG } from './types'
 
 export default function (p5: P5SVG) {
+    const isSVGRenderer = function (renderer: any) {
+        return !!(renderer && renderer.isSVG)
+    }
+
+    const isPatchedImageSource = function (source: any) {
+        return !!(
+            source &&
+            (
+                source instanceof p5.Graphics ||
+                (source._renderer && isSVGRenderer(source._renderer)) ||
+                (source.elt && source.elt.nodeName && source.elt.nodeName.toLowerCase() === 'svg') ||
+                (source.nodeName && source.nodeName.toLowerCase() === 'svg')
+            )
+        )
+    }
+
+    const forceSVGPixelDensity = function (host: any) {
+        if (host && host._renderer && isSVGRenderer(host._renderer)) {
+            host._pixelDensity = 1
+            host._renderer._pixelDensity = 1
+            if (host._pInst) {
+                host._pInst._pixelDensity = 1
+            }
+            return true
+        }
+        return false
+    }
+
+    const _validate = p5.prototype.validate
+    p5.prototype.validate = function (func: string, args: any[]) {
+        if (func === 'createCanvas' && args[2] === constants.SVG) {
+            return
+        }
+        if (func === 'createGraphics' && args[2] === constants.SVG) {
+            return
+        }
+        if (func === 'image' && isPatchedImageSource(args[0])) {
+            return
+        }
+        if (func === 'saveFrames' && (args[2] == null || args[3] == null)) {
+            return
+        }
+        return _validate.call(this, func, args)
+    }
 
     // patch p5.Graphics for SVG
     const _graphics = p5.Graphics
@@ -11,7 +55,7 @@ export default function (p5: P5SVG) {
 
         if (isSVG) {
             // replace renderer with SVG renderer
-            const svgRenderer = new p5.RendererSVG(pg.elt, pg, false)
+            const svgRenderer = new p5.RendererSVG(pg.canvas, pg._pInst || pInst, false)
             pg._renderer = svgRenderer
             pg.elt = svgRenderer.elt
 
@@ -23,6 +67,14 @@ export default function (p5: P5SVG) {
         return pg
     }
     p5.Graphics.prototype = _graphics.prototype
+
+    const _graphicsPixelDensity = p5.Graphics.prototype.pixelDensity
+    p5.Graphics.prototype.pixelDensity = function (val?: number) {
+        if (!forceSVGPixelDensity(this)) {
+            return _graphicsPixelDensity.call(this, val)
+        }
+        return typeof val === 'number' ? this : 1
+    }
     
     /**
      * Patched version of createCanvas
@@ -40,15 +92,29 @@ export default function (p5: P5SVG) {
      */
     const _createCanvas = p5.prototype.createCanvas
     p5.prototype.createCanvas = function (w: number, h: number, renderer: any) {
-        const graphics = _createCanvas.apply(this, [w, h, renderer])
-        if (renderer === constants.SVG) {
-            const c = graphics.canvas
-            this._setProperty('_renderer', new p5.RendererSVG(c, this, true))
-            this._isdefaultGraphics = true
-            this._renderer.resize(w, h)
-            this._renderer._applyDefaults()
+        if (renderer !== constants.SVG) {
+            return _createCanvas.apply(this, [w, h, renderer])
         }
+        const graphics = _createCanvas.apply(this, [w, h, 'p2d'])
+        const c = graphics.canvas
+        const rendererSVG = new p5.RendererSVG(c, this, true)
+        if (typeof this._setProperty === 'function') {
+            this._setProperty('_renderer', rendererSVG)
+        } else {
+            this._renderer = rendererSVG
+        }
+        this._isdefaultGraphics = true
+        this._renderer.resize(w, h)
+        this._renderer._applyDefaults()
         return this._renderer
+    }
+
+    const _pixelDensity = p5.prototype.pixelDensity
+    p5.prototype.pixelDensity = function (val?: number) {
+        if (!forceSVGPixelDensity(this)) {
+            return _pixelDensity.call(this, val)
+        }
+        return typeof val === 'number' ? this : 1
     }
 
     p5.prototype.createGraphics = function (w: number, h: number, renderer: any) {
